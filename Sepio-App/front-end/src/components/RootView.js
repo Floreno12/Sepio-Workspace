@@ -284,6 +284,9 @@ export default function Layout({ icon_username }) {
 							<NavLink to='/querytool/settings' className='nav-link'>
 								<RiDashboardLine className='nav-icon' /> Settings
 							</NavLink>
+							<NavLink to='/querytool/createuser' className='nav-link'>
+								<RiDashboardLine className='nav-icon' /> Users
+							</NavLink>
 						</CNavItem>
 					</CSidebarNav>
 				</CSidebar>

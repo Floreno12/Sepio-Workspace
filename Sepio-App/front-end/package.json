@@ -9,7 +9,7 @@
     "@emotion/styled": "^11.11.5",
     "@mui/icons-material": "^5.15.19",
     "@mui/joy": "^5.0.0-beta.36",
-    "@mui/material": "^5.15.19",
+    "@mui/material": "^5.15.20",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
@@ -22,7 +22,7 @@
     "react-history-search": "^0.0.5",
     "react-icons": "^5.2.1",
     "react-native-logs": "^5.1.0",
-    "react-router-dom": "^6.23.1",
+    "react-router-dom": "^6.24.0",
     "react-scripts": "5.0.1",
     "react-table": "^7.8.0",
     "react-toastify": "^10.0.5",
@@ -34,7 +34,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
-  },  
+  },
   "browserslist": {
     "production": [
       ">0.2%",
