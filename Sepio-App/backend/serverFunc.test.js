@@ -7,9 +7,9 @@ jest.mock('axios');
 describe('getMacAddresses', () => {
   it('should fetch MAC addresses from ServiceNow', async () => {
     const macAddress = ['50EB71435E40'];
-    const serviceNowInstance = 'ven05878.service-now.com';
-    const snUsername = 'forRestApi';
-    const snPassword = '934275@Ll';
+    const serviceNowInstance = 'snInstance';
+    const snUsername = 'username';
+    const snPassword = 'pass';
 
     axios.get.mockResolvedValue({
       status: 200,
@@ -38,9 +38,9 @@ describe('getMacAddresses', () => {
 
 describe('getSepioToken', () => {
   it('should get Sepio token', async () => {
-    const snEndpoint = 'ven05878.service-now.com';
-    const snUsername = 'forRestApi';
-    const snPassword = '934275@Ll';
+    const snEndpoint = 'snInstance';
+    const snUsername = 'username';
+    const snPassword = 'pass';
     console.log(snEndpoint);
     console.log(snUsername);
     console.log(snPassword);
@@ -60,7 +60,7 @@ describe('getSepioToken', () => {
 describe('addTagsToSepioElements', () => {
   it('should add tags to Sepio elements', async () => {
     const sepioToken = 'token';
-    const snEndpoint = 'ven05878.service-now.com';
+    const snEndpoint = 'snInstance';
     const filteredMacs = [
       {
         sys_class_name: 'cmdb_ci',
