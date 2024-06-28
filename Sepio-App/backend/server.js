@@ -25,6 +25,45 @@ app.use((req, res, next) => {
   next();
 });
 
+// Server script
+app.get('/user/all', async (req, res) => {
+  try {
+    const users = await prisma.user.findMany();
+    res.json(users);
+  } catch (error) {
+    console.log('Error fetching users:', error);
+    res.status(500).json({ success: false, message: 'Error fetching users' });
+  }
+});
+
+
+
+app.post('/user/privileges', async (req, res) => {
+  const { username, password, privileges } = req.body;  // Correct the spelling here
+  console.log(`Check user: ${username}`);
+
+  try {
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+    const newUser = await prisma.user.create({
+      data: {
+        name: username,
+        password: hashedPassword,
+        otp_secret: '',
+        otp_verified: false,
+        privileges: privileges  // Correct the spelling here
+      },
+    });
+    console.log('User created successfully', newUser);
+    res.json({ success: true });
+  } catch (error) {
+    console.log('Error', error);
+    res.status(500).json({ success: false, message: 'Error' });
+  }
+});
+
+
 
 app.post('/update-password', async (req, res) => {
   const { password } = req.body;

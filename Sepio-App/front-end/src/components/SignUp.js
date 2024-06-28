@@ -323,6 +323,7 @@
 
 
 
+
 import React, { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import FormControl from '@mui/joy/FormControl';
@@ -416,14 +417,14 @@ export default function UpdatePassword() {
           )}
         </FormControl>
       </form>
-      <Button
+      {/* <Button
         variant='solid'
         color='secondary'
         sx={{ marginTop: '20px' }}
         onClick={handleLoginRedirect}
       >
         Log In
-      </Button>
+      </Button> */}
     </div>
   );
 }

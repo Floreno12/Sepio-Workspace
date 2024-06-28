@@ -290,7 +290,7 @@ export default function Layout({ icon_username }) {
 						</CNavItem>
 					</CSidebarNav>
 				</CSidebar>
-				<div style={{
+				<div style= {{
 					display: 'flex',
 					justifyContent: 'center',
 					marginTop: '-600px',
