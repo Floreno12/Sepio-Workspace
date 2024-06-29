@@ -20,6 +20,7 @@ import '@coreui/coreui/dist/css/coreui.min.css'; // Import CoreUI CSS
 
 function App() {
 	const [icon_username, setUsername] = useLocalStorage('');
+	
 	return (
 		<Router>
 			<section className='sepio'>
