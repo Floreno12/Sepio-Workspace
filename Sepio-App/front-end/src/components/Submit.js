@@ -190,6 +190,7 @@ import { Menu, MenuItem } from '@mui/material';
 import { NavLink } from 'react-router-dom';
 import { CSidebar, CSidebarNav, CNavItem, CContainer, CForm } from '@coreui/react';
 import { RiDashboardLine } from 'react-icons/ri';
+import {Toast} from 'primereact/toast';
 import SepioLogo from './../image/Sepio_Logo.png';
 import FormControl from '@mui/joy/FormControl';
 import FormLabel from '@mui/joy/FormLabel';
@@ -203,6 +204,17 @@ export default function Layout({ icon_username }) {
     const [logoHeight, setLogoHeight] = useState('60px');
     const [isScrollDisabled, setIsScrollDisabled] = useState(true);
     const [formData, setFormData] = useState({ username: '', password: '', privileges: '' });
+    const [status, setStatus] = useState('initial');
+    const toast = useRef(null);
+
+    const showSuccess = (message) => {
+        toast.current.show({ severity: 'success', summary: 'Success', detail: message, life: 3000 });
+      }
+    
+      const showError = (message) => {
+        toast.current.clear();
+        toast.current.show({ severity: 'error', summary: 'Error', detail: message, life: 3000 });
+      }
 
     // Handle form input changes
     const handleInputChange = (e) => {
@@ -219,19 +231,26 @@ export default function Layout({ icon_username }) {
     // Call to the server
     const handleSubmit = (event) => {
         event.preventDefault();
+        setStatus('loading');
         axios.post('/user/privileges', formData)
             .then(response => {
                 if(response.data.success){
+                    showSuccess('User has been created');
                 console.log('User created:', response.data);
                 // Navigate to the users list page or any other page
+                setTimeout(() => {
                 navigate('/querytool/createuser');
+                }, 1500);
                 }else{
+                    setStatus('failure')
                     console.log('Error');
-                    navigate('/querytool/createuser');
+                    showError('Error');
                 }
             })
             .catch(error => {
+                setStatus('failure');
                 console.error('There was an error creating the user!', error);
+                showError('Error creating the user!');
             });
     };
 
@@ -337,6 +356,7 @@ export default function Layout({ icon_username }) {
 
     return (
         <div>
+            <Toast ref = {toast}/>
             <Menubar start={start} end={end} />
             <div>
                 <CSidebar className='border-end custom-sidebar' visible={true} style={{ height: '100vh', position: 'sticky', top: '0' }}>
@@ -380,7 +400,7 @@ export default function Layout({ icon_username }) {
                             </Select>
                         </FormControl>
                         <div style={{ marginLeft: '-550px', marginTop: '10px' }}>
-                            <Button type="submit" label="Submit" style = {{backgroundColor: '#183462'}} />
+                            <Button type="submit" label="Submit" style = {{backgroundColor: '#183462', borderRadius: '5px 5px 5px 5px'}} loading = {status === 'loading'} />
                         </div>
                     </form>
                 </div>
