@@ -2161,6 +2161,697 @@
 
 
 
+// import React, { useEffect, useState } from 'react';
+// import { Menubar } from 'primereact/menubar';
+// import { Button } from 'primereact/button';
+// import { Menu, MenuItem } from '@mui/material';
+// import { NavLink, useNavigate } from 'react-router-dom';
+// import { CSidebar, CSidebarNav, CNavItem, CContainer, CForm } from '@coreui/react';
+// import { RiDashboardLine } from 'react-icons/ri';
+// import SepioLogo from './../image/Sepio_Logo.png';
+// import { DataTable } from 'primereact/datatable';
+// import { Column } from 'primereact/column';
+// import Tooltip from '@mui/material/Tooltip';
+// import axios from 'axios';
+// import './Layout.css';
+
+// export default function Layout({ icon_username }) {
+//     const navigate = useNavigate();
+//     const [first, setFirst] = useState(0);
+//     const [rows, setRows] = useState(10);
+//     const [users, setUsers] = useState([]);
+//     const [filteredUsers, setFilteredUsers] = useState([]);
+//     const [searchTerm, setSearchTerm] = useState('');
+//     const [searchField, setSearchField] = useState('id');
+//     const [dropDown, setDropDown] = useState(null);
+//     const open = Boolean(dropDown);
+
+//     useEffect(() => {
+//         // Fetch users from the server
+//         axios.get('/user/all')
+//             .then(response => {
+//                 console.log('Fetched users:', response.data); // Log the response data
+//                 setUsers(response.data);
+//                 setFilteredUsers(response.data);
+//             })
+//             .catch(error => {
+//                 console.error('Error fetching users:', error);
+//             });
+//     }, []);
+
+//     const handleLogout = () => {
+//         navigate('/');
+//     };
+
+//     const handleClick = (event) => {
+//         setDropDown(event.currentTarget);
+//     };
+
+//     const handleClose = () => {
+//         setDropDown(null);
+//     };
+
+//     const start = <img alt='logo' style={{ cursor: 'pointer' }} src={SepioLogo} height='40' className='mr-2' />;
+//     const end = (
+//         <div className='flex align-items-center gap-2'>
+//             <NavLink to='/' className='p-button p-component p-button-text' style={{ borderRadius: '10px', padding: '10px', textDecoration: 'none' }}>
+//                 <span className='pi pi-sign-out' style={{ marginRight: '5px' }} />
+//                 Logout
+//             </NavLink>
+//             <Menu
+//                 anchorEl={dropDown}
+//                 id='account-menu'
+//                 open={open}
+//                 onClose={handleClose}
+//                 onClick={handleClose}
+//                 PaperProps={{
+//                     elevation: 5,
+//                     sx: {
+//                         width: '120px',
+//                         borderRadius: '10px',
+//                         overflow: 'visible',
+//                         mt: 1,
+//                         '&::before': {
+//                             content: '""',
+//                             display: 'inline-block',
+//                             position: 'absolute',
+//                             top: 0,
+//                             right: 10,
+//                             width: 10,
+//                             height: 10,
+//                             bgcolor: 'background.paper',
+//                             transform: 'translateY(-50%) rotate(45deg)',
+//                             zIndex: 0,
+//                         },
+//                     },
+//                 }}
+//                 transformOrigin={{
+//                     vertical: 'top',
+//                     horizontal: 'center',
+//                 }}
+//                 anchorOrigin={{
+//                     vertical: 'bottom',
+//                     horizontal: 'center',
+//                 }}
+//             >
+//                 <MenuItem sx={{ display: 'flex', justifyContent: 'center' }} title='Profile'>
+//                     <p style={{ marginBottom: '0px' }}>
+//                         User: {icon_username}
+//                     </p>
+//                 </MenuItem>
+//             </Menu>
+
+//             <Button
+//                 style={{ width: '46px', height: '46px', borderRadius: '50%', color: '#183462' }}
+//                 icon="pi pi-user"
+//                 rounded
+//                 text
+//                 severity="secondary"
+//                 aria-label="User"
+//                 className="mr-2"
+//                 onClick={handleClick}
+//                 aria-controls={open ? 'account-menu' : undefined}
+//                 aria-haspopup="true"
+//                 aria-expanded={open ? 'true' : undefined}
+//             />
+//         </div>
+//     );
+
+//     const starting = <img alt='logo' style={{ cursor: 'pointer' }} src={SepioLogo} height='40' className='mr-2' />;
+//     const ending = (
+//         <div className='flex align-items-center gap-2'>
+//             <NavLink to='/' className='p-button p-component p-button-text' style={{ borderRadius: '10px', padding: '10px', textDecoration: 'none' }}>
+//                 <span className='pi pi-sign-out' style={{ marginRight: '5px' }} />
+//                 Logout
+//             </NavLink>
+//             <Menu
+//                 anchorEl={dropDown}
+//                 id='account-menu'
+//                 open={open}
+//                 onClose={handleClose}
+//                 onClick={handleClose}
+//                 PaperProps={{
+//                     elevation: 5,
+//                     sx: {
+//                         width: '120px',
+//                         borderRadius: '10px',
+//                         overflow: 'visible',
+//                         mt: 1,
+//                         '&::before': {
+//                             content: '""',
+//                             display: 'inline-block',
+//                             position: 'absolute',
+//                             top: 0,
+//                             right: 10,
+//                             width: 10,
+//                             height: 10,
+//                             bgcolor: 'background.paper',
+//                             transform: 'translateY(-50%) rotate(45deg)',
+//                             zIndex: 0,
+//                         },
+//                     },
+//                 }}
+//                 transformOrigin={{
+//                     vertical: 'top',
+//                     horizontal: 'center',
+//                 }}
+//                 anchorOrigin={{
+//                     vertical: 'bottom',
+//                     horizontal: 'center',
+//                 }}
+//             >
+//                 <MenuItem sx={{ display: 'flex', justifyContent: 'center' }} title='Profile'>
+//                     <p style={{ marginBottom: '0px' }}>
+//                         User: {icon_username}
+//                     </p>
+//                 </MenuItem>
+//             </Menu>
+
+//             <Button
+//                 style={{ width: '46px', height: '46px', borderRadius: '50%', color: '#183462' }}
+//                 icon="pi pi-user"
+//                 rounded
+//                 text
+//                 severity="secondary"
+//                 aria-label="User"
+//                 className="mr-2"
+//                 onClick={handleClick}
+//                 aria-controls={open ? 'account-menu' : undefined}
+//                 aria-haspopup="true"
+//                 aria-expanded={open ? 'true' : undefined}
+//             />
+//         </div>
+//     );
+
+//     const handleNew = () => {
+//         navigate('/querytool/usersubmit');
+//     };
+
+//     const padData = (data, rowsPerPage) => {
+//         const paddedData = [...data];
+//         console.log('data:', paddedData);
+//         const totalPages = Math.ceil(data.length / rowsPerPage);
+//         const currentPage = Math.ceil(first / rowsPerPage) + 1;
+
+//         if (currentPage === totalPages) {
+//             while (paddedData.length < rowsPerPage * totalPages) {
+//                 paddedData.push({ id: ' - ', username: '', password: '', privileges: '' });
+//             }
+//         }
+
+//         return paddedData;
+//     };
+
+//     const onPage = (event) => {
+//         setFirst(event.first);
+//         setRows(event.rows);
+//     };
+
+//     const bodyTemplate = (rowData, column) => {
+//         return (
+//             <Tooltip title={rowData[column.field]} arrow>
+//                 <span
+//                     style={{
+//                         whiteSpace: 'nowrap',
+//                         overflow: 'hidden',
+//                         textOverflow: 'ellipsis',
+//                         display: 'inline-block',
+//                         maxWidth: '200px',
+//                     }}
+//                 >
+//                     {rowData[column.field]}
+//                 </span>
+//             </Tooltip>
+//         );
+//     };
+
+//     const secondMenubarEnd = (
+//         <div style={{ display: 'flex', alignItems: 'center' }}>
+//             <div style={{ color: 'white', padding: '10px', borderRadius: '5px', marginLeft: '10px' }}>
+//                 Users
+//             </div>
+//             <input
+//                 type="text"
+//                 value={searchTerm}
+//                 onChange={(e) => setSearchTerm(e.target.value)}
+//                 placeholder="Search..."
+//                 style={{ padding: '5px', marginLeft: '10px' }}
+//             />
+//             <select
+//                 value={searchField}
+//                 onChange={(e) => setSearchField(e.target.value)}
+//                 style={{ padding: '5px', marginLeft: '10px' }}
+//             >
+//                 <option value="id">ID</option>
+//                 <option value="name">Username</option>
+//                 <option value="password">Password</option>
+//                 <option value="privileges">Privileges</option>
+//             </select>
+
+//             <Button label='New' icon='pi pi-plus' onClick={handleNew} style={{ backgroundColor: '#183462', marginLeft: '768px'}} />
+//         </div>
+//     );
+
+//     useEffect(() => {
+//         const filtered = users.filter(user =>
+//             user[searchField].toString().toLowerCase().includes(searchTerm.toLowerCase())
+//         );
+//         setFilteredUsers(filtered);
+//     }, [searchTerm, searchField, users]);
+
+//     return (
+//         <div style = {{position: 'sticky', overflow: 'auto'  }}>            
+//             <Menubar start={starting} end={ending} style={{ position: 'sticky', top: '0', zIndex: 1000 }} />
+            
+//             <div style={{ display: 'flex'}}>
+//                 <CSidebar className='border-end custom-sidebar' visible={true} style={{ height: '100vh', position: 'sticky', top: '0' }}>
+//                     <CSidebarNav>
+//                         <CContainer fluid>
+//                             <CForm className='d-flex'>
+//                             </CForm>
+//                         </CContainer>
+//                         <CNavItem>
+//                             <NavLink to='/querytool/mac' className='nav-link'>
+//                                 <RiDashboardLine className='nav-icon' />MAC
+//                             </NavLink>
+//                         </CNavItem>
+//                         <CNavItem>
+//                             <NavLink to='/querytool/settings' className='nav-link'>
+//                                 <RiDashboardLine className='nav-icon' /> Settings
+//                             </NavLink>
+//                             <NavLink to='/querytool/createuser' className='nav-link'>
+//                                 <RiDashboardLine className='nav-icon' /> Users
+//                             </NavLink>
+//                         </CNavItem>
+//                     </CSidebarNav>
+//                 </CSidebar>
+
+//                 <div style={{ flex: 1, paddingLeft: '0px', marginTop: '-12px' }}>
+//                     <Menubar start={secondMenubarEnd} style={{ backgroundColor: '#183462', width: '100%', position: 'sticky', top: '0', zIndex: 1000, marginTop: '10px' }} />
+//                     <div style={{ marginTop: '70px' }}>
+//                         <DataTable
+//                             value={padData(filteredUsers, rows)}
+//                             overflow = 'auto'
+//                             paginator
+//                             rows={rows}
+//                             rowsPerPageOptions={[10]}
+//                             responsiveLayout='scroll'
+//                             first={first}
+//                             onPage={onPage}
+//                             style={{ border: '1px solid #dee2e6', borderCollapse: 'collapse', marginTop: '-70px'}}
+//                             className='p-datatable-gridlines hoverable-rows'
+//                         >
+//                             <Column
+//                                 field='id'
+//                                 header='ID'
+//                                 style={{ borderRight: '1px solid #dee2e6', width: '100px' }}
+//                                 body={bodyTemplate}
+//                             ></Column>
+//                             <Column
+//                                 field='name'
+//                                 header='Username'
+//                                 style={{ borderRight: '1px solid #dee2e6', width: '100px' }}
+//                                 body={bodyTemplate}
+//                             ></Column>
+//                             <Column
+//                                 field='password'
+//                                 header='Password'
+//                                 style={{ borderRight: '1px solid #dee2e6', width: '300px' }}
+//                                 body={bodyTemplate}
+//                             ></Column>
+//                             <Column
+//                                 field='privileges'
+//                                 header='Privileges'
+//                                 style={{ borderRight: '1px solid #dee2e6', width: '150px' }}
+//                                 body={bodyTemplate}
+//                             ></Column>
+//                         </DataTable>
+//                     </div>
+//                     <div style={{ display: 'flex', justifyContent: 'center', position: 'fixed', bottom: '940px', width: '100%' }}>
+                        
+//                     </div>
+//                 </div>
+//             </div>
+//         </div>
+//     );
+// }
+
+
+
+
+
+
+
+
+
+
+// import React, { useEffect, useState } from 'react';
+// import { Menubar } from 'primereact/menubar';
+// import { Button } from 'primereact/button';
+// import { Menu, MenuItem } from '@mui/material';
+// import { NavLink, useNavigate } from 'react-router-dom';
+// import { CSidebar, CSidebarNav, CNavItem, CContainer, CForm } from '@coreui/react';
+// import { RiDashboardLine } from 'react-icons/ri';
+// import SepioLogo from './../image/Sepio_Logo.png';
+// import { DataTable } from 'primereact/datatable';
+// import { Column } from 'primereact/column';
+// import Tooltip from '@mui/material/Tooltip';
+// import axios from 'axios';
+// import './Layout.css';
+
+// export default function Layout({ icon_username }) {
+//     const navigate = useNavigate();
+//     const [first, setFirst] = useState(0);
+//     const [rows, setRows] = useState(10);
+//     const [users, setUsers] = useState([]);
+//     const [filteredUsers, setFilteredUsers] = useState([]);
+//     const [searchTerm, setSearchTerm] = useState('');
+//     const [searchField, setSearchField] = useState('id');
+//     const [dropDown, setDropDown] = useState(null);
+//     const open = Boolean(dropDown);
+
+
+
+//     useEffect(() => {
+//         // Fetch users from the server
+//         axios.get('/user/all')
+//             .then(response => {
+//                 console.log('Fetched users:', response.data); // Log the response data
+//                 setUsers(response.data);
+//                 setFilteredUsers(response.data);
+//             })
+//             .catch(error => {
+//                 console.error('Error fetching users:', error);
+//             });
+//     }, []);
+
+//     const handleLogout = () => {
+//         navigate('/');
+//     };
+
+//     const handleClick = (event) => {
+//         setDropDown(event.currentTarget);
+//     };
+
+//     const handleClose = () => {
+//         setDropDown(null);
+//     };
+
+//     const start = <img alt='logo' style={{ cursor: 'pointer' }} src={SepioLogo} height='40' className='mr-2' />;
+//     const end = (
+//         <div className='flex align-items-center gap-2'>
+//             <NavLink to='/' className='p-button p-component p-button-text' style={{ borderRadius: '10px', padding: '10px', textDecoration: 'none' }}>
+//                 <span className='pi pi-sign-out' style={{ marginRight: '5px' }} />
+//                 Logout
+//             </NavLink>
+//             <Menu
+//                 anchorEl={dropDown}
+//                 id='account-menu'
+//                 open={open}
+//                 onClose={handleClose}
+//                 onClick={handleClose}
+//                 PaperProps={{
+//                     elevation: 5,
+//                     sx: {
+//                         width: '120px',
+//                         borderRadius: '10px',
+//                         overflow: 'visible',
+//                         mt: 1,
+//                         '&::before': {
+//                             content: '""',
+//                             display: 'inline-block',
+//                             position: 'absolute',
+//                             top: 0,
+//                             right: 10,
+//                             width: 10,
+//                             height: 10,
+//                             bgcolor: 'background.paper',
+//                             transform: 'translateY(-50%) rotate(45deg)',
+//                             zIndex: 0,
+//                         },
+//                     },
+//                 }}
+//                 transformOrigin={{
+//                     vertical: 'top',
+//                     horizontal: 'center',
+//                 }}
+//                 anchorOrigin={{
+//                     vertical: 'bottom',
+//                     horizontal: 'center',
+//                 }}
+//             >
+//                 <MenuItem sx={{ display: 'flex', justifyContent: 'center' }} title='Profile'>
+//                     <p style={{ marginBottom: '0px' }}>
+//                         User: {icon_username}
+//                     </p>
+//                 </MenuItem>
+//             </Menu>
+
+//             <Button
+//                 style={{ width: '46px', height: '46px', borderRadius: '50%', color: '#183462' }}
+//                 icon="pi pi-user"
+//                 rounded
+//                 text
+//                 severity="secondary"
+//                 aria-label="User"
+//                 className="mr-2"
+//                 onClick={handleClick}
+//                 aria-controls={open ? 'account-menu' : undefined}
+//                 aria-haspopup="true"
+//                 aria-expanded={open ? 'true' : undefined}
+//             />
+//         </div>
+//     );
+
+
+//     const starting = <img alt='logo' style={{ cursor: 'pointer' }} src={SepioLogo} height='40' className='mr-2' />;
+//     const ending = (
+//         <div className='flex align-items-center gap-2'>
+//             <NavLink to='/' className='p-button p-component p-button-text' style={{ borderRadius: '10px', padding: '10px', textDecoration: 'none' }}>
+//                 <span className='pi pi-sign-out' style={{ marginRight: '5px' }} />
+//                 Logout
+//             </NavLink>
+//             <Menu
+//                 anchorEl={dropDown}
+//                 id='account-menu'
+//                 open={open}
+//                 onClose={handleClose}
+//                 onClick={handleClose}
+//                 PaperProps={{
+//                     elevation: 5,
+//                     sx: {
+//                         width: '120px',
+//                         borderRadius: '10px',
+//                         overflow: 'visible',
+//                         mt: 1,
+//                         '&::before': {
+//                             content: '""',
+//                             display: 'inline-block',
+//                             position: 'absolute',
+//                             top: 0,
+//                             right: 10,
+//                             width: 10,
+//                             height: 10,
+//                             bgcolor: 'background.paper',
+//                             transform: 'translateY(-50%) rotate(45deg)',
+//                             zIndex: 0,
+//                         },
+//                     },
+//                 }}
+//                 transformOrigin={{
+//                     vertical: 'top',
+//                     horizontal: 'center',
+//                 }}
+//                 anchorOrigin={{
+//                     vertical: 'bottom',
+//                     horizontal: 'center',
+//                 }}
+//             >
+//                 <MenuItem sx={{ display: 'flex', justifyContent: 'center' }} title='Profile'>
+//                     <p style={{ marginBottom: '0px' }}>
+//                         User: {icon_username}
+//                     </p>
+//                 </MenuItem>
+//             </Menu>
+
+//             <Button
+//                 style={{ width: '46px', height: '46px', borderRadius: '50%', color: '#183462' }}
+//                 icon="pi pi-user"
+//                 rounded
+//                 text
+//                 severity="secondary"
+//                 aria-label="User"
+//                 className="mr-2"
+//                 onClick={handleClick}
+//                 aria-controls={open ? 'account-menu' : undefined}
+//                 aria-haspopup="true"
+//                 aria-expanded={open ? 'true' : undefined}
+//             />
+//         </div>
+//     );
+
+
+//     const handleNew = () => {
+//         navigate('/querytool/usersubmit');
+//     };
+
+//     const padData = (data, rowsPerPage) => {
+//         const paddedData = [...data];
+//         console.log('data:', paddedData);
+//         const totalPages = Math.ceil(data.length / rowsPerPage);
+//         const currentPage = Math.ceil(first / rowsPerPage) + 1;
+
+//         if (currentPage === totalPages) {
+//             while (paddedData.length < rowsPerPage * totalPages) {
+//                 paddedData.push({ id: ' - ', username: '', password: '', privileges: '' });
+//             }
+//         }
+
+//         return paddedData;
+//     };
+
+//     const onPage = (event) => {
+//         setFirst(event.first);
+//         setRows(event.rows);
+//     };
+
+//     const bodyTemplate = (rowData, column) => {
+//         return (
+//             <Tooltip title={rowData[column.field]} arrow>
+//                 <span
+//                     style={{
+//                         whiteSpace: 'nowrap',
+//                         overflow: 'hidden',
+//                         textOverflow: 'ellipsis',
+//                         display: 'inline-block',
+//                         maxWidth: '200px',
+//                     }}
+//                 >
+//                     {rowData[column.field]}
+//                 </span>
+//             </Tooltip>
+//         );
+//     };
+
+//     const secondMenubarEnd = (
+//         <div style={{ display: 'flex', alignItems: 'center' }}>
+//             <div style={{ color: 'white', padding: '10px', borderRadius: '5px', marginLeft: '10px' }}>
+//                 Users
+//             </div>
+//             <input
+//                 type="text"
+//                 value={searchTerm}
+//                 onChange={(e) => setSearchTerm(e.target.value)}
+//                 placeholder="Search..."
+//                 style={{ padding: '5px', marginLeft: '10px' }}
+//             />
+//             <select
+//                 value={searchField}
+//                 onChange={(e) => setSearchField(e.target.value)}
+//                 style={{ padding: '5px', marginLeft: '10px' }}
+//             >
+//                 <option value="id">ID</option>
+//                 <option value="name">Username</option>
+//                 <option value="password">Password</option>
+//                 <option value="privileges">Privileges</option>
+//             </select>
+
+            
+//         </div>
+//     );
+
+
+
+
+
+
+
+//     const starts = (
+//         <div style={{ display: 'flex', alignItems: 'center' }}>
+//             <div>
+//                 Users
+//             </div>
+//             <input
+//                 type="text"
+//                 value={searchTerm}
+//                 onChange={(e) => setSearchTerm(e.target.value)}
+//                 placeholder="Search..."
+//                 style={{ padding: '5px', marginLeft: '10px' }}
+//             />
+//             <select
+//                 value={searchField}
+//                 onChange={(e) => setSearchField(e.target.value)}
+//                 style={{ padding: '5px', marginLeft: '10px' }}
+//             >
+//                 <option value="id">ID</option>
+//                 <option value="name">Username</option>
+//                 <option value="password">Password</option>
+//                 <option value="privileges">Privileges</option>
+//             </select>
+
+            
+//         </div>
+//     )
+
+
+
+//     const ends = (
+//         <div className='flex align-items-center gap-2'>
+//             <Button label='New' icon='pi pi-plus' onClick={handleNew} style={{ backgroundColor: '#183462'}} />
+//         </div>
+//     );
+
+
+//     useEffect(() => {
+//         const filtered = users.filter(user =>
+//             user[searchField].toString().toLowerCase().includes(searchTerm.toLowerCase())
+//         );
+//         setFilteredUsers(filtered);
+//     }, [searchTerm, searchField, users]);
+
+//     return (
+//         <div style = {{overflow: 'auto' }}>            
+//             <Menubar start = {starting} end = {ending}/>
+            
+//         <div style={{ display: 'flex'}}>
+//             <CSidebar className='border-end custom-sidebar' visible={true} style={{ height: '100vh', position: 'sticky', top: '0' }}>
+//                 <CSidebarNav>
+//                     <CContainer fluid>
+//                         <CForm className='d-flex'>
+//                         </CForm>
+//                     </CContainer>
+//                     <CNavItem>
+//                         <NavLink to='/querytool/mac' className='nav-link'>
+//                             <RiDashboardLine className='nav-icon' />MAC
+//                         </NavLink>
+//                     </CNavItem>
+//                     <CNavItem>
+//                         <NavLink to='/querytool/settings' className='nav-link'>
+//                             <RiDashboardLine className='nav-icon' /> Settings
+//                         </NavLink>
+//                         <NavLink to='/querytool/createuser' className='nav-link'>
+//                             <RiDashboardLine className='nav-icon' /> Users
+//                         </NavLink>
+//                     </CNavItem>
+//                 </CSidebarNav>
+//             </CSidebar>
+
+//             <div style={{ flex: 1, paddingLeft: '0px', marginTop: '-12px'}}>
+//                 <Menubar start={starts} end = {ends} style={{ backgroundColor: '#183462', width: '100%', position: '', top: '0', zIndex: 1000, marginTop: '10px' }} />
+
+               
+//             </div>
+//         </div>
+//         </div>
+//     );
+// }
+
+
+
+
+
+
+
 
 
 import React, { useEffect, useState } from 'react';
@@ -2179,7 +2870,6 @@ import './Layout.css';
 
 export default function Layout({ icon_username }) {
     const navigate = useNavigate();
-    const [isScrollDisabled, setIsScrollDisabled] = useState(true);
     const [first, setFirst] = useState(0);
     const [rows, setRows] = useState(10);
     const [users, setUsers] = useState([]);
@@ -2189,17 +2879,7 @@ export default function Layout({ icon_username }) {
     const [dropDown, setDropDown] = useState(null);
     const open = Boolean(dropDown);
 
-    useEffect(() => {
-        if (isScrollDisabled) {
-            document.body.style.overflow = 'hidden';
-        } else {
-            document.body.style.overflow = 'auto';
-        }
 
-        return () => {
-            document.body.style.overflow = 'auto';
-        };
-    }, [isScrollDisabled]);
 
     useEffect(() => {
         // Fetch users from the server
@@ -2424,10 +3104,19 @@ export default function Layout({ icon_username }) {
                 <option value="password">Password</option>
                 <option value="privileges">Privileges</option>
             </select>
-
-            <Button label='New' icon='pi pi-plus' onClick={handleNew} style={{ backgroundColor: '#183462', marginLeft: '768px'}} />
+            
         </div>
     );
+
+    const second = (
+        <div>
+<Button label='New' icon='pi pi-plus' onClick={handleNew} style={{ backgroundColor: '#183462'}} />
+        </div>
+    )
+        
+
+    
+    
 
     useEffect(() => {
         const filtered = users.filter(user =>
@@ -2437,10 +3126,10 @@ export default function Layout({ icon_username }) {
     }, [searchTerm, searchField, users]);
 
     return (
-        <div>
+        <div>            
             <Menubar start = {starting} end = {ending}/>
-        
-        <div style={{ display: 'flex' }}>
+            
+        <div style={{ display: 'flex', overflow: 'auto' }}>
             <CSidebar className='border-end custom-sidebar' visible={true} style={{ height: '100vh', position: 'sticky', top: '0' }}>
                 <CSidebarNav>
                     <CContainer fluid>
@@ -2464,7 +3153,7 @@ export default function Layout({ icon_username }) {
             </CSidebar>
 
             <div style={{ flex: 1, paddingLeft: '0px', marginTop: '-12px'}}>
-                <Menubar start={secondMenubarEnd} style={{ backgroundColor: '#183462', width: '100%', position: 'fixed', top: '0', zIndex: 1000, marginTop: '60px' }} />
+                <Menubar start={secondMenubarEnd} end = {second} style={{ backgroundColor: '#183462', width: '100%', position: '', top: '0', zIndex: 1000, marginTop: '10px' }} />
                 <div style={{ marginTop: '70px'}}>
                     <DataTable
                         value={padData(filteredUsers, rows)}
@@ -2474,7 +3163,7 @@ export default function Layout({ icon_username }) {
                         responsiveLayout='scroll'
                         first={first}
                         onPage={onPage}
-                        style={{ border: '1px solid #dee2e6', borderCollapse: 'collapse'}}
+                        style={{ border: '1px solid #dee2e6', borderCollapse: 'collapse', marginTop: '-70px'}}
                         className='p-datatable-gridlines hoverable-rows'
                     >
                         <Column

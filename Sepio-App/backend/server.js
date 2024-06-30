@@ -513,7 +513,7 @@ app.post('/api/check-mac', async (req, res) => {
       where: {name: login},
     })
 
-    if (!user || !await bcrypt.compare(password, user.password) || user.privileges !== 'SERVICE_ACCOUNT') {
+    if (!user || !await bcrypt.compare(password, user.password) || user.privileges !== 'SERVICE_ACCOUNT' && user.privileges !== 'ADMIN') {
       return res.status(401).json({success: false, error: 'Invalid creddentials'})
     }
 
