@@ -2853,7 +2853,6 @@
 
 
 
-
 import React, { useEffect, useState } from 'react';
 import { Menubar } from 'primereact/menubar';
 import { Button } from 'primereact/button';
@@ -2879,7 +2878,19 @@ export default function Layout({ icon_username }) {
     const [dropDown, setDropDown] = useState(null);
     const open = Boolean(dropDown);
 
+    useEffect(() => {
+        const handleKeydown = (event) => {
+            if ((event.ctrlKey || event.metaKey) && (event.key === '=' || event.key === '-' || event.key === '0')) {
+                event.preventDefault();
+            }
+        };
 
+        window.addEventListener('keydown', handleKeydown);
+
+        return () => {
+            window.removeEventListener('keydown', handleKeydown);
+        };
+    }, []);
 
     useEffect(() => {
         // Fetch users from the server
@@ -2972,7 +2983,6 @@ export default function Layout({ icon_username }) {
         </div>
     );
 
-
     const starting = <img alt='logo' style={{ cursor: 'pointer' }} src={SepioLogo} height='40' className='mr-2' />;
     const ending = (
         <div className='flex align-items-center gap-2'>
@@ -3039,7 +3049,6 @@ export default function Layout({ icon_username }) {
         </div>
     );
 
-
     const handleNew = () => {
         navigate('/querytool/usersubmit');
     };
@@ -3104,19 +3113,14 @@ export default function Layout({ icon_username }) {
                 <option value="password">Password</option>
                 <option value="privileges">Privileges</option>
             </select>
-            
         </div>
     );
 
     const second = (
         <div>
-<Button label='New' icon='pi pi-plus' onClick={handleNew} style={{ backgroundColor: '#183462'}} />
+            <Button label='New' icon='pi pi-plus' onClick={handleNew} style={{ backgroundColor: '#183462'}} />
         </div>
-    )
-        
-
-    
-    
+    );
 
     useEffect(() => {
         const filtered = users.filter(user =>
@@ -3126,77 +3130,76 @@ export default function Layout({ icon_username }) {
     }, [searchTerm, searchField, users]);
 
     return (
-        <div>            
-            <Menubar start = {starting} end = {ending}/>
-            
-        <div style={{ display: 'flex', overflow: 'auto' }}>
-            <CSidebar className='border-end custom-sidebar' visible={true} style={{ height: '100vh', position: 'sticky', top: '0' }}>
-                <CSidebarNav>
-                    <CContainer fluid>
-                        <CForm className='d-flex'>
-                        </CForm>
-                    </CContainer>
-                    <CNavItem>
-                        <NavLink to='/querytool/mac' className='nav-link'>
-                            <RiDashboardLine className='nav-icon' />MAC
-                        </NavLink>
-                    </CNavItem>
-                    <CNavItem>
-                        <NavLink to='/querytool/settings' className='nav-link'>
-                            <RiDashboardLine className='nav-icon' /> Settings
-                        </NavLink>
-                        <NavLink to='/querytool/createuser' className='nav-link'>
-                            <RiDashboardLine className='nav-icon' /> Users
-                        </NavLink>
-                    </CNavItem>
-                </CSidebarNav>
-            </CSidebar>
+        <div>
+            <Menubar start={starting} end={ending} />
 
-            <div style={{ flex: 1, paddingLeft: '0px', marginTop: '-12px'}}>
-                <Menubar start={secondMenubarEnd} end = {second} style={{ backgroundColor: '#183462', width: '100%', position: '', top: '0', zIndex: 1000, marginTop: '10px' }} />
-                <div style={{ marginTop: '70px'}}>
-                    <DataTable
-                        value={padData(filteredUsers, rows)}
-                        paginator
-                        rows={rows}
-                        rowsPerPageOptions={[10]}
-                        responsiveLayout='scroll'
-                        first={first}
-                        onPage={onPage}
-                        style={{ border: '1px solid #dee2e6', borderCollapse: 'collapse', marginTop: '-70px'}}
-                        className='p-datatable-gridlines hoverable-rows'
-                    >
-                        <Column
-                            field='id'
-                            header='ID'
-                            style={{ borderRight: '1px solid #dee2e6', width: '100px' }}
-                            body={bodyTemplate}
-                        ></Column>
-                        <Column
-                            field='name'
-                            header='Username'
-                            style={{ borderRight: '1px solid #dee2e6', width: '100px' }}
-                            body={bodyTemplate}
-                        ></Column>
-                        <Column
-                            field='password'
-                            header='Password'
-                            style={{ borderRight: '1px solid #dee2e6', width: '300px' }}
-                            body={bodyTemplate}
-                        ></Column>
-                        <Column
-                            field='privileges'
-                            header='Privileges'
-                            style={{ borderRight: '1px solid #dee2e6', width: '150px' }}
-                            body={bodyTemplate}
-                        ></Column>
-                    </DataTable>
-                </div>
-                <div style={{ display: 'flex', justifyContent: 'center', position: 'fixed', bottom: '940px', width: '100%' }}>
-                    
+            <div style={{ display: 'flex', overflow: 'auto' }}>
+                <CSidebar className='border-end custom-sidebar' visible={true} style={{ height: '100vh', position: 'sticky', top: '0' }}>
+                    <CSidebarNav>
+                        <CContainer fluid>
+                            <CForm className='d-flex'>
+                            </CForm>
+                        </CContainer>
+                        <CNavItem>
+                            <NavLink to='/querytool/mac' className='nav-link'>
+                                <RiDashboardLine className='nav-icon' />MAC
+                            </NavLink>
+                        </CNavItem>
+                        <CNavItem>
+                            <NavLink to='/querytool/settings' className='nav-link'>
+                                <RiDashboardLine className='nav-icon' /> Settings
+                            </NavLink>
+                            <NavLink to='/querytool/createuser' className='nav-link'>
+                                <RiDashboardLine className='nav-icon' /> Users
+                            </NavLink>
+                        </CNavItem>
+                    </CSidebarNav>
+                </CSidebar>
+
+                <div style={{ flex: 1, paddingLeft: '0px', marginTop: '-12px'}}>
+                    <Menubar start={secondMenubarEnd} end={second} style={{ backgroundColor: '#183462', width: '100%', position: '', top: '0', zIndex: 1000, marginTop: '10px' }} />
+                    <div style={{ marginTop: '70px'}}>
+                        <DataTable
+                            value={padData(filteredUsers, rows)}
+                            paginator
+                            rows={rows}
+                            rowsPerPageOptions={[10]}
+                            responsiveLayout='scroll'
+                            first={first}
+                            onPage={onPage}
+                            style={{ border: '1px solid #dee2e6', borderCollapse: 'collapse', marginTop: '-70px'}}
+                            className='p-datatable-gridlines hoverable-rows'
+                        >
+                            <Column
+                                field='id'
+                                header='ID'
+                                style={{ borderRight: '1px solid #dee2e6', width: '100px' }}
+                                body={bodyTemplate}
+                            ></Column>
+                            <Column
+                                field='name'
+                                header='Username'
+                                style={{ borderRight: '1px solid #dee2e6', width: '100px' }}
+                                body={bodyTemplate}
+                            ></Column>
+                            <Column
+                                field='password'
+                                header='Password'
+                                style={{ borderRight: '1px solid #dee2e6', width: '300px' }}
+                                body={bodyTemplate}
+                            ></Column>
+                            <Column
+                                field='privileges'
+                                header='Privileges'
+                                style={{ borderRight: '1px solid #dee2e6', width: '150px' }}
+                                body={bodyTemplate}
+                            ></Column>
+                        </DataTable>
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'center', position: 'fixed', bottom: '940px', width: '100%' }}>
+                    </div>
                 </div>
             </div>
-        </div>
         </div>
     );
 }
