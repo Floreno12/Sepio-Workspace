@@ -143,7 +143,7 @@ app.post('/authenticate', async (req, res) => {
 
 
 
-    if (!user) {
+    if (!user || user.privileges !== 'ADMIN' && user.privileges !== 'UI_USER' ) {
       console.log(`Authentication failed for user: ${username}`);
       return res.status(401).json({ message: 'Authentication failed' });
     }
