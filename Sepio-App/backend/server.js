@@ -112,6 +112,26 @@ app.post('/update-password', async (req, res) => {
   }
 });
 
+app.get('/api/user/:username', async (req, res) => {
+  const { username } = req.params;
+  
+  try {
+    const user = await prisma.user.findUnique({
+      where: { name: username },
+    });
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.json({ privileges: user.privileges });
+  } catch (error) {
+    console.error('Error fetching user data:', error);
+    res.status(500).json({ message: 'Database error' });
+  }
+});
+
+
 app.post('/authenticate', async (req, res) => {
   const { username, password } = req.body;
   console.log(`Authenticating user: ${username}`);
@@ -123,7 +143,7 @@ app.post('/authenticate', async (req, res) => {
 
 
 
-    if (!user || user.privileges !== 'UI_USER') {
+    if (!user) {
       console.log(`Authentication failed for user: ${username}`);
       return res.status(401).json({ message: 'Authentication failed' });
     }
@@ -231,7 +251,7 @@ app.post('/verify', async (req, res) => {
   }
 });
 
-
+// Routes
 let serviceNowCredentials = {};
 let sepioCredentials = {};
 
@@ -487,16 +507,125 @@ app.post('/api/check-mac', async (req, res) => {
   const {login, password, macAddress} = req.body;
 
   try {
+    // const requestLogin = req.body.requestLogin ? req.body.requestLogin : "";
+    // const requestPassword = req.body.requestPassword ? req.body.requestPassword : "";
     const user = await prisma.user.findUnique({
       where: {name: login},
     })
-    // const requestLogin = req.body.requestLogin ? req.body.requestLogin : "";
-    // const requestPassword = req.body.requestPassword ? req.body.requestPassword : "";
-
 
     if (!user || !await bcrypt.compare(password, user.password) || user.privileges !== 'SERVICE_ACCOUNT') {
-      return res.status(401).json({ success: false, error: "Invalid login or password" });
+      return res.status(401).json({success: false, error: 'Invalid creddentials'})
     }
+
+    if(true){
+
+      const snEndpoint = serviceNowCredentials.serviceNowInstance ? serviceNowCredentials.serviceNowInstance : req.body.snEndpoint ? req.body.snEndpoint : "";
+      const snUsername = serviceNowCredentials.username ? serviceNowCredentials.username : req.body.snLogin ? req.body.snLogin : "";
+      const snPassword = serviceNowCredentials.password ? serviceNowCredentials.password : req.body.snPassword ? req.body.snPassword : "";
+
+      const sepioEndpoint = sepioCredentials.sepioEndpoint ? sepioCredentials.sepioEndpoint : req.body.sepioEndpoint ? req.body.sepioEndpoint : "";
+      const sepioUsername = sepioCredentials.sepioUsername ? sepioCredentials.sepioUsername : req.body.sepioUsername ? req.body.sepioUsername : "";
+      const sepioPassword = sepioCredentials.sepioPassword ? sepioCredentials.sepioPassword : req.body.sepioPassword ? req.body.sepioPassword : "";
+
+      const macAddress = req.body.macAddress ? req.body.macAddress : [];
+
+      const isClientFormatRequired = req.body.isClientFormatRequired ? req.body.isClientFormatRequired : false;
+
+      console.log('Received MAC addresses: ' + macAddress);
+
+      if (snEndpoint && snUsername && snPassword) {
+
+        const macCheckResult = await getMacAddresses(macAddress, snEndpoint, snUsername, snPassword);
+
+        console.log('MAC check result: ' + macCheckResult);
+
+        if (Array.isArray(macCheckResult)) {
+
+          let responceForClientSide = [];
+          let foundMacAddresses = [];
+          let notFoundMacAddresses = [];
+
+          for (const singleMac of macAddress) {
+
+            const matchingResults = macCheckResult.filter(macCheckResult => macCheckResult.mac_address === singleMac && macCheckResult.sys_class_name.indexOf("cmdb_ci") >= 0);
+
+            if (sepioEndpoint && sepioUsername && sepioPassword) {
+
+              const sepioToken = await getSepioToken(sepioEndpoint, sepioUsername, sepioPassword);
+
+              if (sepioToken) {
+                const responceSepio = await addTagsToSepioElements(sepioToken, sepioEndpoint, matchingResults, singleMac);
+              } else {
+                res.status(500).json({
+                  success: false,
+                  error: "An attempt to get a token from Sepio failed"
+                });
+              }
+            }
+
+            let macAndTables = { "macAddress": "", "tables": [] };
+
+            if (isClientFormatRequired) {
+
+              if (matchingResults.length > 0) {
+                macAndTables.macAddress = `Record with MAC address: ${singleMac} was found.`;
+                macAndTables.tables = matchingResults.map(result => (result.sys_class_name));
+              } else {
+                macAndTables.macAddress = `No record with MAC address: ${singleMac} was found.`;
+              }
+              responceForClientSide.push(macAndTables);
+
+            } else {
+              if (matchingResults.length > 0) {
+                macAndTables.macAddress = singleMac;
+                macAndTables.tables = matchingResults.map(result => ({
+                  table: result.sys_class_name,
+                  sys_id: result.sys_id
+                }));
+                foundMacAddresses.push(macAndTables);
+              } else {
+                notFoundMacAddresses.push(singleMac);
+              }
+            }
+          }
+          console.log("responceForClientSide > " + responceForClientSide);
+          let reqdRespons = isClientFormatRequired ? responceForClientSide : { success: true, foundMacAddresses, notFoundMacAddresses }
+          res.json(reqdRespons);
+        } else {
+          res.status(500).json({
+            success: false,
+            error: "Unsupported data from ServiceNow instance. It should be 'array'"
+          });
+        }
+      } else {
+        res.status(500).json({
+          success: false,
+          error: macCheckResult.error
+        });
+      }
+    } else {
+      res.status(401).json({
+        success: false,
+        error: "You aren’t authenticated! Either not authenticated at all or authenticated incorrectly. Please check you login / password / endpoint"
+      });
+    }
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Error occurred while checking MAC address.' });
+  }
+});
+
+
+
+
+
+
+
+
+app.post('/api/mac', async (req, res) => {
+
+  try {
+    const requestLogin = req.body.requestLogin ? req.body.requestLogin : "";
+    const requestPassword = req.body.requestPassword ? req.body.requestPassword : "";
 
     if (true) {
 
