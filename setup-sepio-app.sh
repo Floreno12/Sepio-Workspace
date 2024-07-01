@@ -254,6 +254,8 @@ CREATE TABLE IF NOT EXISTS user (
     otp_secret VARCHAR(255),
     otp_verified BOOLEAN DEFAULT FALSE,
     privillage BOOLEAN DEFAULT FALSE
+    credentialsUpdated BOOLEAN DEFAULT FALSE,
+    privileges ENUM('UI_USER', 'SERVICE_ACCOUNT', 'ADMIN') NOT NULL
 );
 CREATE TABLE IF NOT EXISTS ServiceNowCredentials (
   id INT AUTO_INCREMENT PRIMARY KEY,
@@ -268,7 +270,7 @@ CREATE TABLE IF NOT EXISTS sepio (
   password VARCHAR(255) NOT NULL
 );
 
-INSERT INTO user (name, password, privillage) VALUES ('SepioAdmin', 'SepioQT_Admin', TRUE);
+INSERT INTO user (name, password, privileges) VALUES ('SepioAdmin', 'SepioQT_Admin', 'ADMIN');
 MYSQL_SCRIPT
 
 if [ $? -ne 0 ]; then
