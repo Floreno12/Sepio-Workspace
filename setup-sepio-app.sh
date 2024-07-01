@@ -253,7 +253,6 @@ CREATE TABLE IF NOT EXISTS user (
     password VARCHAR(255) NOT NULL,
     otp_secret VARCHAR(255),
     otp_verified BOOLEAN DEFAULT FALSE,
-    privillage BOOLEAN DEFAULT FALSE
     credentialsUpdated BOOLEAN DEFAULT FALSE,
     privileges ENUM('UI_USER', 'SERVICE_ACCOUNT', 'ADMIN') NOT NULL
 );
