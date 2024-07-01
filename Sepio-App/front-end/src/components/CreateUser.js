@@ -2851,8 +2851,6 @@
 
 
 
-
-
 import React, { useEffect, useState } from 'react';
 import { Menubar } from 'primereact/menubar';
 import { Button } from 'primereact/button';
@@ -2865,6 +2863,7 @@ import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import Tooltip from '@mui/material/Tooltip';
 import axios from 'axios';
+import { Paginator } from 'primereact/paginator';
 import './Layout.css';
 
 export default function Layout({ icon_username }) {
@@ -2983,89 +2982,8 @@ export default function Layout({ icon_username }) {
         </div>
     );
 
-    const starting = <img alt='logo' style={{ cursor: 'pointer' }} src={SepioLogo} height='40' className='mr-2' />;
-    const ending = (
-        <div className='flex align-items-center gap-2'>
-            <NavLink to='/' className='p-button p-component p-button-text' style={{ borderRadius: '10px', padding: '10px', textDecoration: 'none' }}>
-                <span className='pi pi-sign-out' style={{ marginRight: '5px' }} />
-                Logout
-            </NavLink>
-            <Menu
-                anchorEl={dropDown}
-                id='account-menu'
-                open={open}
-                onClose={handleClose}
-                onClick={handleClose}
-                PaperProps={{
-                    elevation: 5,
-                    sx: {
-                        width: '120px',
-                        borderRadius: '10px',
-                        overflow: 'visible',
-                        mt: 1,
-                        '&::before': {
-                            content: '""',
-                            display: 'inline-block',
-                            position: 'absolute',
-                            top: 0,
-                            right: 10,
-                            width: 10,
-                            height: 10,
-                            bgcolor: 'background.paper',
-                            transform: 'translateY(-50%) rotate(45deg)',
-                            zIndex: 0,
-                        },
-                    },
-                }}
-                transformOrigin={{
-                    vertical: 'top',
-                    horizontal: 'center',
-                }}
-                anchorOrigin={{
-                    vertical: 'bottom',
-                    horizontal: 'center',
-                }}
-            >
-                <MenuItem sx={{ display: 'flex', justifyContent: 'center' }} title='Profile'>
-                    <p style={{ marginBottom: '0px' }}>
-                        User: {icon_username}
-                    </p>
-                </MenuItem>
-            </Menu>
-
-            <Button
-                style={{ width: '46px', height: '46px', borderRadius: '50%', color: '#183462' }}
-                icon="pi pi-user"
-                rounded
-                text
-                severity="secondary"
-                aria-label="User"
-                className="mr-2"
-                onClick={handleClick}
-                aria-controls={open ? 'account-menu' : undefined}
-                aria-haspopup="true"
-                aria-expanded={open ? 'true' : undefined}
-            />
-        </div>
-    );
-
     const handleNew = () => {
         navigate('/querytool/usersubmit');
-    };
-
-    const padData = (data, rowsPerPage) => {
-        const paddedData = [...data];
-        console.log('data:', paddedData);
-        const totalPages = Math.ceil(data.length / rowsPerPage);
-        const currentPage = Math.ceil(first / rowsPerPage) + 1;
-
-        if (currentPage === totalPages) {
-            while (paddedData.length < rowsPerPage * totalPages) {
-                paddedData.push({ id: ' - ', username: '', password: '', privileges: '' });
-            }
-        }
-
-        return paddedData;
     };
 
     const onPage = (event) => {
@@ -3129,9 +3047,35 @@ export default function Layout({ icon_username }) {
         setFilteredUsers(filtered);
     }, [searchTerm, searchField, users]);
 
+    // Pad data to ensure consistent rows per page
+// Pad data to ensure consistent rows per page, including padding
+const padData = (data, rowsPerPage) => {
+    const currentPage = Math.ceil(first / rowsPerPage) + 1;
+    const totalPages = Math.ceil(filteredUsers.length / rowsPerPage);
+
+    // Calculate how many padding rows are needed to fill the page
+    let paddingRowsNeeded = rowsPerPage - data.length;
+    if (currentPage === totalPages) {
+        paddingRowsNeeded = Math.max(0, paddingRowsNeeded); // Ensure no padding rows on last page
+    }
+
+    const paddedData = [...data];
+
+    // Add padding rows if needed
+    for (let i = 0; i < paddingRowsNeeded; i++) {
+        paddedData.push({ id: ' - ', username: '', password: '', privileges: '' });
+    }
+
+    return paddedData;
+};
+
+
+    // Calculate the records to display based on pagination
+    const paginatedUsers = padData(filteredUsers.slice(first, first + rows), rows);
+
     return (
         <div>
-            <Menubar start={starting} end={ending} />
+            <Menubar start={start} end={end} />
 
             <div style={{ display: 'flex', overflow: 'auto' }}>
                 <CSidebar className='border-end custom-sidebar' visible={true} style={{ height: '100vh', position: 'sticky', top: '0' }}>
@@ -3158,16 +3102,11 @@ export default function Layout({ icon_username }) {
 
                 <div style={{ flex: 1, paddingLeft: '0px', marginTop: '-12px'}}>
                     <Menubar start={secondMenubarEnd} end={second} style={{ backgroundColor: '#183462', width: '100%', position: '', top: '0', zIndex: 1000, marginTop: '10px' }} />
-                    <div style={{ marginTop: '70px'}}>
+                    <div style={{ marginTop: '-20px'}}>
                         <DataTable
-                            value={padData(filteredUsers, rows)}
-                            paginator
-                            rows={rows}
-                            rowsPerPageOptions={[10]}
+                            value={paginatedUsers}
                             responsiveLayout='scroll'
-                            first={first}
-                            onPage={onPage}
-                            style={{ border: '1px solid #dee2e6', borderCollapse: 'collapse', marginTop: '-70px'}}
+                            style={{ border: '1px solid #dee2e6', borderRadius: '10px', marginTop: '20px' }}
                             className='p-datatable-gridlines hoverable-rows'
                         >
                             <Column
@@ -3196,10 +3135,12 @@ export default function Layout({ icon_username }) {
                             ></Column>
                         </DataTable>
                     </div>
-                    <div style={{ display: 'flex', justifyContent: 'center', position: 'fixed', bottom: '940px', width: '100%' }}>
+                    <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
+                        <Paginator first={first} rows={rows} totalRecords={filteredUsers.length} onPageChange={onPage} rowsPerPageOptions={[10]} />
                     </div>
                 </div>
             </div>
         </div>
     );
 }
+
