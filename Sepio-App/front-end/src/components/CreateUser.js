@@ -4277,6 +4277,10 @@ export default function Layout({ icon_username }) {
 
 
 
+    const handelquerytool = () => {
+        navigate('/querytool');
+    }
+
     return (
         <div>
             <AppBar ref={appBarRef} position="static" style={{ backgroundColor: '#ffffff', color: '#000000', marginBottom: '1px', zIndex: 1201 }}>
@@ -4285,7 +4289,7 @@ export default function Layout({ icon_username }) {
                         <MenuIcon />
                     </IconButton>
                     <IconButton edge="start" color="inherit" aria-label="logo">
-                        <img alt="logo" style={{ cursor: 'pointer', height: '40px' }} src={SepioLogo} />
+                        <img alt="logo" style={{ cursor: 'pointer', height: '40px' }} src={SepioLogo} onClick = {handelquerytool}/>
                     </IconButton>
 
                     <div style={{ flexGrow: 1}} />

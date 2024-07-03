@@ -821,7 +821,7 @@ app.get('/user/all', async (req, res) => {
 
 
 app.post('/user/privileges', async (req, res) => {
-  const { username, password, privileges, serviceNowInstance, serviceUsername, servicePassword } = req.body;
+  const { username, password, privileges, serviceNowInstance, serviceUsername, servicePassword, sepioEndpoint, sepioUsername, sepioPassword } = req.body;
   console.log(`Check user: ${username}`);
 
   try {
@@ -838,6 +838,9 @@ app.post('/user/privileges', async (req, res) => {
         serviceNowInstance: serviceNowInstance || null,
         serviceUsername: serviceUsername || null,
         servicePassword: servicePassword || null,
+        sepioEndpoint: sepioEndpoint || null,
+        sepioUsername: sepioUsername || null,
+        sepioPassword: sepioPassword ||null
       },
     });
     console.log('User created successfully', newUser);
@@ -1280,6 +1283,10 @@ const addTagsToSepioElements = async (sepioToken, snEndpoint, filteredMacs, mac)
   }
 };
 
+
+
+
+
 app.post('/api/check-mac', async (req, res) => {
   const { login, password, macAddress } = req.body;
 
@@ -1296,30 +1303,35 @@ app.post('/api/check-mac', async (req, res) => {
     const snUsername = user.serviceUsername || req.body.snLogin || "";
     const snPassword = user.servicePassword || req.body.snPassword || "";
 
-    const sepioEndpoint = sepioCredentials.sepioEndpoint || req.body.sepioEndpoint || "";
-    const sepioUsername = sepioCredentials.sepioUsername || req.body.sepioUsername || "";
-    const sepioPassword = sepioCredentials.sepioPassword || req.body.sepioPassword || "";
+    const sepioEndpoint = user.sepioEndpoint || req.body.sepioEndpoint || "";
+    const sepioUsername = user.sepioUsername || req.body.sepioUsername || "";
+    const sepioPassword = user.sepioPassword || req.body.sepioPassword || "";
 
-    console.log('Received MAC addresses:', macAddress);
+    console.log('Sepio Credentials:', { sepioEndpoint, sepioUsername, sepioPassword });
+
+    const macAddresses = req.body.macAddress ? req.body.macAddress : [];
+
+    const isClientFormatRequired = req.body.isClientFormatRequired ? req.body.isClientFormatRequired : false;
+
+    console.log('Received MAC addresses: ' + macAddresses);
 
     if (snEndpoint && snUsername && snPassword) {
-      const macCheckResult = await getMacAddresses(macAddress, snEndpoint, snUsername, snPassword);
-
-      console.log('MAC check result:', macCheckResult);
+      const macCheckResult = await getMacAddresses(macAddresses, snEndpoint, snUsername, snPassword);
+      console.log('MAC check result: ' + macCheckResult);
 
       if (Array.isArray(macCheckResult)) {
-        let responceForClientSide = [];
+        let responseForClientSide = [];
         let foundMacAddresses = [];
         let notFoundMacAddresses = [];
 
-        for (const singleMac of macAddress) {
-          const matchingResults = macCheckResult.filter(result => result.mac_address === singleMac && result.sys_class_name.indexOf("cmdb_ci") >= 0);
+        for (const singleMac of macAddresses) {
+          const matchingResults = macCheckResult.filter(macCheckResult => macCheckResult.mac_address === singleMac && macCheckResult.sys_class_name.indexOf("cmdb_ci") >= 0);
 
           if (sepioEndpoint && sepioUsername && sepioPassword) {
             const sepioToken = await getSepioToken(sepioEndpoint, sepioUsername, sepioPassword);
 
             if (sepioToken) {
-              await addTagsToSepioElements(sepioToken, sepioEndpoint, matchingResults, singleMac);
+              const responseSepio = await addTagsToSepioElements(sepioToken, sepioEndpoint, matchingResults, singleMac);
             } else {
               return res.status(500).json({
                 success: false,
@@ -1330,14 +1342,14 @@ app.post('/api/check-mac', async (req, res) => {
 
           let macAndTables = { "macAddress": "", "tables": [] };
 
-          if (req.body.isClientFormatRequired) {
+          if (isClientFormatRequired) {
             if (matchingResults.length > 0) {
               macAndTables.macAddress = `Record with MAC address: ${singleMac} was found.`;
-              macAndTables.tables = matchingResults.map(result => result.sys_class_name);
+              macAndTables.tables = matchingResults.map(result => (result.sys_class_name));
             } else {
               macAndTables.macAddress = `No record with MAC address: ${singleMac} was found.`;
             }
-            responceForClientSide.push(macAndTables);
+            responseForClientSide.push(macAndTables);
           } else {
             if (matchingResults.length > 0) {
               macAndTables.macAddress = singleMac;
@@ -1352,8 +1364,9 @@ app.post('/api/check-mac', async (req, res) => {
           }
         }
 
-        let reqdRespons = req.body.isClientFormatRequired ? responceForClientSide : { success: true, foundMacAddresses, notFoundMacAddresses };
-        res.json(reqdRespons);
+        console.log("responseForClientSide > " + responseForClientSide);
+        let reqdResponse = isClientFormatRequired ? responseForClientSide : { success: true, foundMacAddresses, notFoundMacAddresses };
+        res.json(reqdResponse);
       } else {
         res.status(500).json({
           success: false,
@@ -1367,11 +1380,10 @@ app.post('/api/check-mac', async (req, res) => {
       });
     }
   } catch (error) {
+    console.log('Error', error);
     res.status(500).json({ success: false, message: 'Error occurred while checking MAC address.' });
   }
 });
-
-
 
 
 
@@ -1417,7 +1429,7 @@ app.post('/api/mac', async (req, res) => {
             const matchingResults = macCheckResult.filter(macCheckResult => macCheckResult.mac_address === singleMac && macCheckResult.sys_class_name.indexOf("cmdb_ci") >= 0);
 
             if (sepioEndpoint && sepioUsername && sepioPassword) {
-
+      
               const sepioToken = await getSepioToken(sepioEndpoint, sepioUsername, sepioPassword);
 
               if (sepioToken) {

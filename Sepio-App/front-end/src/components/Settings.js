@@ -397,6 +397,11 @@ export default function Layout({ icon_username }) {
 
 
 
+	const handelquerytool = () => {
+		navigate('/querytool');
+	}
+
+
     return (
         <div>
 			<Toast ref = {toast}/>
@@ -406,7 +411,7 @@ export default function Layout({ icon_username }) {
                         <MenuIcon />
                     </IconButton>
                     <IconButton edge="start" color="inherit" aria-label="logo">
-                        <img alt="logo" style={{ cursor: 'pointer', height: '40px' }} src={SepioLogo} />
+                        <img alt="logo" style={{ cursor: 'pointer', height: '40px' }} src={SepioLogo} onClick = {handelquerytool}/>
                     </IconButton>
 
                     <div style={{ flexGrow: 1 }} />

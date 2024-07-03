@@ -915,9 +915,6 @@
 
 
 
-
-
-
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 import {AppBar, Toolbar, IconButton, Menu, MenuItem, Avatar} from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -947,12 +944,15 @@ export default function Layout({ icon_username }) {
         privileges: '',
         serviceNowInstance: '',
         serviceUsername: '',
-        servicePassword: ''
+        servicePassword: '',
+        sepioEndpoint: '',
+        sepioUsername: '',
+        sepioPassword: ''
+
     });
     const [status, setStatus] = useState('initial');
     const toast = useRef(null);
-    //new sidebar
-    const [isScrollDisabled, setIsScrollDisabled] = useState(true);
+
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
     const [userPrivileges, setUserPrivileges] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
@@ -966,17 +966,7 @@ export default function Layout({ icon_username }) {
     const appBarRef = useRef(null);
 
 
-    useEffect(() => {
-		if (isScrollDisabled) {
-			document.body.style.overflow = 'hidden';
-		} else {
-			document.body.style.overflow = 'auto';
-		}
 
-		return () => {
-			document.body.style.overflow = 'auto';
-		};
-	}, [isScrollDisabled]);
 
     const toggleSidebar = useCallback(() => {
     setIsSidebarOpen(prevState => !prevState);
@@ -1035,19 +1025,6 @@ export default function Layout({ icon_username }) {
     }
 
 
-
-
-
-
-
-
-
-
-
-
-//
-
-
     const showSuccess = (message) => {
         toast.current.show({ severity: 'success', summary: 'Success', detail: message, life: 3000 });
     };
@@ -1064,59 +1041,6 @@ export default function Layout({ icon_username }) {
         }
     };
 
-
-    const getPassStrength = (password) => {
-		const lengthCriteria = password.length >= minLength;
-		const numberCriteria = /\d/.test(password);
-		const specialCharCriteria = /[!@#$%^&*(),.?":{}|<>]/.test(password);
-		const upperCaseCriteria = /[A-Z]/.test(password);
-		const lowerCaseCriteria = /[a-z]/.test(password);
-
-		let strength = 0;
-		if (lengthCriteria) strength++;
-		if (numberCriteria) strength++;
-		if (specialCharCriteria) strength++;
-		if (upperCaseCriteria) strength++;
-		if (lowerCaseCriteria) strength++;
-
-		return strength;
-	}
-
-	const strength = getPassStrength(formData.password);
-
-	const getStrengthMessage = (strength) => {
-		switch (strength) {
-			case 1:
-			case 2:
-				return 'Very weak';
-			case 3:
-				return 'Weak';
-			case 4:
-				return 'Strong';
-			case 5:
-				return 'Very strong';
-			default:
-				return '';
-		}
-	}
-
-	const getStrengthColor = (strength) => {
-		switch (strength) {
-			case 1:
-			case 2:
-				return '#ff0000'; // Red
-			case 3:
-				return '#ffa500'; // Orange
-			case 4:
-				return '#0000ff'; // Blue
-			case 5:
-				return '#008000'; // Green
-			default:
-				return '#808080'; // Grey
-		}
-	};
-
-    const strengthColor = getStrengthColor(strength);
 
     const handleSelectChange = (event, newValue) => {
         setFormData({ ...formData, privileges: newValue });
@@ -1270,57 +1194,96 @@ export default function Layout({ icon_username }) {
                     </CSidebarNav>
                 </CSidebar>
 
-                <div style={{ flex: '1 1 auto', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-                    <Menubar start={secondMenubarEnd} style={{ backgroundColor: '#183462' }} />
-                    <form onSubmit={handleSubmit}>
-                        <div style={{ marginTop: '-500px', marginLeft: '500px' }}>
-                            <div style = {{position: 'fixed', zIndex: 1000, top: '180px', left: '50%' }}>
-                            <FormControl>
-                                <FormLabel>Username</FormLabel>
-                                <Input name="username" style={{ maxWidth: '250px' }} value={formData.username} onChange={handleInputChange} />
-                            </FormControl>
-                            <FormControl spacing={0.9}>
-									<FormLabel>Password</FormLabel>
-									<Input name="password" style={{ maxWidth: '250px' }} type="password" value={formData.password} onChange={handleInputChange} />									
-									<Typography level="body-xs" sx={{ alignSelf: 'flex-end', color: strengthColor }}>
-										{getStrengthMessage(strength)}
-									</Typography>
-								</FormControl>
-                            <FormControl>
-                                <FormLabel>Privileges</FormLabel>
-                                <Select name="privileges" style={{ maxWidth: '250px' }} value={formData.privileges} onChange={handleSelectChange}>
-                                    <Option value="UI_USER">UI user</Option>
-                                    <Option value="SERVICE_ACCOUNT">Service account</Option>
-                                </Select>
-                            </FormControl>
-                            {formData.privileges === 'SERVICE_ACCOUNT' && (
-                                <>
-                                   <FormControl>
-                                        <FormLabel>ServiceNow Instance</FormLabel>
-                                        <Input name="serviceNowInstance" style={{ maxWidth: '250px' }} value={formData.serviceNowInstance} onChange={handleInputChange} />
-                                    </FormControl>
-                                    <FormControl>
-                                        <FormLabel>Username</FormLabel>
-                                        <Input name="serviceUsername" style={{ maxWidth: '250px' }} value={formData.serviceUsername} onChange={handleInputChange} />
-                                    </FormControl>
-                                    <FormControl>
-                                        <FormLabel>Password</FormLabel>
-                                        <Input name="servicePassword" style={{ maxWidth: '250px' }} type="password" value={formData.servicePassword} onChange={handleInputChange} />
-                                    </FormControl>
-                                </>
-                            )}
-                            <Button type="submit" label="Submit" style={{ backgroundColor: '#183462', borderRadius: '5px', marginTop: '10px', marginLeft: '-20px' }} loading={status === 'loading'} />
+                            <div style={{ flex: 1 , overflowY: 'auto',  marginTop: '0px' }}>
+                            <Menubar start={secondMenubarEnd} style={{ backgroundColor: '#183462'}} />
+                <CContainer style={{ paddingTop: '5rem', width: '50%' }}>
+                    <CForm onSubmit={handleSubmit}>
+                        <FormControl>
+                            <FormLabel>
+                                <Typography level='body2'>Username</Typography>
+                            </FormLabel>
+                            <Input name='username' value={formData.username} onChange={handleInputChange} placeholder='Enter username' />
+                        </FormControl>
+
+                        <FormControl>
+                            <FormLabel>
+                                <Typography level='body2'>Password</Typography>
+                            </FormLabel>
+                            <Input type='password' name='password' value={formData.password} onChange={handleInputChange} placeholder='Enter password' />
+                        </FormControl>
+
+                        <FormControl>
+                            <FormLabel>
+                                <Typography level='body2'>Privileges</Typography>
+                            </FormLabel>
+                            <Select name='privileges' value={formData.privileges} onChange={handleSelectChange}>
+                                <Option value='UI_USER'>UI User</Option>
+                                <Option value='SERVICE_ACCOUNT'>Service Account</Option>
+                            </Select>
+                        </FormControl>
+
+                        {formData.privileges === 'SERVICE_ACCOUNT' && (
+                            <div>
+                                <Typography level='h6' style={{ marginTop: '20px' }}>ServiceNow Credentials</Typography>
+
+                                <FormControl>
+                                    <FormLabel>
+                                        <Typography level='body2'>ServiceNow Instance</Typography>
+                                    </FormLabel>
+                                    <Input name='serviceNowInstance' value={formData.serviceNowInstance} onChange={handleInputChange} placeholder='Enter ServiceNow instance' />
+                                </FormControl>
+
+                                <FormControl>
+                                    <FormLabel>
+                                        <Typography level='body2'>ServiceNow Username</Typography>
+                                    </FormLabel>
+                                    <Input name='serviceUsername' value={formData.serviceUsername} onChange={handleInputChange} placeholder='Enter ServiceNow username' />
+                                </FormControl>
+
+                                <FormControl>
+                                    <FormLabel>
+                                        <Typography level='body2'>ServiceNow Password</Typography>
+                                    </FormLabel>
+                                    <Input type='password' name='servicePassword' value={formData.servicePassword} onChange={handleInputChange} placeholder='Enter ServiceNow password' />
+                                </FormControl>
                             </div>
-                        </div>
-                    </form>
+                        )}
+
+                        {formData.privileges === 'SERVICE_ACCOUNT' && (
+                            <div>
+                                <Typography level='h6' style={{ marginTop: '20px' }}>Sepio Credentials</Typography>
+
+                                <FormControl>
+                                    <FormLabel>
+                                        <Typography level='body2'>Sepio Endpoint</Typography>
+                                    </FormLabel>
+                                    <Input name='sepioEndpoint' value={formData.sepioEndpoint} onChange={handleInputChange} placeholder='Enter Sepio endpoint' />
+                                </FormControl>
+
+                                <FormControl>
+                                    <FormLabel>
+                                        <Typography level='body2'>Sepio Username</Typography>
+                                    </FormLabel>
+                                    <Input name='sepioUsername' value={formData.sepioUsername} onChange={handleInputChange} placeholder='Enter Sepio username' />
+                                </FormControl>
+
+                                <FormControl>
+                                    <FormLabel>
+                                        <Typography level='body2'>Sepio Password</Typography>
+                                    </FormLabel>
+                                    <Input type='password' name='sepioPassword' value={formData.sepioPassword} onChange={handleInputChange} placeholder='Enter Sepio password' />
+                                </FormControl>
+                            </div>
+                        )}
+
+                        <Button type='submit' label='Submit' style = {{borderRadius: '5px', backgroundColor: '#183462', marginTop: '20px'}} />
+                    </CForm>
+                </CContainer>
                 </div>
             </div>
         </div>
     );
 }
-
-
-
 
 
 

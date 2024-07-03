@@ -1728,7 +1728,7 @@ export default function Layout({ icon_username }) {
                         <MenuIcon />
                     </IconButton>
                     <IconButton edge="start" color="inherit" aria-label="logo">
-                        <img alt="logo" style={{ cursor: 'pointer', height: '40px' }} src={SepioLogo} />
+                        <img alt="logo" style={{ cursor: 'pointer', height: '40px' }} src={SepioLogo}/>
                     </IconButton>
 
                     <div style={{ flexGrow: 1 }} />
