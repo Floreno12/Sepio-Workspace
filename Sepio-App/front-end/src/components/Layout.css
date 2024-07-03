@@ -10,6 +10,17 @@
     cursor: pointer; /* Change cursor to pointer on hover */
 }
 
+/* Add this to your CSS file */
+/* Layout.css */
+/* Layout.css */
+@media (max-width: 1024px) {
+    .custom-sidebar {
+        display: none;
+    }
+}
+
+
+
 /* .table-container {
     min-height: 400px; 
     position: relative;
