@@ -137,30 +137,24 @@
 
 
 
-import React, { useState, useEffect, useRef } from 'react';
-import { Menubar } from 'primereact/menubar';
-import { Menu, MenuItem } from '@mui/material';
-import { InputText } from 'primereact/inputtext';
-import { Avatar } from 'primereact/avatar';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { Button } from 'primereact/button';
-import {
-	CSidebar, CSidebarNav, CNavItem, CContainer
-} from '@coreui/react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
+import { AppBar, Toolbar, IconButton, Menu, MenuItem, Avatar } from '@mui/material';
+import MenuIcon from '@mui/icons-material/Menu';
+import { useNavigate, NavLink, useLocation } from 'react-router-dom';
+import { CSidebar, CSidebarNav, CNavItem, CContainer, CForm } from '@coreui/react';
 import { RiDashboardLine } from 'react-icons/ri';
-import { NavLink } from 'react-router-dom';
 import SepioLogo from './../image/Sepio_Logo.png';
-import 'primereact/resources/themes/saga-blue/theme.css';
-import 'primereact/resources/primereact.min.css';
-import 'primeicons/primeicons.css';
-import axios from 'axios';
-import { Message } from 'primereact/message';
+import SepioMainLogo from './../image/QueryTool.png';
 import { Toast } from 'primereact/toast';
-import {Oval} from 'react-loader-spinner';
+//
+import { InputText } from 'primereact/inputtext';
+import { Button } from 'primereact/button';
+import { Message } from 'primereact/message';
+import axios from 'axios';
+
 
 export default function Layout({ icon_username }) {
-
-	const [serviceNowInstance, setServiceNowInstance] = useState('');
+    const [marginLeft, setMarginLeft] = useState('auto');
 	const [username, setUsername] = useState('');
 	const [password, setPassword] = useState('');
 	const [message, setMessage] = useState('');
@@ -168,12 +162,90 @@ export default function Layout({ icon_username }) {
 	const [sepioUsername, setSepioUsername] = useState('');
 	const [sepioPassword, setSepioPassword] = useState('');
 	const [sepioMessage, setSepioMessage] = useState('');
-	const [inputWidth, setInputWidth] = useState('100%'); // Initial width for larger screens
-	const [marginLeft, setMarginLeft] = useState('auto');
-	const [isScrollDisabled, setIsScrollDisabled] = useState(true);
-	const [userPrivileges, SetUserPrivileges] = useState(true);
-	const [isLoading, setIsLoading] = useState(true);
+	const [serviceNowInstance, setServiceNowInstance] = useState('');
+	const [inputWidth, setInputWidth] = useState('100%');
 	const toast = React.useRef(null);
+	
+	//
+    const navigate = useNavigate();
+    const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+    const [userPrivileges, setUserPrivileges] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
+    const [isMiddleSize, setIsMiddleSize] = useState(false);
+    const [isLow, setIsLow] = useState(false);
+    const [menuAnchorEl, setMenuAnchorEl] = useState(null);
+    const [prevWidth, setPrevWidth] = useState(window.innerWidth);
+    const [logoHeight, setLogoHeight] = useState('60px');
+    const [dropDown, setDropDown] = useState(null);
+    const open = Boolean(dropDown);
+
+    const sidebarRef = useRef(null);
+    const appBarRef = useRef(null);
+
+    const toggleSidebar = useCallback(() => {
+        setIsSidebarOpen(prevState => !prevState);
+    }, []);
+   
+
+    useEffect(() => {
+        const handleResize = () => {
+            const width = window.innerWidth;
+            if (width > 602 && width < 983) {
+                setIsMiddleSize(true);
+                setIsLow(false);
+                setIsSidebarOpen(false);
+            } else if (width > 102 && width <= 602) {
+                setIsMiddleSize(false);
+                setIsLow(true);
+                setIsSidebarOpen(false);
+            } else {
+                setIsMiddleSize(false);
+                setIsLow(false);
+                if (prevWidth <= 983 || prevWidth <= 602) {
+                    setIsSidebarOpen(true);
+                }
+            }
+            setPrevWidth(width);
+        };
+
+        handleResize();
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, [prevWidth]);
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (isMiddleSize || isLow) {
+                if (sidebarRef.current && !sidebarRef.current.contains(event.target) && appBarRef.current && !appBarRef.current.contains(event.target) && isSidebarOpen) {
+                    setIsSidebarOpen(false);
+                }
+            }
+        };
+
+        document.addEventListener('click', handleClickOutside);
+        return () => {
+            document.removeEventListener('click', handleClickOutside);
+        };
+    }, [isSidebarOpen, isMiddleSize, isLow]);
+
+    const sidebarStyle = isMiddleSize ? { marginTop: '65px' } : isLow ? { marginTop: '56px' } : {};
+
+
+
+
+    const handleClicks = (event) => {
+        setDropDown(event.currentTarget);
+    };
+
+    const handleClose = () => {
+        setDropDown(null);
+    };
+
+
+
+
+
+
 
 
 	useEffect(() => {
@@ -181,7 +253,7 @@ export default function Layout({ icon_username }) {
 		fetch(`/api/user/${icon_username}`)
 		.then(response => response.json())
 		.then(data => {
-			SetUserPrivileges(data.privileges);
+			setUserPrivileges(data.privileges);
 			setTimeout(() => {
 			setIsLoading(false);
 
@@ -194,7 +266,7 @@ export default function Layout({ icon_username }) {
 		}
 	}, [icon_username]);
 
-	const navigate = useNavigate();
+	
 	const location = useLocation();
 
 	// Функція для отримання даних з сервера
@@ -228,17 +300,17 @@ export default function Layout({ icon_username }) {
 		fetchData();
 	}, [location]);
 
-	useEffect(() => {
-		if (isScrollDisabled) {
-			document.body.style.overflow = 'hidden';
-		} else {
-			document.body.style.overflow = 'auto';
-		}
-		return () => {
-			document.body.style.overflow = 'auto';
-		};
+	// useEffect(() => {
+	// 	if (isScrollDisabled) {
+	// 		document.body.style.overflow = 'hidden';
+	// 	} else {
+	// 		document.body.style.overflow = 'auto';
+	// 	}
+	// 	return () => {
+	// 		document.body.style.overflow = 'auto';
+	// 	};
 
-	}, [isScrollDisabled]);
+	// }, [isScrollDisabled]);
 
 	const handleStartClick = () => {
 		navigate('/querytool');
@@ -297,146 +369,140 @@ export default function Layout({ icon_username }) {
 	};
 
 
-	const [dropDown, setDropDown] = useState(null)
-	const open = Boolean(dropDown);
-	const handleClick = (event) => {
-		setDropDown(event.currentTarget)
-	};
-	const handleClose = () => {
-		setDropDown(null);
-	};
+	// const handleResize = () => {
+	// 	const windowWidth = window.innerWidth;
+	// 	if (windowWidth <= 280) {
+	// 		setInputWidth('calc(100% - 10px)'); // Adjust width for smaller screens
+	// 		setMarginLeft('10px'); // Move to the right on smaller screens
+	// 	} else if (windowWidth <= 968) {
+	// 		setInputWidth('calc(100% - 50px)'); // Adjust width for medium screens
+	// 		setMarginLeft('140px'); // Move to the right on medium screens
+	// 	} else {
+	// 		setInputWidth('100%'); // Default width for larger screens
+	// 		setMarginLeft('auto'); // Center align on larger screens
+	// 	}
+	// };
 
+	// // Effect hook to add and remove resize event listener
+	// useEffect(() => {
+	// 	window.addEventListener('resize', handleResize);
+	// 	handleResize(); // Initial call to set input width based on window size
 
-	const start = (
-		<img
-			alt='logo'
-			src={SepioLogo}
-			height='40'
-			className='mr-2'
-			onClick={handleStartClick}
-		/>
-	);
-
-	const end = (
-		<div className='flex align-items-center gap-2'>
-			<NavLink to='/' className='p-button p-component p-button-text text-decoration-none' style={{ borderRadius: '10px', padding: '10px' }}>
-				<span className='pi pi-sign-out' style={{ marginRight: '5px' }} />
-				Logout
-			</NavLink>
-			<Menu
-				anchorEl={dropDown}
-				id='account-menu'
-				open={open}
-				onClose={handleClose}
-				onClick={handleClose}
-				PaperProps={{
-					elevation: 5,
-					sx: {
-						width: '120px',
-						borderRadius: '10px',
-						overflow: 'visible',
-						mt: 1,
-						'&::before': {
-							content: '""',
-							display: 'inline-block',
-							position: 'absolute',
-							top: 0,
-							right: 10,
-							width: 10,
-							height: 10,
-							bgcolor: 'background.paper',
-							transform: 'translateY(-50%) rotate(45deg)',
-							zIndex: 0,
-						},
-					},
-				}}
-				transformOrigin={{
-					vertical: 'top',
-					horizontal: 'center',
-				}}
-				anchorOrigin={{
-					vertical: 'bottom',
-					horizontal: 'center',
-				}}
-			>
-				<MenuItem sx={{ display: 'flex', justifyContent: 'center' }} title='Profile'>
-					<p style={{ marginBottom: '0px' }}>
-						User: {icon_username}
-					</p>
-				</MenuItem>
-			</Menu>
-
-			<Button
-				style={{ width: '46px', height: '46px', borderRadius: '50%', color: '#183462' }}
-				icon="pi pi-user"
-				rounded
-				text
-				severity="secondary"
-				aria-label="User"
-				className="mr-2"
-				onClick={handleClick}
-				aria-controls={open ? 'account-menu' : undefined}
-				aria-haspopup="true"
-				aria-expanded={open ? 'true' : undefined}
-			/>
-		</div>
-	);
-
-	const handleResize = () => {
-		const windowWidth = window.innerWidth;
-		if (windowWidth <= 280) {
-			setInputWidth('calc(100% - 10px)'); // Adjust width for smaller screens
-			setMarginLeft('10px'); // Move to the right on smaller screens
-		} else if (windowWidth <= 968) {
-			setInputWidth('calc(100% - 50px)'); // Adjust width for medium screens
-			setMarginLeft('140px'); // Move to the right on medium screens
-		} else {
-			setInputWidth('100%'); // Default width for larger screens
-			setMarginLeft('auto'); // Center align on larger screens
-		}
-	};
-
-	// Effect hook to add and remove resize event listener
-	useEffect(() => {
-		window.addEventListener('resize', handleResize);
-		handleResize(); // Initial call to set input width based on window size
-
-		return () => {
-			window.removeEventListener('resize', handleResize);
-		};
-	}, []);
+	// 	return () => {
+	// 		window.removeEventListener('resize', handleResize);
+	// 	};
+	// }, []);
 
 
 
 
 
-	return (
-		<div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
-			<Toast ref={toast} />
-			<Menubar start={start} end={end} />
+	const handelquerytool = () => {
+		navigate('/querytool');
+	}
+
+
+    return (
+        <div>
+			<Toast ref = {toast}/>
+            <AppBar ref={appBarRef} position="static" style={{ backgroundColor: '#ffffff', color: '#000000', marginBottom: '1px', zIndex: 1201 }}>
+                <Toolbar>
+                    <IconButton edge="start" color="inherit" aria-label="menu" onClick={toggleSidebar}>
+                        <MenuIcon />
+                    </IconButton>
+                    <IconButton edge="start" color="inherit" aria-label="logo">
+                        <img alt="logo" style={{ cursor: 'pointer', height: '40px' }} src={SepioLogo} onClick = {handelquerytool}/>
+                    </IconButton>
+
+                    <div style={{ flexGrow: 1 }} />
+                    <NavLink to='/' style={{ textDecoration: 'none' }}>
+                        <span className='pi pi-sign-out' style={{ marginRight: '5px' }} />
+                        Logout
+                    </NavLink>
+
+                    <IconButton
+                        color="inherit"
+                        aria-label="user account"
+                        aria-controls="menu-appbar"
+                        aria-haspopup="true"
+                        onClick={handleClicks}
+                    >
+                        <Avatar sx={{ width: 32, height: 32 }}>U</Avatar>
+                    </IconButton>
+
+                    <Menu
+                        anchorEl={dropDown}
+                        id='account-menu'
+                        open={open}
+                        onClose={handleClose}
+                        onClick={handleClose}
+                        PaperProps={{
+                            elevation: 5,
+                            sx: {
+                                width: '120px',
+                                borderRadius: '10px',
+                                overflow: 'visible',
+                                mt: 1,
+                                '&::before': {
+                                    content: '""',
+                                    display: 'inline-block',
+                                    position: 'absolute',
+                                    top: 0,
+                                    right: 25,
+                                    width: 10,
+                                    height: 10,
+                                    bgcolor: 'background.paper',
+                                    transform: 'translateY(-50%) rotate(45deg)',
+                                    zIndex: 0,
+                                },
+                            },
+                        }}
+                        transformOrigin={{
+                            vertical: 'top',
+                            horizontal: 'center',
+                        }}
+                        anchorOrigin={{
+                            vertical: 'bottom',
+                            horizontal: 'center',
+                        }}
+                    >
+                        <MenuItem sx={{ display: 'flex', justifyContent: 'center' }} title='Profile'>
+                            <p style={{ marginBottom: '0px' }}>
+                                User: {icon_username}
+                            </p>
+                        </MenuItem>
+                    </Menu>
+                </Toolbar>
+            </AppBar>
 
 			<div style={{ display: 'flex', flex: '1' }}>
-				<CSidebar className='border-end custom-sidebar' visible={true} style={{ height: '100vh', position: 'sticky', top: '0' }}>
-					<CSidebarNav>
-						<CContainer fluid>
-						</CContainer>
-						<CNavItem>
-							<NavLink to='/querytool/mac' className='nav-link'><RiDashboardLine className='nav-icon' /> MAC</NavLink>
-						</CNavItem>
-						<CNavItem>
-							<NavLink to='/querytool/settings' className='nav-link'><RiDashboardLine className='nav-icon' /> Settings </NavLink>
-						</CNavItem>
-						<CNavItem>
-							{!isLoading && userPrivileges !== 'UI_USER' &&(
-						<NavLink to='/querytool/createuser' className='nav-link'>
-								<RiDashboardLine className='nav-icon' /> Users
-							</NavLink>
-							)}
-							</CNavItem>
-					</CSidebarNav>
-				</CSidebar>
+           
+            <CSidebar ref={sidebarRef} className='border-end custom-sidebar' visible={isSidebarOpen} style={sidebarStyle}>
+                <CSidebarNav>
+                    <CContainer fluid>
+                        <CForm className='d-flex'></CForm>
+                    </CContainer>
+                    <CNavItem>
+                        <NavLink to='/querytool/mac' className='nav-link'>
+                            <RiDashboardLine className='nav-icon' /> MAC
+                        </NavLink>
+                    </CNavItem>
+                    <CNavItem>
+                        <NavLink to='/querytool/settings' className='nav-link'>
+                            <RiDashboardLine className='nav-icon' /> Settings
+                        </NavLink>
+                        {!isLoading && userPrivileges !== 'UI_USER' && (
+                            <NavLink to='/querytool/createuser' className='nav-link'>
+                                <RiDashboardLine className='nav-icon' /> Users
+                            </NavLink>
+                        )}
+                    </CNavItem>
+                </CSidebarNav>
+            </CSidebar>
+            
 
-				<div style={{ marginLeft: marginLeft, flex: '1', padding: '20px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+			
+			<div style={{ marginLeft: marginLeft, flex: '1', padding: '20px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
 					<div style={{ width: '70%', maxWidth: '600px', minWidth: '300px', padding: '20px', borderRadius: '8px', boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)', backgroundColor: 'white' }}>
 						<div style={{ marginBottom: '20px' }}>
 							{message && (
@@ -518,323 +584,10 @@ export default function Layout({ icon_username }) {
 					backgroundColor: 'rgba(255 ,255, 255, 0.8)',
 					zIndex: 2000
 				}}>
-					{/* <Oval
-					height = {80}
-					width = {80}
-					color = 'green'
-					wrapperStyle = {{}}
-					wrapperClass = ''
-					visible = {true}
-					ariaLabel = 'oval-loading'
-					secondaryColor = 'green'
-					strokeWidth = {2}
-					strokeWidthSecondary = {2}
-					/> */}
+					
 
 				</div>
 			)}
-		</div>
-	);
+        </div>
+    );
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// import React, { useState, useEffect } from 'react';
-// import { Menubar } from 'primereact/menubar';
-// import { Menu, MenuItem } from '@mui/material';
-// import { InputText } from 'primereact/inputtext';
-// import { Button } from 'primereact/button';
-// import {
-// 	CSidebar, CSidebarNav, CNavItem, CContainer
-// } from '@coreui/react';
-// import { RiDashboardLine } from 'react-icons/ri';
-// import { NavLink } from 'react-router-dom';
-// import SepioLogo from './../image/Sepio_Logo.png';
-// import 'primereact/resources/themes/saga-blue/theme.css';
-// import 'primereact/resources/primereact.min.css';
-// import 'primeicons/primeicons.css';
-// import axios from 'axios';
-// import { Message } from 'primereact/message';
-// import { Toast } from 'primereact/toast';
-
-// export default function Layout({ icon_username }) {
-// 	const [isLoading, setIsLoading] = useState(true); // Loading state
-
-// 	const [serviceNowInstance, setServiceNowInstance] = useState('');
-// 	const [username, setUsername] = useState('');
-// 	const [password, setPassword] = useState('');
-// 	const [message, setMessage] = useState('');
-// 	const [sepioEndpoint, setSepioEndpoint] = useState('');
-// 	const [sepioUsername, setSepioUsername] = useState('');
-// 	const [sepioPassword, setSepioPassword] = useState('');
-// 	const [sepioMessage, setSepioMessage] = useState('');
-// 	const [inputWidth, setInputWidth] = useState('100%'); // Initial width for larger screens
-// 	const [marginLeft, setMarginLeft] = useState('auto');
-// 	const [isScrollDisabled, setIsScrollDisabled] = useState(true);
-// 	const [userPrivileges, setUserPrivileges] = useState('');
-
-// 	const toast = React.useRef(null);
-
-// 	useEffect(() => {
-// 		if (icon_username) {
-// 			fetch(`/api/user/${icon_username}`)
-// 				.then(response => response.json())
-// 				.then(data => {
-// 					setUserPrivileges(data.privileges);
-// 					setIsLoading(false); // Set loading to false once data is fetched
-// 				})
-// 				.catch(error => {
-// 					console.error('Error fetching data', error);
-// 					setIsLoading(false); // Handle error and set loading to false
-// 				});
-// 		}
-// 	}, [icon_username]);
-
-// 	const handleStartClick = () => {
-// 		// Handle click action
-// 	};
-
-// 	const handleLogout = () => {
-// 		// Handle logout action
-// 	};
-
-// 	const testConnection = async () => {
-// 		// Test connection function
-// 	};
-
-// 	const testSepioConnection = async () => {
-// 		// Test Sepio connection function
-// 	};
-
-// 	const [dropDown, setDropDown] = useState(null);
-// 	const open = Boolean(dropDown);
-
-// 	const handleClick = (event) => {
-// 		// Handle click event
-// 	};
-
-// 	const handleClose = () => {
-// 		// Handle close event
-// 	};
-
-// 	const start = (
-// 		<img
-// 			alt='logo'
-// 			src={SepioLogo}
-// 			height='40'
-// 			className='mr-2'
-// 			onClick={handleStartClick}
-// 		/>
-// 	);
-
-// 	const end = (
-// 		<div className='flex align-items-center gap-2'>
-// 			<NavLink to='/' className='p-button p-component p-button-text text-decoration-none' style={{ borderRadius: '10px', padding: '10px' }}>
-// 				<span className='pi pi-sign-out' style={{ marginRight: '5px' }} />
-// 				Logout
-// 			</NavLink>
-// 			<Menu
-// 				anchorEl={dropDown}
-// 				id='account-menu'
-// 				open={open}
-// 				onClose={handleClose}
-// 				onClick={handleClose}
-// 				PaperProps={{
-// 					elevation: 5,
-// 					sx: {
-// 						width: '120px',
-// 						borderRadius: '10px',
-// 						overflow: 'visible',
-// 						mt: 1,
-// 						'&::before': {
-// 							content: '""',
-// 							display: 'inline-block',
-// 							position: 'absolute',
-// 							top: 0,
-// 							right: 10,
-// 							width: 10,
-// 							height: 10,
-// 							bgcolor: 'background.paper',
-// 							transform: 'translateY(-50%) rotate(45deg)',
-// 							zIndex: 0,
-// 						},
-// 					},
-// 				}}
-// 				transformOrigin={{
-// 					vertical: 'top',
-// 					horizontal: 'center',
-// 				}}
-// 				anchorOrigin={{
-// 					vertical: 'bottom',
-// 					horizontal: 'center',
-// 				}}
-// 			>
-// 				<MenuItem sx={{ display: 'flex', justifyContent: 'center' }} title='Profile'>
-// 					<p style={{ marginBottom: '0px' }}>
-// 						User: {icon_username}
-// 					</p>
-// 				</MenuItem>
-// 			</Menu>
-
-// 			<Button
-// 				style={{ width: '46px', height: '46px', borderRadius: '50%', color: '#183462' }}
-// 				icon="pi pi-user"
-// 				rounded
-// 				text
-// 				severity="secondary"
-// 				aria-label="User"
-// 				className="mr-2"
-// 				onClick={handleClick}
-// 				aria-controls={open ? 'account-menu' : undefined}
-// 				aria-haspopup="true"
-// 				aria-expanded={open ? 'true' : undefined}
-// 			/>
-// 		</div>
-// 	);
-
-// 	const handleResize = () => {
-// 		const windowWidth = window.innerWidth;
-// 		if (windowWidth <= 280) {
-// 			setInputWidth('calc(100% - 10px)'); // Adjust width for smaller screens
-// 			setMarginLeft('10px'); // Move to the right on smaller screens
-// 		} else if (windowWidth <= 968) {
-// 			setInputWidth('calc(100% - 50px)'); // Adjust width for medium screens
-// 			setMarginLeft('140px'); // Move to the right on medium screens
-// 		} else {
-// 			setInputWidth('100%'); // Default width for larger screens
-// 			setMarginLeft('auto'); // Center align on larger screens
-// 		}
-// 	};
-
-// 	// Effect hook to add and remove resize event listener
-// 	useEffect(() => {
-// 		window.addEventListener('resize', handleResize);
-// 		handleResize(); // Initial call to set input width based on window size
-
-// 		return () => {
-// 			window.removeEventListener('resize', handleResize);
-// 		};
-// 	}, []);
-
-// 	return (
-// 		<div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
-// 			<Toast ref={toast} />
-// 			<Menubar start={start} end={end} />
-
-// 			<div style={{ display: 'flex', flex: '1' }}>
-// 				<CSidebar className='border-end custom-sidebar' visible={true} style={{ height: '100vh', position: 'sticky', top: '0' }}>
-// 					<CSidebarNav>
-// 						<CContainer fluid>
-// 						</CContainer>
-// 						<CNavItem>
-// 							<NavLink to='/querytool/mac' className='nav-link'><RiDashboardLine className='nav-icon' /> MAC</NavLink>
-// 						</CNavItem>
-// 						<CNavItem>
-// 							<NavLink to='/querytool/settings' className='nav-link'><RiDashboardLine className='nav-icon' /> Settings </NavLink>
-// 						</CNavItem>
-// 						<CNavItem>
-// 							{!isLoading && userPrivileges !== 'UI_USER' && (
-// 								<NavLink to='/querytool/createuser' className='nav-link'>
-// 									<RiDashboardLine className='nav-icon' /> Users
-// 								</NavLink>
-// 							)}
-// 						</CNavItem>
-// 					</CSidebarNav>
-// 				</CSidebar>
-
-// 				<div style={{ marginLeft: marginLeft, flex: '1', padding: '20px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
-// 					<div style={{ width: '70%', maxWidth: '600px', minWidth: '300px', padding: '20px', borderRadius: '8px', boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)', backgroundColor: 'white' }}>
-// 						<div style={{ marginBottom: '20px' }}>
-// 							{message && (
-// 								<div style={{ marginBottom: '20px' }}>
-// 									<Message text={message} />
-// 								</div>
-// 							)}
-// 							{sepioMessage && (
-// 								<div style={{ marginBottom: '20px' }}>
-// 									<Message text={sepioMessage} />
-// 								</div>
-// 							)}
-// 						</div>
-// 						<h3>ServiceNow Credentials</h3>
-// 						<div style={{ display: 'flex', flexDirection: 'column', marginBottom: '20px' }}>
-// 							<InputText
-// 								type="text"
-// 								placeholder="ServiceNow Instance"
-// 								value={serviceNowInstance}
-// 								onChange={(e) => setServiceNowInstance(e.target.value)}
-// 								style={{ marginBottom: '10px', width: inputWidth, }}
-// 							/>
-// 							<InputText
-// 								type="text"
-// 								placeholder="Username"
-// 								value={username}
-// 								onChange={(e) => setUsername(e.target.value)}
-// 								style={{ marginBottom: '10px', width: inputWidth }}
-// 							/>
-// 							<InputText
-// 								type="password"
-// 								placeholder="Password"
-// 								value={password}
-// 								onChange={(e) => setPassword(e.target.value)}
-// 								style={{ marginBottom: '10px', width: inputWidth }}
-// 							/>
-// 						</div>
-// 						<Button label="Test Connection" icon="pi pi-check" onClick={testConnection} style={{ backgroundColor: '#183462', borderColor: '#183462', marginBottom: '20px', width: '35%', borderRadius: '5px' }} />
-
-// 						<div style={{ marginTop: '20px' }}></div>
-// 						<h3>Sepio Credentials</h3>
-// 						<div style={{ display: 'flex', flexDirection: 'column', marginBottom: '20px' }}>
-// 							<InputText
-// 								type="text"
-// 								placeholder="Sepio Endpoint"
-// 								value={sepioEndpoint}
-// 								onChange={(e) => setSepioEndpoint(e.target.value)}
-// 								style={{ marginBottom: '10px', width: inputWidth }}
-// 							/>
-// 							<InputText
-// 								type="text"
-// 								placeholder="Username"
-// 								value={sepioUsername}
-// 								onChange={(e) => setSepioUsername(e.target.value)}
-// 								style={{ marginBottom: '10px', width: inputWidth }}
-// 							/>
-// 							<InputText
-// 								type="password"
-// 								placeholder="Password"
-// 								value={sepioPassword}
-// 								onChange={(e) => setSepioPassword(e.target.value)}
-// 								style={{ marginBottom: '10px', width: inputWidth }}
-// 							/>
-// 						</div>
-// 						<Button label="Test Connection" icon="pi pi-check" onClick={testSepioConnection} style={{ backgroundColor: '#183462', borderColor: '#183462', width: '35%', borderRadius: '5px' }} />
-// 					</div>
-// 				</div>
-// 			</div>
-// 		</div>
-// 	);
-// }

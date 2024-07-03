@@ -21,6 +21,13 @@ model User {
   otp_verified       Boolean
   credentialsUpdated Boolean   @default(false) 
   privileges         Privileges
+  serviceNowInstance String?   // Add this field
+  serviceUsername    String?   // Add this field
+  servicePassword    String?   // Add this field
+  sepioEndpoint      String?
+  sepioUsername      String?
+  sepioPassword      String?
+
 }
 
 
