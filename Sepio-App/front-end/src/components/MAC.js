@@ -2558,6 +2558,7 @@ import { Toast } from 'primereact/toast';
 import Switch from '@mui/material/Switch';
 import Typography from '@mui/material/Typography';
 import { Oval } from 'react-loader-spinner';
+import RootView from './RootView';
 
 export default function Layout({ icon_username }) {
 	const navigate = useNavigate();
@@ -2877,11 +2878,11 @@ export default function Layout({ icon_username }) {
 				</Toolbar>
 			</AppBar>
 			<div>
-				<CSidebar ref={sidebarRef} className='border-end custom-sidebar' visible={isSidebarOpen} style={sidebarStyle}>
+				{/* <CSidebar ref={sidebarRef} className='border-end custom-sidebar' visible={isSidebarOpen} style={sidebarStyle}>
 					<CSidebarNav>
 						<CContainer fluid>
 							<CForm className='d-flex'>
-								{/* Place for additional form elements after demo */}
+							
 							</CForm>
 						</CContainer>
 						<CNavItem>
@@ -2898,7 +2899,8 @@ export default function Layout({ icon_username }) {
 							)}
 						</CNavItem>
 					</CSidebarNav>
-				</CSidebar>
+				</CSidebar> */}
+				<RootView/>
 
 				<div style={{ display: 'flex', justifyContent: 'center', position: 'fixed', top: '180px', left: '50%', transform: 'translateX(-50%)', zIndex: 1000 }}>
 					<InputText
@@ -2988,7 +2990,7 @@ export default function Layout({ icon_username }) {
 					</div>
 				)}
 			</div>
-			{isLoading && (
+			{/* {isLoading && (
 				<div style={{
 					display: 'flex',
 					justifyContent: 'center',
@@ -3003,7 +3005,7 @@ export default function Layout({ icon_username }) {
 				}}>
 
 				</div>
-			)}
+			)} */}
 		</div>
 	);
 }
