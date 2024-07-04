@@ -2808,12 +2808,15 @@ export default function Layout({ icon_username }) {
 					</IconButton>
 
 					<div style={{ flexGrow: 1 }} />
-					<NavLink to='/' style={{ textDecoration: 'none' }}>
-						<span className='pi pi-sign-out' style={{ marginRight: '5px' }} />
-						Logout
-					</NavLink>
+					<div style={{ marginRight: '10px' }}>
+						<NavLink to='/' style={{ textDecoration: 'none' }}>
+							<span className='pi pi-sign-out' style={{ marginRight: '5px' }} />
+							Logout
+						</NavLink>
+					</div>
 
 					<IconButton
+						style={{ marginRight: '-25px' }}
 						color="inherit"
 						aria-label="user account"
 						aria-controls="menu-appbar"
@@ -2841,7 +2844,7 @@ export default function Layout({ icon_username }) {
 									display: 'inline-block',
 									position: 'absolute',
 									top: 0,
-									right: 27,
+									right: 19,
 									width: 10,
 									height: 10,
 									bgcolor: 'background.paper',

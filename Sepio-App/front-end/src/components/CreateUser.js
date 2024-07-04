@@ -4031,7 +4031,7 @@ export default function Layout({ icon_username }) {
 	const [users, setUsers] = useState([]);
 	const [filteredUsers, setFilteredUsers] = useState([]);
 	const [searchTerm, setSearchTerm] = useState('');
-	const [searchField, setSearchField] = useState('id');
+	const [searchField, setSearchField] = useState('all');
 	const [dropDown, setDropDown] = useState(null);
 	const open = Boolean(dropDown);
 
@@ -4233,7 +4233,8 @@ export default function Layout({ icon_username }) {
 				value={searchField}
 				onChange={(e) => setSearchField(e.target.value)}
 				style={{ padding: '5px', marginLeft: '10px' }}
-			>
+			> 
+			    <option value = "all">All</option>
 				<option value="id">ID</option>
 				<option value="name">Username</option>
 				<option value="password">Password</option>
@@ -4248,12 +4249,24 @@ export default function Layout({ icon_username }) {
 		</div>
 	);
 
+	// useEffect(() => {
+	// 	const filtered = users.filter(user =>
+	// 		user[searchField].toString().toLowerCase().includes(searchTerm.toLowerCase())
+	// 	);
+	// 	setFilteredUsers(filtered);
+	// }, [searchTerm, searchField, users]);
+
 	useEffect(() => {
-		const filtered = users.filter(user =>
-			user[searchField].toString().toLowerCase().includes(searchTerm.toLowerCase())
-		);
-		setFilteredUsers(filtered);
-	}, [searchTerm, searchField, users]);
+        const filtered = users.filter(user => {
+            if (searchField === 'all') {
+                return Object.values(user).some(value =>
+                    String(value).toLowerCase().includes(searchTerm.toLowerCase())
+                );
+            }
+            return String(user[searchField]).toLowerCase().includes(searchTerm.toLowerCase());
+        });
+        setFilteredUsers(filtered);
+    }, [searchTerm, searchField, users]);
 
 	const padData = (data, rowsPerPage) => {
 		const currentPage = Math.ceil(first / rowsPerPage) + 1;
