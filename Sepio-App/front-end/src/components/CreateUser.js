@@ -1094,7 +1094,7 @@
 //                             overflowX: 'auto',
 //                             marginBottom: '50px', // Ensure space for the paginator
 // 							marginTop: '-700px',
-							
+
 //                         }}
 //                     >
 //                         <DataTable
@@ -1207,7 +1207,7 @@
 
 // export default function Layout({ icon_username }) {
 // 	const navigate = useNavigate();
-	
+
 // 	const [isScrollDisabled, setIsScrollDisabled] = useState(true);
 // 	const [first, setFirst] = useState(0);
 // 	const [rows, setRows] = useState(10);
@@ -1420,7 +1420,7 @@
 //                             overflowX: 'auto',
 //                             marginBottom: '50px', // Ensure space for the paginator
 // 							marginTop: '-852px',
-							
+
 //                         }}
 //                     >
 //                         <DataTable
@@ -1482,16 +1482,16 @@
 //                         display: 'flex',
 //                         justifyContent: 'center',
 //                         position: 'fixed',
-						
+
 //                         bottom: '735px',
 //                         width: '163%',
-				
+
 //                         marginLeft: '250px', // Adjust sidebar width as needed
 //                     }}
 //                 >
 //                     <Button label='New' icon='pi pi-plus' onClick={handleNew} />
 //                 </div>
-				
+
 // 			</div>
 // 		</div>
 // 	);
@@ -1644,7 +1644,7 @@
 //         const totalPages = Math.ceil(data.length / rowsPerPage);
 //         const currentPage = Math.ceil(first / rowsPerPage) + 1;
 //         // const totalRows = Math.max(rowsPerPage, paddedData.length);
-        
+
 //         if(currentPage === totalPages){
 //         while (paddedData.length < rowsPerPage * totalPages) {
 //             paddedData.push({ id: ' - ', username: '', password: '', privileges: '' });
@@ -1991,7 +1991,7 @@
 //             <div style={{ color: 'white', padding: '10px', borderRadius: '5px', marginLeft: '10px' }}>
 //                 Users
 //             </div>
-            
+
 //         </div>
 //     );
 
@@ -2006,7 +2006,7 @@
 //         <div>
 //             <Menubar start={start} end={end} />
 //             <div>
-            
+
 //                 <CSidebar className='border-end custom-sidebar' visible={true} style={{ height: '100vh', position: 'sticky', top: '0' }}>
 //                     <CSidebarNav>
 //                         <CContainer fluid>
@@ -2028,7 +2028,7 @@
 //                         </CNavItem>
 //                     </CSidebarNav>
 //                 </CSidebar>
-                
+
 //                 <Menubar start={secondMenubarEnd} style={{ backgroundColor: '#183462', maxWidth: '1500px', marginLeft: '250px', marginTop: '-839px' }} />
 
 //                 <div
@@ -2060,7 +2060,7 @@
 //                             onPage={onPage}
 //                             style={{
 //                                 border: '1px solid #dee2e6',
-                                
+
 //                                 borderCollapse: 'collapse',
 //                             }}
 //                             className='p-datatable-gridlines hoverable-rows'
@@ -2105,7 +2105,7 @@
 //                     </div>
 //                 </div>
 
-               
+
 //                 <div
 //                     style={{
 //                         display: 'flex',
@@ -2119,7 +2119,7 @@
 //                     <div style = {{marginRight: '-1200px'}}>
 //                     <Button label='New' icon='pi pi-plus' onClick={handleNew} style={{ backgroundColor: '#183462' }} />
 //                 </div>
-             
+
 //                 <input
 //                 type="text"
 //                 value={searchTerm}
@@ -2140,7 +2140,7 @@
 //             </div>
 //                 {/* </div> */}
 //             </div>
-            
+
 //         </div>
 //     );
 // }
@@ -2422,7 +2422,7 @@
 //     return (
 //         <div style = {{position: 'sticky', overflow: 'auto'  }}>            
 //             <Menubar start={starting} end={ending} style={{ position: 'sticky', top: '0', zIndex: 1000 }} />
-            
+
 //             <div style={{ display: 'flex'}}>
 //                 <CSidebar className='border-end custom-sidebar' visible={true} style={{ height: '100vh', position: 'sticky', top: '0' }}>
 //                     <CSidebarNav>
@@ -2488,7 +2488,7 @@
 //                         </DataTable>
 //                     </div>
 //                     <div style={{ display: 'flex', justifyContent: 'center', position: 'fixed', bottom: '940px', width: '100%' }}>
-                        
+
 //                     </div>
 //                 </div>
 //             </div>
@@ -2756,7 +2756,7 @@
 //                 <option value="privileges">Privileges</option>
 //             </select>
 
-            
+
 //         </div>
 //     );
 
@@ -2789,7 +2789,7 @@
 //                 <option value="privileges">Privileges</option>
 //             </select>
 
-            
+
 //         </div>
 //     )
 
@@ -2812,7 +2812,7 @@
 //     return (
 //         <div style = {{overflow: 'auto' }}>            
 //             <Menubar start = {starting} end = {ending}/>
-            
+
 //         <div style={{ display: 'flex'}}>
 //             <CSidebar className='border-end custom-sidebar' visible={true} style={{ height: '100vh', position: 'sticky', top: '0' }}>
 //                 <CSidebarNav>
@@ -2839,7 +2839,7 @@
 //             <div style={{ flex: 1, paddingLeft: '0px', marginTop: '-12px'}}>
 //                 <Menubar start={starts} end = {ends} style={{ backgroundColor: '#183462', width: '100%', position: '', top: '0', zIndex: 1000, marginTop: '10px' }} />
 
-               
+
 //             </div>
 //         </div>
 //         </div>
@@ -3093,7 +3093,7 @@
 // import Button from '@mui/material/Button';
 // import Avatar from '@mui/material/Avatar';
 // import SepioLogo from './../image/Sepio_Logo.png';
- 
+
 // const MenuBar = () => {
 //     const [anchorEl, setAnchorEl] = useState(null);
 //     const open = Boolean(anchorEl);
@@ -3933,8 +3933,8 @@
 //                         <Avatar sx={{ width: 32, height: 32 }}>U</Avatar>
 //                     </IconButton>
 
-                   
-                       
+
+
 //                 </Toolbar>
 //             </AppBar>
 
@@ -4010,7 +4010,7 @@
 
 
 import React, { useEffect, useState, useRef, useCallback } from 'react';
-import { AppBar, Toolbar, IconButton, Menu, MenuItem, Avatar, Tooltip } from '@mui/material';
+import { AppBar, Toolbar, IconButton, Menu, MenuItem, Avatar, Tooltip, Divider } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import { Button } from 'primereact/button';
 import { Menubar } from 'primereact/menubar';
@@ -4025,404 +4025,410 @@ import { Paginator } from 'primereact/paginator';
 import './Layout.css';
 
 export default function Layout({ icon_username }) {
-    const navigate = useNavigate();
-    const [first, setFirst] = useState(0);
-    const [rows, setRows] = useState(10);
-    const [users, setUsers] = useState([]);
-    const [filteredUsers, setFilteredUsers] = useState([]);
-    const [searchTerm, setSearchTerm] = useState('');
-    const [searchField, setSearchField] = useState('id');
-    const [dropDown, setDropDown] = useState(null);
-    const open = Boolean(dropDown);
+	const navigate = useNavigate();
+	const [first, setFirst] = useState(0);
+	const [rows, setRows] = useState(10);
+	const [users, setUsers] = useState([]);
+	const [filteredUsers, setFilteredUsers] = useState([]);
+	const [searchTerm, setSearchTerm] = useState('');
+	const [searchField, setSearchField] = useState('id');
+	const [dropDown, setDropDown] = useState(null);
+	const open = Boolean(dropDown);
 
-    //
-    
-    const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-    const [userPrivileges, setUserPrivileges] = useState(null);
-    const [isLoading, setIsLoading] = useState(true);
-    const [isMiddleSize, setIsMiddleSize] = useState(false);
-    const [isLow, setIsLow] = useState(false);
-    const [menuAnchorEl, setMenuAnchorEl] = useState(null);
-    const [prevWidth, setPrevWidth] = useState(window.innerWidth);
-    const [logoHeight, setLogoHeight] = useState('60px');
-    
+	//
 
-    const sidebarRef = useRef(null);
-    const appBarRef = useRef(null);
+	const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+	const [userPrivileges, setUserPrivileges] = useState(null);
+	const [isLoading, setIsLoading] = useState(true);
+	const [isMiddleSize, setIsMiddleSize] = useState(false);
+	const [isLow, setIsLow] = useState(false);
+	const [menuAnchorEl, setMenuAnchorEl] = useState(null);
+	const [prevWidth, setPrevWidth] = useState(window.innerWidth);
+	const [logoHeight, setLogoHeight] = useState('60px');
 
 
-
-     useEffect (() => {
-        if(icon_username) {
-            fetch(`/api/user/${icon_username}`)
-            .then(response => response.json())
-            .then(data => {
-                setUserPrivileges(data.privileges);
-                setTimeout(() => {
-                    setIsLoading(false);
-                },100)
-            })
-            .catch(error => {
-                console.log('Error feching the privileges from server', error);
-                setIsLoading(false);
-            })
-        }
-     }, [icon_username]);
+	const sidebarRef = useRef(null);
+	const appBarRef = useRef(null);
 
 
 
-    const toggleSidebar = useCallback(() => {
-        setIsSidebarOpen(prevState => !prevState);
-    }, []);
-
-   
-
-    useEffect(() => {
-        const handleResize = () => {
-            const width = window.innerWidth;
-            if (width > 602 && width < 983) {
-                setIsMiddleSize(true);
-                setIsLow(false);
-                setIsSidebarOpen(false);
-            } else if (width > 102 && width <= 602) {
-                setIsMiddleSize(false);
-                setIsLow(true);
-                setIsSidebarOpen(false);
-            } else {
-                setIsMiddleSize(false);
-                setIsLow(false);
-                if (prevWidth <= 983 || prevWidth <= 602) {
-                    setIsSidebarOpen(true);
-                }
-            }
-            setPrevWidth(width);
-        };
-
-        handleResize();
-        window.addEventListener('resize', handleResize);
-        return () => window.removeEventListener('resize', handleResize);
-    }, [prevWidth]);
-
-    useEffect(() => {
-        const handleClickOutside = (event) => {
-            if (isMiddleSize || isLow) {
-                if (sidebarRef.current && !sidebarRef.current.contains(event.target) && appBarRef.current && !appBarRef.current.contains(event.target) && isSidebarOpen) {
-                    setIsSidebarOpen(false);
-                }
-            }
-        };
-
-        document.addEventListener('click', handleClickOutside);
-        return () => {
-            document.removeEventListener('click', handleClickOutside);
-        };
-    }, [isSidebarOpen, isMiddleSize, isLow]);
-
-    const sidebarStyle = isMiddleSize ? { marginTop: '65px' } : isLow ? { marginTop: '56px' } : {};
+	useEffect(() => {
+		if (icon_username) {
+			fetch(`/api/user/${icon_username}`)
+				.then(response => response.json())
+				.then(data => {
+					setUserPrivileges(data.privileges);
+					setTimeout(() => {
+						setIsLoading(false);
+					}, 100)
+				})
+				.catch(error => {
+					console.log('Error feching the privileges from server', error);
+					setIsLoading(false);
+				})
+		}
+	}, [icon_username]);
 
 
 
+	const toggleSidebar = useCallback(() => {
+		setIsSidebarOpen(prevState => !prevState);
+	}, []);
 
 
-    const handleClicks = (event) => {
-        setDropDown(event.currentTarget);
-    };
 
-    const handleClose = () => {
-        setDropDown(null);
-    };
+	useEffect(() => {
+		const handleResize = () => {
+			const width = window.innerWidth;
+			if (width > 602 && width < 983) {
+				setIsMiddleSize(true);
+				setIsLow(false);
+				setIsSidebarOpen(false);
+			} else if (width > 102 && width <= 602) {
+				setIsMiddleSize(false);
+				setIsLow(true);
+				setIsSidebarOpen(false);
+			} else {
+				setIsMiddleSize(false);
+				setIsLow(false);
+				if (prevWidth <= 983 || prevWidth <= 602) {
+					setIsSidebarOpen(true);
+				}
+			}
+			setPrevWidth(width);
+		};
+
+		handleResize();
+		window.addEventListener('resize', handleResize);
+		return () => window.removeEventListener('resize', handleResize);
+	}, [prevWidth]);
+
+	useEffect(() => {
+		const handleClickOutside = (event) => {
+			if (isMiddleSize || isLow) {
+				if (sidebarRef.current && !sidebarRef.current.contains(event.target) && appBarRef.current && !appBarRef.current.contains(event.target) && isSidebarOpen) {
+					setIsSidebarOpen(false);
+				}
+			}
+		};
+
+		document.addEventListener('click', handleClickOutside);
+		return () => {
+			document.removeEventListener('click', handleClickOutside);
+		};
+	}, [isSidebarOpen, isMiddleSize, isLow]);
+
+	const sidebarStyle = isMiddleSize ? { marginTop: '65px' } : isLow ? { marginTop: '56px' } : {};
 
 
 
 
-    //
 
-    useEffect(() => {
-        const handleKeydown = (event) => {
-            if ((event.ctrlKey || event.metaKey) && (event.key === '=' || event.key === '-' || event.key === '0')) {
-                event.preventDefault();
-            }
-        };
+	const handleClicks = (event) => {
+		setDropDown(event.currentTarget);
+	};
 
-        window.addEventListener('keydown', handleKeydown);
-
-        return () => {
-            window.removeEventListener('keydown', handleKeydown);
-        };
-    }, []);
-
-    useEffect(() => {
-        axios.get('/user/all')
-            .then(response => {
-                console.log('Fetched users:', response.data);
-                setUsers(response.data);
-                setFilteredUsers(response.data);
-            })
-            .catch(error => {
-                console.error('Error fetching users:', error);
-            });
-    }, []);
-
-    const handleLogout = () => {
-        navigate('/');
-    };
-
-    const handleClick = (event) => {
-        setDropDown(event.currentTarget);
-    };
-
- 
-
-    const handleNew = () => {
-        navigate('/querytool/usersubmit');
-    };
-
-    const onPage = (event) => {
-        setFirst(event.first);
-        setRows(event.rows);
-    };
-
-    const bodyTemplate = (rowData, column) => (
-        <Tooltip title={rowData[column.field]} arrow>
-            <span
-                style={{
-                    whiteSpace: 'nowrap',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    display: 'inline-block',
-                    maxWidth: '200px',
-                }}
-            >
-                {rowData[column.field]}
-            </span>
-        </Tooltip>
-    );
-
-    const passwordTemplate = (rowData) => {
-        const value = rowData.password || '';
-        return (
-            <Tooltip title={value} arrow>
-                <span
-                    style={{
-                        whiteSpace: 'normal',
-                        overflow: 'visible',
-                        textOverflow: 'clip',
-                        display: 'inline-block',
-                        maxWidth: '200px',
-                    }}
-                >
-                    {value ? '*'.repeat(8) : ''}
-                </span>
-            </Tooltip>
-        );
-    };
-
-    const secondMenubarEnd = (
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-            <div style={{ color: 'white', padding: '10px', borderRadius: '5px', marginLeft: '10px' }}>
-                Users
-            </div>
-            <input
-                type="text"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                placeholder="Search..."
-                style={{ padding: '5px', marginLeft: '10px' }}
-            />
-            <select
-                value={searchField}
-                onChange={(e) => setSearchField(e.target.value)}
-                style={{ padding: '5px', marginLeft: '10px' }}
-            >
-                <option value="id">ID</option>
-                <option value="name">Username</option>
-                <option value="password">Password</option>
-                <option value="privileges">Privileges</option>
-            </select>
-        </div>
-    );
-
-    const second = (
-        <div>
-            <Button label='New' icon='pi pi-plus' onClick={handleNew} style={{ backgroundColor: '#183462' }} />
-        </div>
-    );
-
-    useEffect(() => {
-        const filtered = users.filter(user =>
-            user[searchField].toString().toLowerCase().includes(searchTerm.toLowerCase())
-        );
-        setFilteredUsers(filtered);
-    }, [searchTerm, searchField, users]);
-
-    const padData = (data, rowsPerPage) => {
-        const currentPage = Math.ceil(first / rowsPerPage) + 1;
-        const totalPages = Math.ceil(filteredUsers.length / rowsPerPage);
-
-        let paddingRowsNeeded = rowsPerPage - data.length;
-        if (currentPage === totalPages) {
-            paddingRowsNeeded = Math.max(0, paddingRowsNeeded);
-        }
-
-        const paddedData = [...data];
-
-        for (let i = 0; i < paddingRowsNeeded; i++) {
-            paddedData.push({ id: ' - ', username: '', password: '', privileges: '' });
-        }
-
-        return paddedData;
-    };
-
-    const paginatedUsers = padData(filteredUsers.slice(first, first + rows), rows);
+	const handleClose = () => {
+		setDropDown(null);
+	};
 
 
 
-    const handelquerytool = () => {
-        navigate('/querytool');
-    }
 
-    return (
-        <div>
-            <AppBar ref={appBarRef} position="static" style={{ backgroundColor: '#ffffff', color: '#000000', marginBottom: '1px', zIndex: 1201 }}>
-                <Toolbar>
-                    <IconButton edge="start" color="inherit" aria-label="menu" onClick={toggleSidebar}>
-                        <MenuIcon />
-                    </IconButton>
-                    <IconButton edge="start" color="inherit" aria-label="logo">
-                        <img alt="logo" style={{ cursor: 'pointer', height: '40px' }} src={SepioLogo} onClick = {handelquerytool}/>
-                    </IconButton>
+	//
 
-                    <div style={{ flexGrow: 1}} />
-                    <div style = {{marginRight: '10px'}}>
-                    <NavLink to='/' style={{ textDecoration: 'none' }}>
-                        <span className='pi pi-sign-out' style={{ marginRight: '5px' }} />
-                        Logout
-                    </NavLink>
-                    </div>
+	useEffect(() => {
+		const handleKeydown = (event) => {
+			if ((event.ctrlKey || event.metaKey) && (event.key === '=' || event.key === '-' || event.key === '0')) {
+				event.preventDefault();
+			}
+		};
 
-                    <IconButton
-                    style = {{marginRight: '-25px'}}
-                        color="inherit"
-                        aria-label="user account"
-                        aria-controls="menu-appbar"
-                        aria-haspopup="true"
-                        onClick={handleClicks}
-                    >
-                        <Avatar sx={{ width: 32, height: 32 }}>U</Avatar>
-                    </IconButton>
+		window.addEventListener('keydown', handleKeydown);
 
-                    <Menu
-                        anchorEl={dropDown}
-                        id='account-menu'
-                        open={open}
-                        onClose={handleClose}
-                        onClick={handleClose}
-                        PaperProps={{
-                            elevation: 5,
-                            sx: {
-                                width: '120px',
-                                borderRadius: '10px',
-                                overflow: 'visible',
-                                mt: 1,
-                                '&::before': {
-                                    content: '""',
-                                    display: 'inline-block',
-                                    position: 'absolute',
-                                    top: 0,
-                                    right: 25,
-                                    width: 10,
-                                    height: 10,
-                                    bgcolor: 'background.paper',
-                                    transform: 'translateY(-50%) rotate(45deg)',
-                                    zIndex: 0,
-                                },
-                            },
-                        }}
-                        transformOrigin={{
-                            vertical: 'top',
-                            horizontal: 'center',
-                        }}
-                        anchorOrigin={{
-                            vertical: 'bottom',
-                            horizontal: 'center',
-                        }}
-                    >
-                        <MenuItem sx={{ display: 'flex', justifyContent: 'center' }} title='Profile'>
-                            <p style={{ marginBottom: '0px' }}>
-                                User: {icon_username}
-                            </p>
-                        </MenuItem>
-                    </Menu>
-                </Toolbar>
-            </AppBar>
-            <div style = {{display: 'flex', overflow: 'auto'}}>
-            <CSidebar ref={sidebarRef} className='border-end custom-sidebar' visible={isSidebarOpen} style={sidebarStyle}>
-                <CSidebarNav>
-                    <CContainer fluid>
-                        <CForm className='d-flex'></CForm>
-                    </CContainer>
-                    <CNavItem>
-                        <NavLink to='/querytool/mac' className='nav-link'>
-                            <RiDashboardLine className='nav-icon' /> MAC
-                        </NavLink>
-                    </CNavItem>
-                    <CNavItem>
-                        <NavLink to='/querytool/settings' className='nav-link'>
-                            <RiDashboardLine className='nav-icon' /> Settings
-                        </NavLink>
-                        {!isLoading && userPrivileges !== 'UI_USER' && (
-                            <NavLink to='/querytool/createuser' className='nav-link'>
-                                <RiDashboardLine className='nav-icon' /> Users
-                            </NavLink>
-                        )}
-                    </CNavItem>
-                </CSidebarNav>
-            </CSidebar>
+		return () => {
+			window.removeEventListener('keydown', handleKeydown);
+		};
+	}, []);
 
-                <div style={{ flex: 1, paddingLeft: '0px', marginTop: '-12px' }}>
-                    <Menubar start={secondMenubarEnd} end={second} style={{ backgroundColor: '#183462', width: '100%', position: '', top: '0', zIndex: 1000, marginTop: '10px' }} />
-                    <div style={{ marginTop: '-20px' }}>
-                        <DataTable
-                            value={paginatedUsers}
-                            responsiveLayout='scroll'
-                            style={{ border: '1px solid #dee2e6', borderRadius: '10px', marginTop: '20px' }}
-                            className='p-datatable-gridlines hoverable-rows'
-                        >
-                            <Column
-                                field='id'
-                                header='ID'
-                                style={{ borderRight: '1px solid #dee2e6', width: '100px' }}
-                                body={bodyTemplate}
-                            ></Column>
-                            <Column
-                                field='name'
-                                header='Username'
-                                style={{ borderRight: '1px solid #dee2e6', width: '100px' }}
-                                body={bodyTemplate}
-                            ></Column>
-                            <Column
-                                field='password'
-                                header='Password'
-                                style={{ borderRight: '1px solid #dee2e6', width: '200px' }}
-                                body={passwordTemplate}
-                            ></Column>
-                            <Column
-                                field='privileges'
-                                header='Privileges'
-                                style={{ borderRight: '1px solid #dee2e6', width: '150px' }}
-                                body={bodyTemplate}
-                            ></Column>
-                        </DataTable>
-                        <div style={{ display: 'flex', justifyContent: 'center', marginTop: '80px', marginLeft: '-60px'}}>
-                <Paginator first={first} rows={rows} totalRecords={filteredUsers.length} onPageChange={onPage} rowsPerPageOptions={[10]} />
-            </div>
-                    </div>
-                </div>
-            </div>
-            {/* <div style={{ display: 'flex', justifyContent: 'center', marginTop: '-20px', marginLeft: '150px'}}>
+	useEffect(() => {
+		axios.get('/user/all')
+			.then(response => {
+				console.log('Fetched users:', response.data);
+				setUsers(response.data);
+				setFilteredUsers(response.data);
+			})
+			.catch(error => {
+				console.error('Error fetching users:', error);
+			});
+	}, []);
+
+	const handleLogout = () => {
+		navigate('/');
+	};
+
+	const handleClick = (event) => {
+		setDropDown(event.currentTarget);
+	};
+
+
+
+	const handleNew = () => {
+		navigate('/querytool/usersubmit');
+	};
+
+	const onPage = (event) => {
+		setFirst(event.first);
+		setRows(event.rows);
+	};
+
+	const bodyTemplate = (rowData, column) => (
+		<Tooltip title={rowData[column.field]} arrow>
+			<span
+				style={{
+					whiteSpace: 'nowrap',
+					overflow: 'hidden',
+					textOverflow: 'ellipsis',
+					display: 'inline-block',
+					maxWidth: '200px',
+				}}
+			>
+				{rowData[column.field]}
+			</span>
+		</Tooltip>
+	);
+
+	const passwordTemplate = (rowData) => {
+		const value = rowData.password || '';
+		return (
+			<Tooltip title={value} arrow>
+				<span
+					style={{
+						whiteSpace: 'normal',
+						overflow: 'visible',
+						textOverflow: 'clip',
+						display: 'inline-block',
+						maxWidth: '200px',
+					}}
+				>
+					{value ? '*'.repeat(8) : ''}
+				</span>
+			</Tooltip>
+		);
+	};
+
+	const secondMenubarEnd = (
+		<div style={{ display: 'flex', alignItems: 'center' }}>
+			<div style={{ color: 'white', padding: '10px', borderRadius: '5px', marginLeft: '10px' }}>
+				Users
+			</div>
+			<input
+				type="text"
+				value={searchTerm}
+				onChange={(e) => setSearchTerm(e.target.value)}
+				placeholder="Search..."
+				style={{ padding: '5px', marginLeft: '10px' }}
+			/>
+			<select
+				value={searchField}
+				onChange={(e) => setSearchField(e.target.value)}
+				style={{ padding: '5px', marginLeft: '10px' }}
+			>
+				<option value="id">ID</option>
+				<option value="name">Username</option>
+				<option value="password">Password</option>
+				<option value="privileges">Privileges</option>
+			</select>
+		</div>
+	);
+
+	const second = (
+		<div>
+			<Button label='New' icon='pi pi-plus' onClick={handleNew} style={{ backgroundColor: '#183462' }} />
+		</div>
+	);
+
+	useEffect(() => {
+		const filtered = users.filter(user =>
+			user[searchField].toString().toLowerCase().includes(searchTerm.toLowerCase())
+		);
+		setFilteredUsers(filtered);
+	}, [searchTerm, searchField, users]);
+
+	const padData = (data, rowsPerPage) => {
+		const currentPage = Math.ceil(first / rowsPerPage) + 1;
+		const totalPages = Math.ceil(filteredUsers.length / rowsPerPage);
+
+		let paddingRowsNeeded = rowsPerPage - data.length;
+		if (currentPage === totalPages) {
+			paddingRowsNeeded = Math.max(0, paddingRowsNeeded);
+		}
+
+		const paddedData = [...data];
+
+		for (let i = 0; i < paddingRowsNeeded; i++) {
+			paddedData.push({ id: ' - ', username: '', password: '', privileges: '' });
+		}
+
+		return paddedData;
+	};
+
+	const paginatedUsers = padData(filteredUsers.slice(first, first + rows), rows);
+
+
+
+	const handelquerytool = () => {
+		navigate('/querytool');
+	}
+
+	return (
+		<div>
+			<AppBar ref={appBarRef} position="static" style={{ backgroundColor: '#ffffff', color: '#000000', marginBottom: '1px', zIndex: 1201 }}>
+				<Toolbar>
+					<IconButton edge="start" color="inherit" aria-label="menu" onClick={toggleSidebar}>
+						<MenuIcon />
+					</IconButton>
+					<IconButton edge="start" color="inherit" aria-label="logo">
+						<img alt="logo" style={{ cursor: 'pointer', height: '40px' }} src={SepioLogo} onClick={handelquerytool} />
+					</IconButton>
+
+					<div style={{ flexGrow: 1 }} />
+					<div style={{ marginRight: '10px' }}>
+						<NavLink to='/' style={{ textDecoration: 'none' }}>
+							<span className='pi pi-sign-out' style={{ marginRight: '5px' }} />
+							Logout
+						</NavLink>
+					</div>
+
+					<IconButton
+						style={{ marginRight: '-25px' }}
+						color="inherit"
+						aria-label="user account"
+						aria-controls="menu-appbar"
+						aria-haspopup="true"
+						onClick={handleClicks}
+					>
+						<Avatar sx={{ width: 32, height: 32 }}>U</Avatar>
+					</IconButton>
+
+					<Menu
+						anchorEl={dropDown}
+						id='account-menu'
+						open={open}
+						onClose={handleClose}
+						onClick={handleClose}
+						PaperProps={{
+							elevation: 5,
+							sx: {
+								width: '140px',
+								borderRadius: '10px',
+								overflow: 'visible',
+								mt: 1,
+								'&::before': {
+									content: '""',
+									display: 'inline-block',
+									position: 'absolute',
+									top: 0,
+									right: 19,
+									width: 10,
+									height: 10,
+									bgcolor: 'background.paper',
+									transform: 'translateY(-50%) rotate(45deg)',
+									zIndex: 0,
+								},
+							},
+						}}
+						transformOrigin={{
+							vertical: 'top',
+							horizontal: 'center',
+						}}
+						anchorOrigin={{
+							vertical: 'bottom',
+							horizontal: 'center',
+						}}
+					>
+						<MenuItem sx={{ display: 'flex', justifyContent: 'center' }} title='Profile'>
+							<p style={{ marginBottom: '0px' }}>
+								User: {icon_username}
+							</p>
+						</MenuItem>
+						<Divider spacing={1}></Divider>
+						<MenuItem sx={{ display: 'flex', justifyContent: 'center' }} title='Profile'>
+							<p style={{ marginBottom: '0px' }}>
+								{userPrivileges}
+							</p>
+						</MenuItem>
+					</Menu>
+				</Toolbar>
+			</AppBar>
+			<div style={{ display: 'flex', overflow: 'auto' }}>
+				<CSidebar ref={sidebarRef} className='border-end custom-sidebar' visible={isSidebarOpen} style={sidebarStyle}>
+					<CSidebarNav>
+						<CContainer fluid>
+							<CForm className='d-flex'></CForm>
+						</CContainer>
+						<CNavItem>
+							<NavLink to='/querytool/mac' className='nav-link'>
+								<RiDashboardLine className='nav-icon' /> MAC
+							</NavLink>
+						</CNavItem>
+						<CNavItem>
+							<NavLink to='/querytool/settings' className='nav-link'>
+								<RiDashboardLine className='nav-icon' /> Settings
+							</NavLink>
+							{!isLoading && userPrivileges !== 'UI_USER' && (
+								<NavLink to='/querytool/createuser' className='nav-link'>
+									<RiDashboardLine className='nav-icon' /> Users
+								</NavLink>
+							)}
+						</CNavItem>
+					</CSidebarNav>
+				</CSidebar>
+
+				<div style={{ flex: 1, paddingLeft: '0px', marginTop: '-12px' }}>
+					<Menubar start={secondMenubarEnd} end={second} style={{ backgroundColor: '#183462', width: '100%', position: '', top: '0', zIndex: 1000, marginTop: '10px' }} />
+					<div style={{ marginTop: '-20px' }}>
+						<DataTable
+							value={paginatedUsers}
+							responsiveLayout='scroll'
+							style={{ border: '1px solid #dee2e6', borderRadius: '10px', marginTop: '20px' }}
+							className='p-datatable-gridlines hoverable-rows'
+						>
+							<Column
+								field='id'
+								header='ID'
+								style={{ borderRight: '1px solid #dee2e6', width: '100px' }}
+								body={bodyTemplate}
+							></Column>
+							<Column
+								field='name'
+								header='Username'
+								style={{ borderRight: '1px solid #dee2e6', width: '100px' }}
+								body={bodyTemplate}
+							></Column>
+							<Column
+								field='password'
+								header='Password'
+								style={{ borderRight: '1px solid #dee2e6', width: '200px' }}
+								body={passwordTemplate}
+							></Column>
+							<Column
+								field='privileges'
+								header='Privileges'
+								style={{ borderRight: '1px solid #dee2e6', width: '150px' }}
+								body={bodyTemplate}
+							></Column>
+						</DataTable>
+						<div style={{ display: 'flex', justifyContent: 'center', marginTop: '80px', marginLeft: '-60px' }}>
+							<Paginator first={first} rows={rows} totalRecords={filteredUsers.length} onPageChange={onPage} rowsPerPageOptions={[10]} />
+						</div>
+					</div>
+				</div>
+			</div>
+			{/* <div style={{ display: 'flex', justifyContent: 'center', marginTop: '-20px', marginLeft: '150px'}}>
                 <Paginator first={first} rows={rows} totalRecords={filteredUsers.length} onPageChange={onPage} rowsPerPageOptions={[10]} />
             </div> */}
-            {isLoading && (
+			{isLoading && (
 				<div style={{
 					display: 'flex',
 					justifyContent: 'center',
@@ -4435,11 +4441,11 @@ export default function Layout({ icon_username }) {
 					backgroundColor: 'rgba(255, 255, 255, 0.8)',
 					zIndex: 2000
 				}}>
-					
+
 				</div>
 			)}
-        </div>
-    );
+		</div>
+	);
 }
 
 

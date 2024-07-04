@@ -1386,7 +1386,7 @@
 // 	const [isScrollDisabled, setIsScrollDisabled] = useState(true);
 // 	const [isValidationEnabled, setIsValidationEnabled] = useState(true);
 // 	const [userPrivileges, setUserPrivileges] = useState(null);
-	
+
 // 	const toast = useRef(null);
 
 
@@ -1396,10 +1396,10 @@
 // 			.then(response => response.json())
 // 			.then(data => {
 // 				setUserPrivileges(data.privileges);
-				
+
 // 			})
 // 			.catch(error => console.error('Error ferching the privilege', error));
-			
+
 // 		}
 // 	},[icon_username]);
 
@@ -2157,7 +2157,7 @@
 // 					setTimeout(() => {
 // 						setIsLoading(false); // Set loading to false after fetching data
 // 					},100)
-					
+
 // 				})
 // 				.catch(error => {
 // 					console.error('Error fetching the privilege', error);
@@ -2504,7 +2504,7 @@
 // 					backgroundColor: 'rgba(255, 255, 255, 0.8)',
 // 					zIndex: 2000
 // 				}}>
-					
+
 // 				</div>
 // 			)} */}
 // 		</div>
@@ -2541,7 +2541,7 @@
 
 
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import {AppBar, Toolbar, IconButton, Menu, MenuItem, Avatar, Tooltip} from '@mui/material';
+import { AppBar, Toolbar, IconButton, Menu, MenuItem, Avatar, Tooltip, Divider } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import { Menubar } from 'primereact/menubar';
 import { Button } from 'primereact/button';
@@ -2557,7 +2557,7 @@ import SepioLogo from './../image/Sepio_Logo.png';
 import { Toast } from 'primereact/toast';
 import Switch from '@mui/material/Switch';
 import Typography from '@mui/material/Typography';
-import {Oval} from 'react-loader-spinner';
+import { Oval } from 'react-loader-spinner';
 
 export default function Layout({ icon_username }) {
 	const navigate = useNavigate();
@@ -2572,65 +2572,65 @@ export default function Layout({ icon_username }) {
 	const [isLoading, setIsLoading] = useState(true);
 	const [sidebarOpen, setSidebarOpen] = useState(true);
 	const toast = useRef(null);
-    const [prevWidth, setPrevWidth] = useState(window.innerWidth); 
+	const [prevWidth, setPrevWidth] = useState(window.innerWidth);
 	const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-    const [isLow, setIsLow] = useState(false);
+	const [isLow, setIsLow] = useState(false);
 	const [isMiddleSize, setIsMiddleSize] = useState(false);
 	const [dropDown, setDropDown] = useState(null)
 	const open = Boolean(dropDown);
 
 	const sidebarRef = useRef(null);
-    const appBarRef = useRef(null);
+	const appBarRef = useRef(null);
 
 
 	const toggleSidebar = useCallback(() => {
-        setIsSidebarOpen(prevState => !prevState);
-    }, []);
+		setIsSidebarOpen(prevState => !prevState);
+	}, []);
 
 
 	useEffect(() => {
-        const handleResize = () => {
-            const width = window.innerWidth;
-            if (width > 602 && width < 983) {
-                setIsMiddleSize(true);
-                setIsLow(false);
-                setIsSidebarOpen(false);
-            } else if (width > 102 && width <= 602) {
-                setIsMiddleSize(false);
-                setIsLow(true);
-                setIsSidebarOpen(false);
-            } else {
-                setIsMiddleSize(false);
-                setIsLow(false);
-                if (prevWidth <= 983 || prevWidth <= 602) {
-                    setIsSidebarOpen(true);
-                }
-            }
-            setPrevWidth(width);
-        };
+		const handleResize = () => {
+			const width = window.innerWidth;
+			if (width > 602 && width < 983) {
+				setIsMiddleSize(true);
+				setIsLow(false);
+				setIsSidebarOpen(false);
+			} else if (width > 102 && width <= 602) {
+				setIsMiddleSize(false);
+				setIsLow(true);
+				setIsSidebarOpen(false);
+			} else {
+				setIsMiddleSize(false);
+				setIsLow(false);
+				if (prevWidth <= 983 || prevWidth <= 602) {
+					setIsSidebarOpen(true);
+				}
+			}
+			setPrevWidth(width);
+		};
 
-        handleResize();
-        window.addEventListener('resize', handleResize);
-        return () => window.removeEventListener('resize', handleResize);
-    }, [prevWidth]);
+		handleResize();
+		window.addEventListener('resize', handleResize);
+		return () => window.removeEventListener('resize', handleResize);
+	}, [prevWidth]);
 
 
 	useEffect(() => {
-        const handleClickOutside = (event) => {
-            if (isMiddleSize || isLow) {
-                if (sidebarRef.current && !sidebarRef.current.contains(event.target) && appBarRef.current && !appBarRef.current.contains(event.target) && isSidebarOpen) {
-                    setIsSidebarOpen(false);
-                }
-            }
-        };
+		const handleClickOutside = (event) => {
+			if (isMiddleSize || isLow) {
+				if (sidebarRef.current && !sidebarRef.current.contains(event.target) && appBarRef.current && !appBarRef.current.contains(event.target) && isSidebarOpen) {
+					setIsSidebarOpen(false);
+				}
+			}
+		};
 
-        document.addEventListener('click', handleClickOutside);
-        return () => {
-            document.removeEventListener('click', handleClickOutside);
-        };
-    }, [isSidebarOpen, isMiddleSize, isLow]);
+		document.addEventListener('click', handleClickOutside);
+		return () => {
+			document.removeEventListener('click', handleClickOutside);
+		};
+	}, [isSidebarOpen, isMiddleSize, isLow]);
 
-    const sidebarStyle = isMiddleSize ? { marginTop: '65px' } : isLow ? { marginTop: '56px' } : {};
+	const sidebarStyle = isMiddleSize ? { marginTop: '65px' } : isLow ? { marginTop: '56px' } : {};
 
 
 	useEffect(() => {
@@ -2642,8 +2642,8 @@ export default function Layout({ icon_username }) {
 					console.log(data.privileges);
 					setTimeout(() => {
 						setIsLoading(false); // Set loading to false after fetching data
-					},100)
-					
+					}, 100)
+
 				})
 				.catch(error => {
 					console.error('Error fetching the privilege', error);
@@ -2780,7 +2780,7 @@ export default function Layout({ icon_username }) {
 		};
 	}, [isScrollDisabled]);
 
-	
+
 	const handleClicks = (event) => {
 		setDropDown(event.currentTarget)
 	};
@@ -2799,76 +2799,82 @@ export default function Layout({ icon_username }) {
 		<div>
 			<Toast ref={toast} />
 			<AppBar ref={appBarRef} position="static" style={{ backgroundColor: '#ffffff', color: '#000000', marginBottom: '1px', zIndex: 1201 }}>
-                <Toolbar>
-                    <IconButton edge="start" color="inherit" aria-label="menu" onClick={toggleSidebar}>
-                        <MenuIcon />
-                    </IconButton>
-                    <IconButton edge="start" color="inherit" aria-label="logo">
-                        <img alt="logo" style={{ cursor: 'pointer', height: '40px' }} src={SepioLogo} onClick = {handelquerytool} />
-                    </IconButton>
+				<Toolbar>
+					<IconButton edge="start" color="inherit" aria-label="menu" onClick={toggleSidebar}>
+						<MenuIcon />
+					</IconButton>
+					<IconButton edge="start" color="inherit" aria-label="logo">
+						<img alt="logo" style={{ cursor: 'pointer', height: '40px' }} src={SepioLogo} onClick={handelquerytool} />
+					</IconButton>
 
-                    <div style={{ flexGrow: 1 }} />
-                    <NavLink to='/' style={{ textDecoration: 'none' }}>
-                        <span className='pi pi-sign-out' style={{ marginRight: '5px' }} />
-                        Logout
-                    </NavLink>
+					<div style={{ flexGrow: 1 }} />
+					<NavLink to='/' style={{ textDecoration: 'none' }}>
+						<span className='pi pi-sign-out' style={{ marginRight: '5px' }} />
+						Logout
+					</NavLink>
 
-                    <IconButton
-                        color="inherit"
-                        aria-label="user account"
-                        aria-controls="menu-appbar"
-                        aria-haspopup="true"
-                        onClick={handleClicks}
-                    >
-                        <Avatar sx={{ width: 32, height: 32 }}>U</Avatar>
-                    </IconButton>
+					<IconButton
+						color="inherit"
+						aria-label="user account"
+						aria-controls="menu-appbar"
+						aria-haspopup="true"
+						onClick={handleClicks}
+					>
+						<Avatar sx={{ width: 32, height: 32 }}>U</Avatar>
+					</IconButton>
 
-                    <Menu
-                        anchorEl={dropDown}
-                        id='account-menu'
-                        open={open}
-                        onClose={handleClose}
-                        onClick={handleClose}
-                        PaperProps={{
-                            elevation: 5,
-                            sx: {
-                                width: '120px',
-                                borderRadius: '10px',
-                                overflow: 'visible',
-                                mt: 1,
-                                '&::before': {
-                                    content: '""',
-                                    display: 'inline-block',
-                                    position: 'absolute',
-                                    top: 0,
-                                    right: 25,
-                                    width: 10,
-                                    height: 10,
-                                    bgcolor: 'background.paper',
-                                    transform: 'translateY(-50%) rotate(45deg)',
-                                    zIndex: 0,
-                                },
-                            },
-                        }}
-                        transformOrigin={{
-                            vertical: 'top',
-                            horizontal: 'center',
-                        }}
-                        anchorOrigin={{
-                            vertical: 'bottom',
-                            horizontal: 'center',
-                        }}
-                    >
-                        <MenuItem sx={{ display: 'flex', justifyContent: 'center' }} title='Profile'>
-                            <p style={{ marginBottom: '0px' }}>
-                                User: {icon_username}
-                            </p>
-                        </MenuItem>
-                    </Menu>
-                </Toolbar>
-            </AppBar>
+					<Menu
+						anchorEl={dropDown}
+						id='account-menu'
+						open={open}
+						onClose={handleClose}
+						onClick={handleClose}
+						PaperProps={{
+							elevation: 5,
+							sx: {
+								width: '140px',
+								borderRadius: '10px',
+								overflow: 'visible',
+								mt: 1,
+								'&::before': {
+									content: '""',
+									display: 'inline-block',
+									position: 'absolute',
+									top: 0,
+									right: 27,
+									width: 10,
+									height: 10,
+									bgcolor: 'background.paper',
+									transform: 'translateY(-50%) rotate(45deg)',
+									zIndex: 0,
+								},
+							},
+						}}
+						transformOrigin={{
+							vertical: 'top',
+							horizontal: 'center',
+						}}
+						anchorOrigin={{
+							vertical: 'bottom',
+							horizontal: 'center',
+						}}
+					>
+						<MenuItem sx={{ display: 'flex', justifyContent: 'center' }} title='Profile'>
+							<p style={{ marginBottom: '0px' }}>
+								User: {icon_username}
+							</p>
+						</MenuItem>
+						<Divider spacing={1}></Divider>
+						<MenuItem sx={{ display: 'flex', justifyContent: 'center' }} title='Profile'>
+							<p style={{ marginBottom: '0px' }}>
+								{userPrivileges}
+							</p>
+						</MenuItem>
+					</Menu>
+				</Toolbar>
+			</AppBar>
 			<div>
-			<CSidebar ref={sidebarRef} className='border-end custom-sidebar' visible={isSidebarOpen} style={sidebarStyle}>
+				<CSidebar ref={sidebarRef} className='border-end custom-sidebar' visible={isSidebarOpen} style={sidebarStyle}>
 					<CSidebarNav>
 						<CContainer fluid>
 							<CForm className='d-flex'>
@@ -2883,11 +2889,11 @@ export default function Layout({ icon_username }) {
 						</CNavItem>
 						<CNavItem>
 							{!isLoading && userPrivileges !== 'UI_USER' && (
-						<NavLink to='/querytool/createuser' className='nav-link'>
-								<RiDashboardLine className='nav-icon' /> Users
-							</NavLink>
+								<NavLink to='/querytool/createuser' className='nav-link'>
+									<RiDashboardLine className='nav-icon' /> Users
+								</NavLink>
 							)}
-							</CNavItem>
+						</CNavItem>
 					</CSidebarNav>
 				</CSidebar>
 
@@ -2992,7 +2998,7 @@ export default function Layout({ icon_username }) {
 					backgroundColor: 'rgba(255, 255, 255, 0.8)',
 					zIndex: 2000
 				}}>
-					
+
 				</div>
 			)}
 		</div>

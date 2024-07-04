@@ -29,7 +29,7 @@
 
 //     })  
 
-    
+
 //    }
 
 // 	const handleResize = () => {
@@ -166,7 +166,7 @@
 // 						</CNavItem>
 // 					</CSidebarNav>
 // 				</CSidebar>
-               
+
 
 
 
@@ -208,7 +208,7 @@
 //     const showSuccess = (message) => {
 //         toast.current.show({ severity: 'success', summary: 'Success', detail: message, life: 3000 });
 //       }
-    
+
 //       const showError = (message) => {
 //         toast.current.clear();
 //         toast.current.show({ severity: 'error', summary: 'Error', detail: message, life: 3000 });
@@ -406,7 +406,7 @@
 //                         </div>
 //                     </form>
 //                 </div>
-                
+
 //             </div>
 //         </div>
 //     );
@@ -667,7 +667,7 @@
 //                         <Button type="submit" label="Submit" style={{ backgroundColor: '#183462', borderRadius: '5px', marginLeft: '-400px' }} loading={status === 'loading'} />
 //             </div>
 //             </from>
-                   
+
 //                 </div>
 //             </div>
 
@@ -916,7 +916,7 @@
 
 
 import React, { useEffect, useState, useRef, useCallback } from 'react';
-import {AppBar, Toolbar, IconButton, Menu, MenuItem, Avatar} from '@mui/material';
+import { AppBar, Toolbar, IconButton, Menu, MenuItem, Avatar, Divider } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import { Menubar } from 'primereact/menubar';
 import { useNavigate } from 'react-router-dom';
@@ -935,354 +935,440 @@ import Typography from '@mui/joy/Typography';
 import axios from 'axios';
 
 export default function Layout({ icon_username }) {
-    const navigate = useNavigate();
-    const [logoHeight, setLogoHeight] = useState('60px');
-    const minLength = 8;
-    const [formData, setFormData] = useState({
-        username: '',
-        password: '',
-        privileges: '',
-        serviceNowInstance: '',
-        serviceUsername: '',
-        servicePassword: '',
-        sepioEndpoint: '',
-        sepioUsername: '',
-        sepioPassword: ''
+	const navigate = useNavigate();
+	const [logoHeight, setLogoHeight] = useState('60px');
+	const minLength = 8;
+	const [formData, setFormData] = useState({
+		username: '',
+		password: '',
+		confirmPassword: '',
+		privileges: '',
+		serviceNowInstance: '',
+		serviceUsername: '',
+		servicePassword: '',
+		sepioEndpoint: '',
+		sepioUsername: '',
+		sepioPassword: ''
 
-    });
-    const [status, setStatus] = useState('initial');
-    const toast = useRef(null);
+	});
+	const [status, setStatus] = useState('initial');
+	const toast = useRef(null);
 
-    const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-    const [userPrivileges, setUserPrivileges] = useState(null);
-    const [isLoading, setIsLoading] = useState(true);
-    const [isMiddleSize, setIsMiddleSize] = useState(false);
-    const [isLow, setIsLow] = useState(false);
-    const [prevWidth, setPrevWidth] = useState(window.innerWidth); 
-    const [dropDown, setDropDown] = useState(null);
-    const open = Boolean(dropDown);
+	const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+	const [userPrivileges, setUserPrivileges] = useState(null);
+	const [isLoading, setIsLoading] = useState(true);
+	const [isMiddleSize, setIsMiddleSize] = useState(false);
+	const [isLow, setIsLow] = useState(false);
+	const [prevWidth, setPrevWidth] = useState(window.innerWidth);
+	const [dropDown, setDropDown] = useState(null);
+	const open = Boolean(dropDown);
 
-    const sidebarRef = useRef(null);
-    const appBarRef = useRef(null);
-
-
-
-
-    const toggleSidebar = useCallback(() => {
-    setIsSidebarOpen(prevState => !prevState);
-    }, []);
-
-    useEffect(() => {
-        const handleResize = () => {
-            const width = window.innerWidth;
-            if(width > 602 && width < 983){
-                setIsMiddleSize(true);
-                setIsLow(false);
-                setIsSidebarOpen(false);
-            }else if(width > 102 && width <= 602){
-                setIsMiddleSize(false);
-                setIsLow(true);
-                setIsSidebarOpen(false);
-            }else{
-                setIsMiddleSize(false);
-                setIsLow(false);
-                if(prevWidth <= 983 || prevWidth <= 602){
-                    setIsSidebarOpen(true);
-                }
-            }
-            setPrevWidth(width);
-        };
-
-        handleResize();
-        window.addEventListener('resize', handleResize);
-        return () => window.removeEventListener('resize', handleResize);
-
-    }, [prevWidth]);
-
-    useEffect(() => {
-        const handleClickOutside = (event) => {
-            if(isMiddleSize || isLow){
-                if(sidebarRef.current && !sidebarRef.current.contains(event.target) && appBarRef.current && !appBarRef.current.contains(event.target) && isSidebarOpen){
-
-                }
-            }
-        }
-
-        document.addEventListener('click', handleClickOutside)
-        return () => {
-        document.removeEventListener('click', handleClickOutside);
-        }
-    }, [isSidebarOpen, isMiddleSize, isLow]);
-
-    const sidebarStyle = isMiddleSize ? {marginTop: '65px'}: isLow ? {marginTop: '56px'} : {};
-
-    const handleClicks = (event) => {
-       setDropDown(event.currentTarget);
-    }
-
-    const handleClose = () => {
-        setDropDown(null);
-    }
-
-
-    const showSuccess = (message) => {
-        toast.current.show({ severity: 'success', summary: 'Success', detail: message, life: 3000 });
-    };
-
-    const showError = (message) => {
-        toast.current.clear();
-        toast.current.show({ severity: 'error', summary: 'Error', detail: message, life: 3000 });
-    };
-
-    const handleInputChange = (e) => {
-        if (e && e.target) {
-            const { name, value } = e.target;
-            setFormData({ ...formData, [name]: value });
-        }
-    };
-
-
-    const handleSelectChange = (event, newValue) => {
-        setFormData({ ...formData, privileges: newValue });
-    };
-
-    const handleSubmit = (event) => {
-        event.preventDefault();
-        setStatus('loading');
-        axios.post('/user/privileges', formData)
-            .then(response => {
-                if (response.data.success) {
-                    showSuccess('User has been created');
-                    console.log('User created:', response.data);
-                    setTimeout(() => {
-                        navigate('/querytool/createuser');
-                    }, 1500);
-                } else {
-                    setStatus('failure');
-                    console.log('Error');
-                    showError('Error');
-                }
-            })
-            .catch(error => {
-                setStatus('failure');
-                console.error('There was an error creating the user!', error);
-                showError('Error creating the user!');
-            });
-    };
-
-    const handleResize = () => {
-        if (window.innerWidth <= 480) {
-            setLogoHeight('20px');
-        } else if (window.innerWidth <= 868) {
-            setLogoHeight('20px');
-        } else {
-            setLogoHeight('40px');
-        }
-    };
-
-    useEffect(() => {
-        window.addEventListener('resize', handleResize);
-        handleResize();
-
-        return () => {
-            window.removeEventListener('resize', handleResize);
-        };
-    }, []);
+	const sidebarRef = useRef(null);
+	const appBarRef = useRef(null);
 
 
 
 
-    const secondMenubarEnd = (
-        <div style={{ color: 'white', padding: '10px', borderRadius: '5px', marginLeft: '10px', width: '300px' }}>
-            User new record
-        </div>
-    );
+	const toggleSidebar = useCallback(() => {
+		setIsSidebarOpen(prevState => !prevState);
+	}, []);
 
-    return (
-        <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
-            <Toast ref={toast} />
-            <AppBar ref = {appBarRef} position = 'static' style = {{backgroundColor: '#ffffff', color: '#000000', marginBottom: '1px', zIndex: 1201}}>
-                <Toolbar>
-                    <IconButton edge = 'start' color = 'inherit' aria-label = 'menu' onClick = {toggleSidebar}>
-                        <MenuIcon/>
-                    </IconButton>
-                    <IconButton edge = 'start' color = 'inherit' aria-label = 'logo'>
-                        <img alt = 'logo' style = {{cursor: 'pointer', height: '40px'}} src = {SepioLogo}/>
-                    </IconButton>
-                    
-                    <div style = {{flexGrow: 1}}/>
-                    <NavLink to='/' style={{ textDecoration: 'none' }}>
-                        <span className='pi pi-sign-out' style={{ marginRight: '5px' }} />
-                        Logout
-                    </NavLink>
+	useEffect(() => {
+		const handleResize = () => {
+			const width = window.innerWidth;
+			if (width > 602 && width < 983) {
+				setIsMiddleSize(true);
+				setIsLow(false);
+				setIsSidebarOpen(false);
+			} else if (width > 102 && width <= 602) {
+				setIsMiddleSize(false);
+				setIsLow(true);
+				setIsSidebarOpen(false);
+			} else {
+				setIsMiddleSize(false);
+				setIsLow(false);
+				if (prevWidth <= 983 || prevWidth <= 602) {
+					setIsSidebarOpen(true);
+				}
+			}
+			setPrevWidth(width);
+		};
 
-                    <IconButton
-                        color="inherit"
-                        aria-label="user account"
-                        aria-controls="menu-appbar"
-                        aria-haspopup="true"
-                        onClick={handleClicks}
-                    >
-                        <Avatar sx={{ width: 32, height: 32 }}>U</Avatar>
-                    </IconButton>
+		handleResize();
+		window.addEventListener('resize', handleResize);
+		return () => window.removeEventListener('resize', handleResize);
 
-                    <Menu
-                        anchorEl={dropDown}
-                        id='account-menu'
-                        open={open}
-                        onClose={handleClose}
-                        onClick={handleClose}
-                        PaperProps={{
-                            elevation: 5,
-                            sx: {
-                                width: '120px',
-                                borderRadius: '10px',
-                                overflow: 'visible',
-                                mt: 1,
-                                '&::before': {
-                                    content: '""',
-                                    display: 'inline-block',
-                                    position: 'absolute',
-                                    top: 0,
-                                    right: 25,
-                                    width: 10,
-                                    height: 10,
-                                    bgcolor: 'background.paper',
-                                    transform: 'translateY(-50%) rotate(45deg)',
-                                    zIndex: 0,
-                                },
-                            },
-                        }}
-                        transformOrigin={{
-                            vertical: 'top',
-                            horizontal: 'center',
-                        }}
-                        anchorOrigin={{
-                            vertical: 'bottom',
-                            horizontal: 'center',
-                        }}
-                    >
-                        <MenuItem sx={{ display: 'flex', justifyContent: 'center' }} title='Profile'>
-                            <p style={{ marginBottom: '0px' }}>
-                                User: {icon_username}
-                            </p>
-                        </MenuItem>
-                    </Menu>
-                </Toolbar>
-            </AppBar>
-             
-            <div style={{ display: 'flex', flex: '1 1 auto' }}>
-                <CSidebar ref = {sidebarRef} className='border-end custom-sidebar' visible = {isSidebarOpen} style = {sidebarStyle}>
-                    <CSidebarNav>
-                        <CContainer fluid>
-                            <CForm className='d-flex'>
-                            </CForm>
-                        </CContainer>
-                        <CNavItem>
-                            <NavLink to='/querytool/mac' className='nav-link'>
-                                <RiDashboardLine className='nav-icon' /> MAC
-                            </NavLink>
-                        </CNavItem>
-                        <CNavItem>
-                            <NavLink to='/querytool/settings' className='nav-link'>
-                                <RiDashboardLine className='nav-icon' /> Settings
-                            </NavLink>
-                            <NavLink to='/querytool/createuser' className='nav-link'>
-                                <RiDashboardLine className='nav-icon' /> Users
-                            </NavLink>
-                        </CNavItem>
-                    </CSidebarNav>
-                </CSidebar>
+	}, [prevWidth]);
 
-                            <div style={{ flex: 1 , overflowY: 'auto',  marginTop: '0px' }}>
-                            <Menubar start={secondMenubarEnd} style={{ backgroundColor: '#183462'}} />
-                <CContainer style={{ paddingTop: '5rem', width: '50%' }}>
-                    <CForm onSubmit={handleSubmit}>
-                        <FormControl>
-                            <FormLabel>
-                                <Typography level='body2'>Username</Typography>
-                            </FormLabel>
-                            <Input name='username' value={formData.username} onChange={handleInputChange} placeholder='Enter username' />
-                        </FormControl>
+	useEffect(() => {
+		const handleClickOutside = (event) => {
+			if (isMiddleSize || isLow) {
+				if (sidebarRef.current && !sidebarRef.current.contains(event.target) && appBarRef.current && !appBarRef.current.contains(event.target) && isSidebarOpen) {
 
-                        <FormControl>
-                            <FormLabel>
-                                <Typography level='body2'>Password</Typography>
-                            </FormLabel>
-                            <Input type='password' name='password' value={formData.password} onChange={handleInputChange} placeholder='Enter password' />
-                        </FormControl>
+				}
+			}
+		}
 
-                        <FormControl>
-                            <FormLabel>
-                                <Typography level='body2'>Privileges</Typography>
-                            </FormLabel>
-                            <Select name='privileges' value={formData.privileges} onChange={handleSelectChange}>
-                                <Option value='UI_USER'>UI User</Option>
-                                <Option value='SERVICE_ACCOUNT'>Service Account</Option>
-                            </Select>
-                        </FormControl>
+		document.addEventListener('click', handleClickOutside)
+		return () => {
+			document.removeEventListener('click', handleClickOutside);
+		}
+	}, [isSidebarOpen, isMiddleSize, isLow]);
 
-                        {formData.privileges === 'SERVICE_ACCOUNT' && (
-                            <div>
-                                <Typography level='h6' style={{ marginTop: '20px' }}>ServiceNow Credentials</Typography>
+	const sidebarStyle = isMiddleSize ? { marginTop: '65px' } : isLow ? { marginTop: '56px' } : {};
 
-                                <FormControl>
-                                    <FormLabel>
-                                        <Typography level='body2'>ServiceNow Instance</Typography>
-                                    </FormLabel>
-                                    <Input name='serviceNowInstance' value={formData.serviceNowInstance} onChange={handleInputChange} placeholder='Enter ServiceNow instance' />
-                                </FormControl>
+	const handleClicks = (event) => {
+		setDropDown(event.currentTarget);
+	}
 
-                                <FormControl>
-                                    <FormLabel>
-                                        <Typography level='body2'>ServiceNow Username</Typography>
-                                    </FormLabel>
-                                    <Input name='serviceUsername' value={formData.serviceUsername} onChange={handleInputChange} placeholder='Enter ServiceNow username' />
-                                </FormControl>
+	const handleClose = () => {
+		setDropDown(null);
+	}
 
-                                <FormControl>
-                                    <FormLabel>
-                                        <Typography level='body2'>ServiceNow Password</Typography>
-                                    </FormLabel>
-                                    <Input type='password' name='servicePassword' value={formData.servicePassword} onChange={handleInputChange} placeholder='Enter ServiceNow password' />
-                                </FormControl>
-                            </div>
-                        )}
 
-                        {formData.privileges === 'SERVICE_ACCOUNT' && (
-                            <div>
-                                <Typography level='h6' style={{ marginTop: '20px' }}>Sepio Credentials</Typography>
+	const showSuccess = (message) => {
+		toast.current.show({ severity: 'success', summary: 'Success', detail: message, life: 3000 });
+	};
 
-                                <FormControl>
-                                    <FormLabel>
-                                        <Typography level='body2'>Sepio Endpoint</Typography>
-                                    </FormLabel>
-                                    <Input name='sepioEndpoint' value={formData.sepioEndpoint} onChange={handleInputChange} placeholder='Enter Sepio endpoint' />
-                                </FormControl>
+	const showError = (message) => {
+		toast.current.clear();
+		toast.current.show({ severity: 'error', summary: 'Error', detail: message, life: 3000 });
+	};
 
-                                <FormControl>
-                                    <FormLabel>
-                                        <Typography level='body2'>Sepio Username</Typography>
-                                    </FormLabel>
-                                    <Input name='sepioUsername' value={formData.sepioUsername} onChange={handleInputChange} placeholder='Enter Sepio username' />
-                                </FormControl>
+	const handleInputChange = (e) => {
+		if (e && e.target) {
+			const { name, value } = e.target;
+			setFormData({ ...formData, [name]: value });
+		}
+	};
 
-                                <FormControl>
-                                    <FormLabel>
-                                        <Typography level='body2'>Sepio Password</Typography>
-                                    </FormLabel>
-                                    <Input type='password' name='sepioPassword' value={formData.sepioPassword} onChange={handleInputChange} placeholder='Enter Sepio password' />
-                                </FormControl>
-                            </div>
-                        )}
 
-                        <Button type='submit' label='Submit' style = {{borderRadius: '5px', backgroundColor: '#183462', marginTop: '20px'}} />
-                    </CForm>
-                </CContainer>
-                </div>
-            </div>
-        </div>
-    );
+	const getPassStrength = (password) => {
+		const lengthCriteria = password.length >= minLength;
+		const numberCriteria = /\d/.test(password);
+		const specialCharCriteria = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+		const upperCaseCriteria = /[A-Z]/.test(password);
+		const lowerCaseCriteria = /[a-z]/.test(password);
+
+		let strength = 0;
+		if (lengthCriteria) strength++;
+		if (numberCriteria) strength++;
+		if (specialCharCriteria) strength++;
+		if (upperCaseCriteria) strength++;
+		if (lowerCaseCriteria) strength++;
+
+		return strength;
+	}
+
+	const strength = getPassStrength(formData.password);
+
+	const getStrengthMessage = (strength) => {
+		switch (strength) {
+			case 1:
+			case 2:
+				return 'Very weak';
+			case 3:
+				return 'Weak';
+			case 4:
+				return 'Strong';
+			case 5:
+				return 'Very strong';
+			default:
+				return '';
+		}
+	}
+
+	const getStrengthColor = (strength) => {
+		switch (strength) {
+			case 1:
+			case 2:
+				return '#ff0000'; // Red
+			case 3:
+				return '#ffa500'; // Orange
+			case 4:
+				return '#0000ff'; // Blue
+			case 5:
+				return '#008000'; // Green
+			default:
+				return '#808080'; // Grey
+		}
+	};
+
+	const strengthColor = getStrengthColor(strength);
+
+
+	const handleSelectChange = (event, newValue) => {
+		setFormData({ ...formData, privileges: newValue });
+	};
+
+	useEffect(() => {
+		fetch(`/api/user/${icon_username}`)
+			.then(response => response.json())
+			.then(data => {
+				setUserPrivileges(data.privileges);
+			})
+			.catch(error => {
+				console.error('Error fetching user data:', error);
+			});
+	}, [icon_username]);
+
+	const handleSubmit = (event) => {
+		event.preventDefault();
+		if (formData.password !== formData.confirmPassword) {
+			showError('Passwords do not match');
+			return;
+		}
+		setStatus('loading');
+		axios.post('/user/privileges', formData)
+			.then(response => {
+				if (response.data.success) {
+					showSuccess('User has been created');
+					console.log('User created:', response.data);
+					setTimeout(() => {
+						navigate('/querytool/createuser');
+					}, 1500);
+				} else {
+					setStatus('failure');
+					console.log('Error');
+					showError('Error');
+				}
+			})
+			.catch(error => {
+				setStatus('failure');
+				console.error('There was an error creating the user!', error);
+				showError('Error creating the user!');
+			});
+	};
+
+	const handleResize = () => {
+		if (window.innerWidth <= 480) {
+			setLogoHeight('20px');
+		} else if (window.innerWidth <= 868) {
+			setLogoHeight('20px');
+		} else {
+			setLogoHeight('40px');
+		}
+	};
+
+	useEffect(() => {
+		window.addEventListener('resize', handleResize);
+		handleResize();
+
+		return () => {
+			window.removeEventListener('resize', handleResize);
+		};
+	}, []);
+
+
+
+
+	const secondMenubarEnd = (
+		<div style={{ color: 'white', padding: '10px', borderRadius: '5px', marginLeft: '10px', width: '300px' }}>
+			User new record
+		</div>
+	);
+
+	return (
+		<div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
+			<Toast ref={toast} />
+			<AppBar ref={appBarRef} position='static' style={{ backgroundColor: '#ffffff', color: '#000000', marginBottom: '1px', zIndex: 1201 }}>
+				<Toolbar>
+					<IconButton edge='start' color='inherit' aria-label='menu' onClick={toggleSidebar}>
+						<MenuIcon />
+					</IconButton>
+					<IconButton edge='start' color='inherit' aria-label='logo'>
+						<img alt='logo' style={{ cursor: 'pointer', height: '40px' }} src={SepioLogo} />
+					</IconButton>
+
+					<div style={{ flexGrow: 1 }} />
+					<NavLink to='/' style={{ textDecoration: 'none' }}>
+						<span className='pi pi-sign-out' style={{ marginRight: '5px' }} />
+						Logout
+					</NavLink>
+
+					<IconButton
+						color="inherit"
+						aria-label="user account"
+						aria-controls="menu-appbar"
+						aria-haspopup="true"
+						onClick={handleClicks}
+					>
+						<Avatar sx={{ width: 32, height: 32 }}>U</Avatar>
+					</IconButton>
+
+					<Menu
+						anchorEl={dropDown}
+						id='account-menu'
+						open={open}
+						onClose={handleClose}
+						onClick={handleClose}
+						PaperProps={{
+							elevation: 5,
+							sx: {
+								width: '140px',
+								borderRadius: '10px',
+								overflow: 'visible',
+								mt: 1,
+								'&::before': {
+									content: '""',
+									display: 'inline-block',
+									position: 'absolute',
+									top: 0,
+									right: 44,
+									width: 10,
+									height: 10,
+									bgcolor: 'background.paper',
+									transform: 'translateY(-50%) rotate(45deg)',
+									zIndex: 0,
+								},
+							},
+						}}
+						transformOrigin={{
+							vertical: 'top',
+							horizontal: 'center',
+						}}
+						anchorOrigin={{
+							vertical: 'bottom',
+							horizontal: 'center',
+						}}
+					>
+						<MenuItem sx={{ display: 'flex', justifyContent: 'center' }} title='Profile'>
+							<p style={{ marginBottom: '0px' }}>
+								User: {icon_username}
+							</p>
+						</MenuItem>
+						<Divider spacing={1}></Divider>
+						<MenuItem sx={{ display: 'flex', justifyContent: 'center' }} title='Profile'>
+							<p style={{ marginBottom: '0px' }}>
+								{userPrivileges}
+							</p>
+						</MenuItem>
+					</Menu>
+				</Toolbar>
+			</AppBar>
+
+			<div style={{ display: 'flex', flex: '1 1 auto' }}>
+				<CSidebar ref={sidebarRef} className='border-end custom-sidebar' visible={isSidebarOpen} style={sidebarStyle}>
+					<CSidebarNav>
+						<CContainer fluid>
+							<CForm className='d-flex'>
+							</CForm>
+						</CContainer>
+						<CNavItem>
+							<NavLink to='/querytool/mac' className='nav-link'>
+								<RiDashboardLine className='nav-icon' /> MAC
+							</NavLink>
+						</CNavItem>
+						<CNavItem>
+							<NavLink to='/querytool/settings' className='nav-link'>
+								<RiDashboardLine className='nav-icon' /> Settings
+							</NavLink>
+							<NavLink to='/querytool/createuser' className='nav-link'>
+								<RiDashboardLine className='nav-icon' /> Users
+							</NavLink>
+						</CNavItem>
+					</CSidebarNav>
+				</CSidebar>
+
+				<div style={{ flex: 1, overflowY: 'auto', marginTop: '0px' }}>
+					<Menubar start={secondMenubarEnd} style={{ backgroundColor: '#183462' }} />
+					<CContainer style={{ paddingTop: '5rem', width: '50%' }}>
+						<CForm onSubmit={handleSubmit}>
+							<FormControl>
+								<FormLabel>
+									<Typography level='body2'>Username</Typography>
+								</FormLabel>
+								<Input name='username' value={formData.username} onChange={handleInputChange} placeholder='Enter username' />
+							</FormControl>
+
+							<FormControl>
+								<FormLabel>
+									<Typography level='body2'>Password</Typography>
+								</FormLabel>
+								<Input type='password' name='password' value={formData.password} onChange={handleInputChange} placeholder='Enter password' />
+								<Typography level="body-xs" sx={{ alignSelf: 'flex-end', color: strengthColor }}>
+									{getStrengthMessage(strength)}
+								</Typography>
+							</FormControl>
+
+							<FormControl>
+								<FormLabel>
+									<Typography level='body2'>Confirm password</Typography>
+								</FormLabel>
+								<Input type='password' name='confirmPassword' value={formData.confirmPassword} onChange={handleInputChange} placeholder='Enter confirm password' />
+							</FormControl>
+
+							<FormControl>
+								<FormLabel>
+									<Typography level='body2'>Privileges</Typography>
+								</FormLabel>
+								<Select name='privileges' value={formData.privileges} onChange={handleSelectChange}>
+									<Option value='UI_USER'>UI User</Option>
+									<Option value='SERVICE_ACCOUNT'>Service Account</Option>
+								</Select>
+							</FormControl>
+
+							{formData.privileges === 'SERVICE_ACCOUNT' && (
+								<div>
+									<Typography level='h6' style={{ marginTop: '20px' }}>ServiceNow Credentials</Typography>
+
+									<FormControl>
+										<FormLabel>
+											<Typography level='body2'>ServiceNow Instance</Typography>
+										</FormLabel>
+										<Input name='serviceNowInstance' value={formData.serviceNowInstance} onChange={handleInputChange} placeholder='Enter ServiceNow instance' />
+									</FormControl>
+
+									<FormControl>
+										<FormLabel>
+											<Typography level='body2'>ServiceNow Username</Typography>
+										</FormLabel>
+										<Input name='serviceUsername' value={formData.serviceUsername} onChange={handleInputChange} placeholder='Enter ServiceNow username' />
+									</FormControl>
+
+									<FormControl>
+										<FormLabel>
+											<Typography level='body2'>ServiceNow Password</Typography>
+										</FormLabel>
+										<Input type='password' name='servicePassword' value={formData.servicePassword} onChange={handleInputChange} placeholder='Enter ServiceNow password' />
+									</FormControl>
+								</div>
+							)}
+
+							{formData.privileges === 'SERVICE_ACCOUNT' && (
+								<div>
+									<Typography level='h6' style={{ marginTop: '20px' }}>Sepio Credentials</Typography>
+
+									<FormControl>
+										<FormLabel>
+											<Typography level='body2'>Sepio Endpoint</Typography>
+										</FormLabel>
+										<Input name='sepioEndpoint' value={formData.sepioEndpoint} onChange={handleInputChange} placeholder='Enter Sepio endpoint' />
+									</FormControl>
+
+									<FormControl>
+										<FormLabel>
+											<Typography level='body2'>Sepio Username</Typography>
+										</FormLabel>
+										<Input name='sepioUsername' value={formData.sepioUsername} onChange={handleInputChange} placeholder='Enter Sepio username' />
+									</FormControl>
+
+									<FormControl>
+										<FormLabel>
+											<Typography level='body2'>Sepio Password</Typography>
+										</FormLabel>
+										<Input type='password' name='sepioPassword' value={formData.sepioPassword} onChange={handleInputChange} placeholder='Enter Sepio password' />
+									</FormControl>
+								</div>
+							)}
+
+							<Button type='submit' label='Submit' style={{ borderRadius: '5px', backgroundColor: '#183462', marginTop: '20px' }} />
+						</CForm>
+					</CContainer>
+				</div>
+			</div>
+		</div>
+	);
 }
 
 
