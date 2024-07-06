@@ -4817,7 +4817,7 @@ export default function Layout({ icon_username }) {
 							></Column>
 						</DataTable>
 						<div style={{ display: 'flex', justifyContent: 'center', marginTop: '80px', marginLeft: '-60px' }}>
-							<Paginator first={first} rows={rows} totalRecords={filteredUsers.length} onPageChange={onPage} rowsPerPageOptions={[10]} />
+							<Paginator first={first} rows={rows} totalRecords={filteredUsers.length} onPageChange={onPage} rowsPerPageOptions={[10, 20]} />
 						</div>
 					</div>
 				</div>
