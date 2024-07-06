@@ -941,8 +941,6 @@ import {Menu, MenuItem} from '@mui/material';
 
 export default function Layout({ icon_username }) {
 	const navigate = useNavigate();
-	const [logoHeight, setLogoHeight] = useState('60px');
-	const minLength = 8;
 	const [formData, setFormData] = useState({
 		username: '',
 		password: '',
@@ -956,21 +954,9 @@ export default function Layout({ icon_username }) {
 		sepioPassword: ''
 
 	});
-	const [status, setStatus] = useState('initial');
 	const toast = useRef(null);
-
-	const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-	const [userPrivileges, setUserPrivileges] = useState(null);
-	const [isLoading, setIsLoading] = useState(true);
-	const [isMiddleSize, setIsMiddleSize] = useState(false);
-	const [isLow, setIsLow] = useState(false);
-	const [prevWidth, setPrevWidth] = useState(window.innerWidth);
-	const [dropDown, setDropDown] = useState(null);
-	const open = Boolean(dropDown);
+	
 	const [sidebarOpen, setSidebarOpen] = useState(true);
-
-	const sidebarRef = useRef(null);
-	const appBarRef = useRef(null);
    
 
 
@@ -1023,60 +1009,6 @@ export default function Layout({ icon_username }) {
 	};
 
 
-	const getPassStrength = (password) => {
-		const lengthCriteria = password.length >= minLength;
-		const numberCriteria = /\d/.test(password);
-		const specialCharCriteria = /[!@#$%^&*(),.?":{}|<>]/.test(password);
-		const upperCaseCriteria = /[A-Z]/.test(password);
-		const lowerCaseCriteria = /[a-z]/.test(password);
-
-		let strength = 0;
-		if (lengthCriteria) strength++;
-		if (numberCriteria) strength++;
-		if (specialCharCriteria) strength++;
-		if (upperCaseCriteria) strength++;
-		if (lowerCaseCriteria) strength++;
-
-		return strength;
-	}
-
-	const strength = getPassStrength(formData.password);
-
-	const getStrengthMessage = (strength) => {
-		switch (strength) {
-			case 1:
-			case 2:
-				return 'Very weak';
-			case 3:
-				return 'Weak';
-			case 4:
-				return 'Strong';
-			case 5:
-				return 'Very strong';
-			default:
-				return '';
-		}
-	}
-
-	const getStrengthColor = (strength) => {
-		switch (strength) {
-			case 1:
-			case 2:
-				return '#ff0000'; // Red
-			case 3:
-				return '#ffa500'; // Orange
-			case 4:
-				return '#0000ff'; // Blue
-			case 5:
-				return '#008000'; // Green
-			default:
-				return '#808080'; // Grey
-		}
-	};
-
-	const strengthColor = getStrengthColor(strength);
-
-
 	const handleSelectChange = (event, newValue) => {
 		setFormData({ ...formData, privileges: newValue });
 	};
@@ -1093,12 +1025,19 @@ export default function Layout({ icon_username }) {
 	}, [icon_username]);
 
 	const handleSubmit = (event) => {
+
 		event.preventDefault();
+
+		if(!formData.username || !formData.password || !formData.confirmPassword || !formData.privileges){
+			showError('All fields are required');
+			return;
+		}
+
 		if (formData.password !== formData.confirmPassword) {
 			showError('Passwords do not match');
 			return;
 		}
-		setStatus('loading');
+		
 		axios.post('/user/privileges', formData)
 			.then(response => {
 				if (response.data.success) {
@@ -1108,36 +1047,30 @@ export default function Layout({ icon_username }) {
 						navigate('/querytool/createuser');
 					}, 1500);
 				} else {
-					setStatus('failure');
+					
 					console.log('Error');
 					showError('Error');
 				}
 			})
 			.catch(error => {
-				setStatus('failure');
+			
 				console.error('There was an error creating the user!', error);
 				showError('Error creating the user!');
 			});
 	};
 
-	const handleResize = () => {
-		if (window.innerWidth <= 480) {
-			setLogoHeight('20px');
-		} else if (window.innerWidth <= 868) {
-			setLogoHeight('20px');
-		} else {
-			setLogoHeight('40px');
+	const ServiceValidation = () => {
+		if(!formData.username || !formData.password || !formData.confirmPassword || !formData.privileges){
+         return false;
 		}
-	};
+		if(formData.privileges === 'SERVICE_ACCOUNT'){
+			return formData.serviceNowInstance && formData.serviceUsername && formData.servicePassword && formData.sepioEndpoint && formData.sepioUsername && formData.sepioPassword;
 
-	useEffect(() => {
-		window.addEventListener('resize', handleResize);
-		handleResize();
+		}
 
-		return () => {
-			window.removeEventListener('resize', handleResize);
-		};
-	}, []);
+		return true;
+	}
+
 
 
 
@@ -1182,54 +1115,6 @@ export default function Layout({ icon_username }) {
 						<Avatar sx={{ width: 32, height: 32 }}>U</Avatar>
 					</IconButton>
 
-					<Menu
-						anchorEl={dropDown}
-						id='account-menu'
-						open={open}
-						onClose={handleClose}
-						onClick={handleClose}
-						PaperProps={{
-							elevation: 5,
-							sx: {
-								width: '140px',
-								borderRadius: '10px',
-								overflow: 'visible',
-								mt: 1,
-								'&::before': {
-									content: '""',
-									display: 'inline-block',
-									position: 'absolute',
-									top: 0,
-									right: 19,
-									width: 10,
-									height: 10,
-									bgcolor: 'background.paper',
-									transform: 'translateY(-50%) rotate(45deg)',
-									zIndex: 0,
-								},
-							},
-						}}
-						transformOrigin={{
-							vertical: 'top',
-							horizontal: 'center',
-						}}
-						anchorOrigin={{
-							vertical: 'bottom',
-							horizontal: 'center',
-						}}
-					>
-						<MenuItem sx={{ display: 'flex', justifyContent: 'center' }} title='Profile'>
-							<p style={{ marginBottom: '0px' }}>
-								User: {icon_username}
-							</p>
-						</MenuItem>
-						<Divider spacing={1}></Divider>
-						<MenuItem sx={{ display: 'flex', justifyContent: 'center' }} title='Profile'>
-							<p style={{ marginBottom: '0px' }}>
-								{userPrivileges}
-							</p>
-						</MenuItem>
-					</Menu>
         </Toolbar>
       </AppBar>
       <div style={{ display: "flex", height: "100vh" }}>
@@ -1273,8 +1158,8 @@ export default function Layout({ icon_username }) {
 									<Typography level='body2'>Password</Typography>
 								</FormLabel>
 								<Input type='password' name='password' value={formData.password} onChange={handleInputChange} placeholder='Enter password' />
-								<Typography level="body-xs" sx={{ alignSelf: 'flex-end', color: strengthColor }}>
-									{getStrengthMessage(strength)}
+								<Typography level="body-xs" sx={{ alignSelf: 'flex-end'}}>
+									
 								</Typography>
 							</FormControl>
 
@@ -1349,7 +1234,7 @@ export default function Layout({ icon_username }) {
 								</div>
 							)}
 
-							<Button type='submit' label='Submit' style={{ borderRadius: '5px', backgroundColor: '#183462', marginTop: '20px' }} />
+							<Button type='submit' label='Submit' disabled = {!ServiceValidation()} style={{ borderRadius: '5px', backgroundColor: '#183462', marginTop: '20px' }} />
 						</CForm>
 					</CContainer>
 				</div>
@@ -1357,6 +1242,7 @@ export default function Layout({ icon_username }) {
 		</div>
 	);
 }
+
 
 
 
