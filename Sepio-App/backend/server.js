@@ -1049,6 +1049,9 @@ app.get('/get-sepio-source', async (req, res) => {
   res.json(sepioCredentials);
 });
 
+
+
+
 app.post('/check-connection', async (req, res) => {
   const { serviceNowInstance, username, password } = req.body;
   serviceNowCredentials = {serviceNowInstance, username, password};
@@ -1096,56 +1099,61 @@ app.post('/check-connection', async (req, res) => {
 
 
 
+
+
+
 app.post('/check-sepio-connection', async (req, res) => {
-  const { sepioEndpoint, sepioUsername, sepioPassword } = req.body;
-  sepioCredentials = { sepioEndpoint, sepioUsername, sepioPassword };
-  if (sepioEndpoint && sepioUsername && sepioPassword) {
-    console.log("sepioEndpoint > " + sepioEndpoint);
-    console.log("username > " + sepioUsername);
-    console.log("password > " + sepioPassword);
-
-    const requestBody = {
-      username: sepioUsername,
-      password: sepioPassword
-    };
-
-    const config = {
-      headers: {
-        'Content-Type': 'application/json',
-      }
-    };
-
-    try {
-      const response = await axios.post(`https://${sepioEndpoint}/prime/webui/Auth/LocalLogin`, requestBody, config);
-      
-      if (response.status === 200) {
-        try {
-          const newRecord = await prisma.sepio.create({
-            data: {
-              instance: sepioEndpoint,
-              username: sepioUsername,
-              password: sepioPassword
-            }
-          });
-
-          console.log('New record created:', newRecord);
-          res.json({ success: true, message: 'Connection successful!' });
-        } catch (dbError) {
-          console.error('Database error:', dbError);
-          res.status(500).json({ success: false, message: 'Failed to save credentials to the database' });
-        }
-      } else {
-        res.status(500).json({ success: false, message: 'Connection failed!' });
-      }
-    } catch (error) {
-      console.error('API error:', error);
-      res.status(500).json({ success: false, message: 'Connection failed!', error: error.message });
-    }
-  } else {
-    res.status(500).json({ success: false, message: 'All fields are required!' });
-  }
-});
-
+	const { sepioEndpoint, sepioUsername, sepioPassword } = req.body;
+	sepioCredentials = { sepioEndpoint, sepioUsername, sepioPassword };
+	
+	// Ensure all fields are provided
+	if (!sepioEndpoint || !sepioUsername || !sepioPassword) {
+	  return res.status(400).json({ success: false, message: 'All fields are required!' });
+	}
+  
+	// Validate if the endpoint is for Sepio (you can add more specific checks here)
+	if (!sepioEndpoint.includes('sepio')) {
+	  return res.status(400).json({ success: false, message: 'Invalid Sepio endpoint!' });
+	}
+  
+	const requestBody = {
+	  username: sepioUsername,
+	  password: sepioPassword
+	};
+  
+	const config = {
+	  headers: {
+		'Content-Type': 'application/json',
+	  }
+	};
+  
+	try {
+	  const response = await axios.post(`https://${sepioEndpoint}/prime/webui/Auth/LocalLogin`, requestBody, config);
+	  
+	  if (response.status === 200) {
+		try {
+		  const newRecord = await prisma.sepio.create({
+			data: {
+			  instance: sepioEndpoint,
+			  username: sepioUsername,
+			  password: sepioPassword
+			}
+		  });
+  
+		  console.log('New record created:', newRecord);
+		  res.json({ success: true, message: 'Connection successful!' });
+		} catch (dbError) {
+		  console.error('Database error:', dbError);
+		  res.status(500).json({ success: false, message: 'Failed to save credentials to the database' });
+		}
+	  } else {
+		res.status(500).json({ success: false, message: 'Connection failed!' });
+	  }
+	} catch (error) {
+	  console.error('API error:', error);
+	  res.status(500).json({ success: false, message: 'Connection failed!', error: error.message });
+	}
+  });
 
 
 const getMacAddresses = async (macAddress, serviceNowInstance, snUsername, snPassword) => {
@@ -1509,3 +1517,22 @@ module.exports = {
   getSepioToken,
   addTagsToSepioElements,
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

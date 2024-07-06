@@ -553,6 +553,295 @@
 
 
 
+// import React, { useEffect, useState, useRef } from 'react';
+// import { AppBar, Toolbar, IconButton, Avatar, Divider, Menu, MenuItem } from '@mui/material';
+// import MenuIcon from '@mui/icons-material/Menu';
+// import { useNavigate, NavLink, useLocation } from 'react-router-dom';
+// import { Sidebar } from "react-pro-sidebar";
+// import { RiDashboardLine } from 'react-icons/ri';
+// import SepioLogo from './../image/Sepio_Logo.png';
+// import { Toast } from 'primereact/toast';
+// import { InputText } from 'primereact/inputtext';
+// import { Button } from 'primereact/button';
+// import { Message } from 'primereact/message';
+// import axios from 'axios';
+
+// export default function Layout({ icon_username }) {
+//   const [username, setUsername] = useState('');
+//   const [password, setPassword] = useState('');
+//   const [message, setMessage] = useState('');
+//   const [sepioEndpoint, setSepioEndpoint] = useState('');
+//   const [sepioUsername, setSepioUsername] = useState('');
+//   const [sepioPassword, setSepioPassword] = useState('');
+//   const [sepioMessage, setSepioMessage] = useState('');
+//   const [serviceNowInstance, setServiceNowInstance] = useState('');
+//   const toast = useRef(null);
+//   const navigate = useNavigate();
+//   const location = useLocation();
+//   const [dropDown, setDropDown] = useState(null);
+//   const open = Boolean(dropDown);
+//   const [sidebarOpen, setSidebarOpen] = useState(true);
+
+//   const toggleSidebar = () => {
+//     setSidebarOpen(!sidebarOpen);
+//   };
+
+//   const handleClicks = (event) => {
+//     setDropDown(event.currentTarget);
+//   };
+
+//   const handleClose = () => {
+//     setDropDown(null);
+//   };
+
+//   const fetchData = async () => {
+//     try {
+//       const snResponse = await axios.get('/get-source');
+//       setServiceNowInstance(snResponse.data.serviceNowInstance);
+//       setUsername(snResponse.data.username);
+//       setPassword(snResponse.data.password);
+
+//       const sepioResponse = await axios.get('/get-sepio-source');
+//       setSepioEndpoint(sepioResponse.data.sepioEndpoint);
+//       setSepioUsername(sepioResponse.data.sepioUsername);
+//       setSepioPassword(sepioResponse.data.sepioPassword);
+//     } catch (error) {
+//       console.error("Error fetching data:", error);
+//     }
+//   };
+
+//   const showError = (message) => {
+//     toast.current.show({ severity: 'error', summary: 'Error', detail: message, life: 3000 });
+//   };
+
+//   const showSuccess = (message) => {
+//     toast.current.show({ severity: 'success', summary: 'Success', detail: message, life: 3000 });
+//   };
+
+//   useEffect(() => {
+//     fetchData();
+//   }, [location]);
+
+//   const handleStartClick = () => {
+//     navigate('/querytool');
+//   };
+
+//   const handleLogout = () => {
+//     navigate('/');
+//   };
+
+//   const testConnection = async () => {
+//     try {
+//       if (serviceNowInstance.indexOf("http") >= 0) {
+//         showError('Please, provide endpoint without «http(s)://»');
+//         return;
+//       }
+
+//       const response = await axios.post('/check-connection', {
+//         serviceNowInstance,
+//         username,
+//         password
+//       });
+
+//       if (response.data.success) {
+//         showSuccess(response.data.message);
+//       } else {
+//         showError(response.data.message);
+//       }
+//     } catch (error) {
+//       showError('Connection failed. Please check your credentials and try again.');
+//     }
+//   };
+
+//   const testSepioConnection = async () => {
+//     try {
+//       if (sepioEndpoint.indexOf("http") >= 0) {
+//         showError('Please, provide endpoint without «http(s)://»');
+//         return;
+//       }
+
+//       const response = await axios.post('/check-sepio-connection', {
+//         sepioEndpoint,
+//         sepioUsername,
+//         sepioPassword
+//       });
+
+//       if (response.data.success) {
+//         showSuccess(response.data.message);
+//       } else {
+//         showError(response.data.message);
+//       }
+//     } catch (error) {
+//       showError('Connection failed. Please check your credentials and try again.');
+//     }
+//   };
+
+//   const handleQueryTool = () => {
+//     navigate('/querytool');
+//   };
+
+//   return (
+//     <div>
+//       <Toast ref={toast} />
+//       <AppBar position="static" style={{ backgroundColor: '#ffffff', color: '#000000', marginBottom: '1px', zIndex: 1201 }}>
+//         <Toolbar>
+//           <IconButton edge="start" color="inherit" aria-label="menu" onClick={toggleSidebar}>
+//             <MenuIcon />
+//           </IconButton>
+//           <IconButton edge="start" color="inherit" aria-label="logo">
+//             <img alt="logo" style={{ cursor: 'pointer', height: '40px' }} src={SepioLogo} onClick={handleQueryTool} />
+//           </IconButton>
+//           <div style={{ flexGrow: 1 }} />
+//           <div style={{ marginRight: '10px' }}>
+//             <NavLink to='/' style={{ textDecoration: 'none' }}>
+//               <span className='pi pi-sign-out' style={{ marginRight: '5px' }} />
+//               Logout
+//             </NavLink>
+//           </div>
+//           <IconButton
+//             style={{ marginRight: '-25px' }}
+//             color="inherit"
+//             aria-label="user account"
+//             aria-controls="menu-appbar"
+//             aria-haspopup="true"
+//             onClick={handleClicks}
+//           >
+//             <Avatar sx={{ width: 32, height: 32 }}>U</Avatar>
+//           </IconButton>
+//           <Menu
+//             anchorEl={dropDown}
+//             id='account-menu'
+//             open={open}
+//             onClose={handleClose}
+//             onClick={handleClose}
+//             PaperProps={{
+//               elevation: 5,
+//               sx: {
+//                 width: '140px',
+//                 borderRadius: '10px',
+//                 overflow: 'visible',
+//                 mt: 1,
+//                 '&::before': {
+//                   content: '""',
+//                   display: 'inline-block',
+//                   position: 'absolute',
+//                   top: 0,
+//                   right: 19,
+//                   width: 10,
+//                   height: 10,
+//                   bgcolor: 'background.paper',
+//                   transform: 'translateY(-50%) rotate(45deg)',
+//                   zIndex: 0,
+//                 },
+//               },
+//             }}
+//             transformOrigin={{
+//               vertical: 'top',
+//               horizontal: 'center',
+//             }}
+//             anchorOrigin={{
+//               vertical: 'bottom',
+//               horizontal: 'center',
+//             }}
+//           >
+//             <MenuItem sx={{ display: 'flex', justifyContent: 'center' }} title='Profile'>
+//               <p style={{ marginBottom: '0px' }}>
+//                 User: {icon_username}
+//               </p>
+//             </MenuItem>
+//             <Divider spacing={1}></Divider>
+//             {/* Additional menu items as needed */}
+//           </Menu>
+//         </Toolbar>
+//       </AppBar>
+//       <div style={{ display: "flex", height: "100vh" }}>
+//         <Sidebar className='border-end' collapsed={!sidebarOpen} style={{ backgroundColor: '#FAFAFA' }}>
+//           {/* Sidebar content */}
+//         </Sidebar>
+//         <div style={{ marginLeft: 'auto', flex: '1', padding: '20px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+//           <div style={{ width: '70%', maxWidth: '600px', minWidth: '300px', padding: '20px', borderRadius: '8px', boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)', backgroundColor: 'white' }}>
+//             <div style={{ marginBottom: '20px' }}>
+//               {message && (
+//                 <div style={{ marginBottom: '20px' }}>
+//                   <Message text={message} />
+//                 </div>
+//               )}
+//               {sepioMessage && (
+//                 <div style={{ marginBottom: '20px' }}>
+//                   <Message text={sepioMessage} />
+//                 </div>
+//               )}
+//             </div>
+//             <h3>ServiceNow Credentials</h3>
+//             <div style={{ display: 'flex', flexDirection: 'column', marginBottom: '20px' }}>
+//               <InputText
+//                 type="text"
+//                 placeholder="ServiceNow Instance"
+//                 value={serviceNowInstance}
+//                 onChange={(e) => setServiceNowInstance(e.target.value)}
+//                 style={{ marginBottom: '10px', width: '100%' }}
+//               />
+//               <InputText
+//                 type="text"
+//                 placeholder="Username"
+//                 value={username}
+//                 onChange={(e) => setUsername(e.target.value)}
+//                 style={{ marginBottom: '10px', width: '100%' }}
+//               />
+//               <InputText
+//                 type="password"
+//                 placeholder="Password"
+//                 value={password}
+//                 onChange={(e) => setPassword(e.target.value)}
+//                 style={{ marginBottom: '10px', width: '100%' }}
+//               />
+//             </div>
+//             <Button label="Test Connection" icon="pi pi-check" onClick={testConnection} style={{ backgroundColor: '#183462', borderColor: '#183462', marginBottom: '20px', width: '35%', borderRadius: '5px' }} />
+
+//             <div style={{ marginTop: '20px' }}></div>
+//             <h3>Sepio Credentials</h3>
+//             <div style={{ display: 'flex', flexDirection: 'column', marginBottom: '20px' }}>
+//               <InputText
+//                 type="text"
+//                 placeholder="Sepio Endpoint"
+//                 value={sepioEndpoint}
+//                 onChange={(e) => setSepioEndpoint(e.target.value)}
+//                 style={{ marginBottom: '10px', width: '100%' }}
+//               />
+//               <InputText
+//                 type="text"
+//                 placeholder="Username"
+//                 value={sepioUsername}
+//                 onChange={(e) => setSepioUsername(e.target.value)}
+//                 style={{ marginBottom: '10px', width: '100%' }}
+//               />
+//               <InputText
+//                 type="password"
+//                 placeholder="Password"
+//                 value={sepioPassword}
+//                 onChange={(e) => setSepioPassword(e.target.value)}
+//                 style={{ marginBottom: '10px', width: '100%' }}
+//               />
+//             </div>
+//             <Button label="Test Sepio Connection" icon="pi pi-check" onClick={testSepioConnection} style={{ backgroundColor: '#183462', borderColor: '#183462', marginBottom: '20px', width: '35%', borderRadius: '5px' }} />
+//           </div>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// }
+
+
+
+
+
+
+
+
+
+
+
+
 
 import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { AppBar, Toolbar, IconButton,  Avatar, Divider } from '@mui/material';
