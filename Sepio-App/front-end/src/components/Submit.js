@@ -916,7 +916,7 @@
 
 
 import React, { useEffect, useState, useRef, useCallback } from 'react';
-import { AppBar, Toolbar, IconButton, Menu, MenuItem, Avatar, Divider } from '@mui/material';
+import { AppBar, Toolbar, IconButton, Avatar, Divider } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import { Menubar } from 'primereact/menubar';
 import { useNavigate } from 'react-router-dom';
@@ -932,7 +932,12 @@ import Input from '@mui/joy/Input';
 import Select from '@mui/joy/Select';
 import Option from '@mui/joy/Option';
 import Typography from '@mui/joy/Typography';
+import GridViewRoundedIcon from "@mui/icons-material/GridViewRounded";
 import axios from 'axios';
+//
+import { Sidebar} from "react-pro-sidebar";
+import {Menu, MenuItem} from '@mui/material';
+
 
 export default function Layout({ icon_username }) {
 	const navigate = useNavigate();
@@ -962,60 +967,35 @@ export default function Layout({ icon_username }) {
 	const [prevWidth, setPrevWidth] = useState(window.innerWidth);
 	const [dropDown, setDropDown] = useState(null);
 	const open = Boolean(dropDown);
+	const [sidebarOpen, setSidebarOpen] = useState(true);
 
 	const sidebarRef = useRef(null);
 	const appBarRef = useRef(null);
+   
 
 
 
 
-	const toggleSidebar = useCallback(() => {
-		setIsSidebarOpen(prevState => !prevState);
-	}, []);
-
-	useEffect(() => {
+	const toggleSidebar = () => {
+		setSidebarOpen(!sidebarOpen);
+	  };
+	
+	  useEffect(() => {
 		const handleResize = () => {
-			const width = window.innerWidth;
-			if (width > 602 && width < 983) {
-				setIsMiddleSize(true);
-				setIsLow(false);
-				setIsSidebarOpen(false);
-			} else if (width > 102 && width <= 602) {
-				setIsMiddleSize(false);
-				setIsLow(true);
-				setIsSidebarOpen(false);
-			} else {
-				setIsMiddleSize(false);
-				setIsLow(false);
-				if (prevWidth <= 983 || prevWidth <= 602) {
-					setIsSidebarOpen(true);
-				}
-			}
-			setPrevWidth(width);
+		  if (window.innerWidth <= 960) {
+			setSidebarOpen(false);
+		  } else {
+			setSidebarOpen(true);
+		  }
 		};
-
+	
+		window.addEventListener("resize", handleResize);
 		handleResize();
-		window.addEventListener('resize', handleResize);
-		return () => window.removeEventListener('resize', handleResize);
+	
+		return () => window.removeEventListener("resize", handleResize);
+	  }, []);
 
-	}, [prevWidth]);
-
-	useEffect(() => {
-		const handleClickOutside = (event) => {
-			if (isMiddleSize || isLow) {
-				if (sidebarRef.current && !sidebarRef.current.contains(event.target) && appBarRef.current && !appBarRef.current.contains(event.target) && isSidebarOpen) {
-
-				}
-			}
-		}
-
-		document.addEventListener('click', handleClickOutside)
-		return () => {
-			document.removeEventListener('click', handleClickOutside);
-		}
-	}, [isSidebarOpen, isMiddleSize, isLow]);
-
-	const sidebarStyle = isMiddleSize ? { marginTop: '65px' } : isLow ? { marginTop: '56px' } : {};
+	
 
 	const handleClicks = (event) => {
 		setDropDown(event.currentTarget);
@@ -1168,27 +1148,30 @@ export default function Layout({ icon_username }) {
 		</div>
 	);
 
+	const handelquery = () => {
+		navigate('/querytool');
+	}
+
 	return (
+		
 		<div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
-			<Toast ref={toast} />
-			<AppBar ref={appBarRef} position='static' style={{ backgroundColor: '#ffffff', color: '#000000', marginBottom: '1px', zIndex: 1201 }}>
-				<Toolbar>
-					<IconButton edge='start' color='inherit' aria-label='menu' onClick={toggleSidebar}>
-						<MenuIcon />
-					</IconButton>
-					<IconButton edge='start' color='inherit' aria-label='logo'>
-						<img alt='logo' style={{ cursor: 'pointer', height: '40px' }} src={SepioLogo} />
-					</IconButton>
-
-					<div style={{ flexGrow: 1 }} />
-					<div style={{ marginRight: '10px' }}>
-						<NavLink to='/' style={{ textDecoration: 'none' }}>
-							<span className='pi pi-sign-out' style={{ marginRight: '5px' }} />
-							Logout
-						</NavLink>
-					</div>
-
-					<IconButton
+			<Toast ref = {toast}/>
+			<AppBar position="static" style={{ backgroundColor: '#ffffff', color: '#000000', marginBottom: '1px', zIndex: 1201 }}>
+        <Toolbar>
+          <IconButton edge="start" color="inherit" aria-label="menu" onClick={toggleSidebar}>
+            <MenuIcon />
+          </IconButton>
+          <IconButton edge="start" color="inherit" aria-label="logo">
+            <img alt="logo" style={{ cursor: 'pointer', height: '40px' }} src={SepioLogo} onClick = {handelquery} />
+          </IconButton>
+          <div style={{ flexGrow: 1 }} />
+          <div style={{ marginRight: '10px' }}>
+            <NavLink to='/' style={{ textDecoration: 'none' }}>
+              <span className='pi pi-sign-out' style={{ marginRight: '5px' }} />
+              Logout
+            </NavLink>
+          </div>
+		  <IconButton
 						style={{ marginRight: '-25px' }}
 						color="inherit"
 						aria-label="user account"
@@ -1247,31 +1230,32 @@ export default function Layout({ icon_username }) {
 							</p>
 						</MenuItem>
 					</Menu>
-				</Toolbar>
-			</AppBar>
-
-			<div style={{ display: 'flex', flex: '1 1 auto' }}>
-				<CSidebar ref={sidebarRef} className='border-end custom-sidebar' visible={isSidebarOpen} style={sidebarStyle}>
-					<CSidebarNav>
-						<CContainer fluid>
-							<CForm className='d-flex'>
-							</CForm>
-						</CContainer>
-						<CNavItem>
-							<NavLink to='/querytool/mac' className='nav-link'>
-								<RiDashboardLine className='nav-icon' /> MAC
-							</NavLink>
-						</CNavItem>
-						<CNavItem>
-							<NavLink to='/querytool/settings' className='nav-link'>
-								<RiDashboardLine className='nav-icon' /> Settings
-							</NavLink>
+        </Toolbar>
+      </AppBar>
+      <div style={{ display: "flex", height: "100vh" }}>
+	  <Sidebar className='border-end' collapsed={!sidebarOpen} style={{ backgroundColor: '#FAFAFA' }}>
+				<CSidebarNav>
+					<CContainer fluid>
+						<CForm className='d-flex'></CForm>
+					</CContainer>
+					<CNavItem>
+						<NavLink to='/querytool/mac' className='nav-link'>
+							<RiDashboardLine className='nav-icon' /> {sidebarOpen && 'MAC'}
+						</NavLink>
+					</CNavItem>
+					<CNavItem>
+						<NavLink to='/querytool/settings' className='nav-link'>
+							<RiDashboardLine className='nav-icon' /> { sidebarOpen && 'Settings'}
+						</NavLink>
+						
 							<NavLink to='/querytool/createuser' className='nav-link'>
-								<RiDashboardLine className='nav-icon' /> Users
+								<RiDashboardLine className='nav-icon' /> {sidebarOpen && 'Users'}
 							</NavLink>
-						</CNavItem>
-					</CSidebarNav>
-				</CSidebar>
+						
+					</CNavItem>
+				</CSidebarNav>
+				</Sidebar>
+			
 
 				<div style={{ flex: 1, overflowY: 'auto', marginTop: '0px' }}>
 					<Menubar start={secondMenubarEnd} style={{ backgroundColor: '#183462' }} />

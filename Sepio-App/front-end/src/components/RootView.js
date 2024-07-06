@@ -2223,66 +2223,1136 @@
 
 
 
-import { useState } from "react";
-import { Sidebar, Menu, MenuItem, SubMenu, useProSidebar } from "react-pro-sidebar";
-import Layout from './Layout.css'
-import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
-import GridViewRoundedIcon from "@mui/icons-material/GridViewRounded";
-import ReceiptRoundedIcon from "@mui/icons-material/ReceiptRounded";
-import BarChartRoundedIcon from "@mui/icons-material/BarChartRounded";
-import TimelineRoundedIcon from "@mui/icons-material/TimelineRounded";
-import BubbleChartRoundedIcon from "@mui/icons-material/BubbleChartRounded";
-import WalletRoundedIcon from "@mui/icons-material/WalletRounded";
-import AccountBalanceRoundedIcon from "@mui/icons-material/AccountBalanceRounded";
-import SavingsRoundedIcon from "@mui/icons-material/SavingsRounded";
-import MonetizationOnRoundedIcon from "@mui/icons-material/MonetizationOnRounded";
-import SettingsApplicationsRoundedIcon from "@mui/icons-material/SettingsApplicationsRounded";
-import AccountCircleRoundedIcon from "@mui/icons-material/AccountCircleRounded";
-import ShieldRoundedIcon from "@mui/icons-material/ShieldRounded";
-import NotificationsRoundedIcon from "@mui/icons-material/NotificationsRounded";
-import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
+// import { useState } from "react";
+// import { Sidebar, Menu, MenuItem, SubMenu, useProSidebar } from "react-pro-sidebar";
+// import Layout from './Layout.css'
+// import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
+// import GridViewRoundedIcon from "@mui/icons-material/GridViewRounded";
+// import ReceiptRoundedIcon from "@mui/icons-material/ReceiptRounded";
+// import BarChartRoundedIcon from "@mui/icons-material/BarChartRounded";
+// import TimelineRoundedIcon from "@mui/icons-material/TimelineRounded";
+// import BubbleChartRoundedIcon from "@mui/icons-material/BubbleChartRounded";
+// import WalletRoundedIcon from "@mui/icons-material/WalletRounded";
+// import AccountBalanceRoundedIcon from "@mui/icons-material/AccountBalanceRounded";
+// import SavingsRoundedIcon from "@mui/icons-material/SavingsRounded";
+// import MonetizationOnRoundedIcon from "@mui/icons-material/MonetizationOnRounded";
+// import SettingsApplicationsRoundedIcon from "@mui/icons-material/SettingsApplicationsRounded";
+// import AccountCircleRoundedIcon from "@mui/icons-material/AccountCircleRounded";
+// import ShieldRoundedIcon from "@mui/icons-material/ShieldRounded";
+// import NotificationsRoundedIcon from "@mui/icons-material/NotificationsRounded";
+// import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
 
-// const { collapseSidebar, toggleSidebar, collapsed, toggled, broken, rtl } =
-//   useProSidebar();
+// // const { collapseSidebar, toggleSidebar, collapsed, toggled, broken, rtl } =
+// //   useProSidebar();
 
-const App = () => {
-	const [sidebarOpen, setSidebarOpen] = useState(true);
+// const App = () => {
+// 	const [sidebarOpen, setSidebarOpen] = useState(true);
 
-	const toggleSidebar = () => {
-	  setSidebarOpen(!sidebarOpen);
-	};
-	return (
-		<div style={{ display: "flex", height: "100vh" }}>
-		  <Sidebar className="app" collapsed={!sidebarOpen}>
-			<Menu>
-			  <MenuItem className="menu1" onClick={toggleSidebar} icon={<MenuRoundedIcon />}>
-				<h2> QUICKPAY</h2>
-			  </MenuItem>
-			  <MenuItem icon={<GridViewRoundedIcon />}> Dashboard </MenuItem>
-			  <MenuItem icon={<ReceiptRoundedIcon />}> Invoices </MenuItem>
-			  <SubMenu label="Charts" icon={<BarChartRoundedIcon />}>
-				<MenuItem icon={<TimelineRoundedIcon />}> Timeline Chart </MenuItem>
-				<MenuItem icon={<BubbleChartRoundedIcon />}>Bubble Chart</MenuItem>
-			  </SubMenu>
-			  <SubMenu label="Wallets" icon={<WalletRoundedIcon />}>
-				<MenuItem icon={<AccountBalanceRoundedIcon />}>
-				  Current Wallet
-				</MenuItem>
-				<MenuItem icon={<SavingsRoundedIcon />}>Savings Wallet</MenuItem>
-			  </SubMenu>
-			  <MenuItem icon={<MonetizationOnRoundedIcon />}>Transactions</MenuItem>
-			  <SubMenu label="Settings" icon={<SettingsApplicationsRoundedIcon />}>
-				<MenuItem icon={<AccountCircleRoundedIcon />}> Account </MenuItem>
-				<MenuItem icon={<ShieldRoundedIcon />}> Privacy </MenuItem>
-				<MenuItem icon={<NotificationsRoundedIcon />}>
-				  Notifications
-				</MenuItem>
-			  </SubMenu>
-			  <MenuItem icon={<LogoutRoundedIcon />}> Logout </MenuItem>
-			</Menu>
-		  </Sidebar>
+// 	const toggleSidebar = () => {
+// 	  setSidebarOpen(!sidebarOpen);
+// 	};
+// 	return (
+// 		<div style={{ display: "flex", height: "100vh" }}>
+// 		  <Sidebar className="app" collapsed={!sidebarOpen}>
+// 			<Menu>
+			
+// 			  <MenuItem className="menu1" onClick={toggleSidebar} icon={<MenuRoundedIcon />}>				
+// 			  </MenuItem>
+// 			  <MenuItem icon={<GridViewRoundedIcon />}> Dashboard </MenuItem>
+// 			  <MenuItem icon={<ReceiptRoundedIcon />}> Invoices </MenuItem>			 
+// 			  <MenuItem icon={<MonetizationOnRoundedIcon />}>Transactions</MenuItem>			 
+// 			  <MenuItem icon={<LogoutRoundedIcon />}> Logout </MenuItem>
+// 			</Menu>
+// 		  </Sidebar>
 		  
-		</div>
-	  );
+// 		</div>
+// 	  );
+// 	};
+// 	export default App;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// import { Sidebar, Menu, MenuItem } from "react-pro-sidebar";
+// import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
+// import GridViewRoundedIcon from "@mui/icons-material/GridViewRounded";
+// import ReceiptRoundedIcon from "@mui/icons-material/ReceiptRounded";
+// import MonetizationOnRoundedIcon from "@mui/icons-material/MonetizationOnRounded";
+// import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
+// ////////
+// import React, { useEffect, useState, useCallback, useRef } from 'react';
+// import { AppBar, Toolbar, IconButton, Avatar, Divider } from '@mui/material';
+// import MenuIcon from '@mui/icons-material/Menu';
+// import { useNavigate, NavLink, useLocation } from 'react-router-dom';
+
+// import SepioLogo from './../image/Sepio_Logo.png';
+// // import { AppBar, Toolbar, IconButton, Menu, MenuItem, Avatar, Tooltip, Divider } from '@mui/material';
+// // import 'primeflex/primeflex.scss';
+// const App = ({icon_username}) => {
+//   const [sidebarOpen, setSidebarOpen] = useState(true);
+//   const [userPrivileges, setUserPrivileges] = useState(null);
+//   const [isLoading, setIsLoading] = useState(true);
+
+
+
+//   useEffect(() => {
+// 	if (icon_username) {
+// 		fetch(`/api/user/${icon_username}`)
+// 			.then(response => response.json())
+// 			.then(data => {
+// 				setUserPrivileges(data.privileges);
+// 				setTimeout(() => {
+// 					setIsLoading(false);
+// 				}, 100);
+// 			})
+// 			.catch(error => {
+// 				console.log('Error fetching user privileges', error);
+// 				setIsLoading(false);
+// 			});
+// 	}
+// }, [icon_username]);
+
+//   //togle sidebar
+//   const toggleSidebar = () => {
+//     setSidebarOpen(!sidebarOpen);
+//   };
+
+
+
+
+//   useEffect(() => {
+//     const handleResize = () => {
+//       if (window.innerWidth <= 960) {
+//         setSidebarOpen(false);
+//       } else {
+//         setSidebarOpen(true);
+//       }
+//     };
+
+//     // Add event listener
+//     window.addEventListener("resize", handleResize);
+
+//     // Call handler right away so state gets updated with initial window size
+//     handleResize();
+
+//     // Remove event listener on cleanup
+//     return () => window.removeEventListener("resize", handleResize);
+//   }, []);
+
+//   return (
+//     <div>
+
+// <AppBar position="static" style={{ backgroundColor: '#ffffff', color: '#000000', marginBottom: '1px', zIndex: 1201 }}>
+// 				<Toolbar>
+// 					<IconButton edge="start" color="inherit" aria-label="menu" >
+// 						<MenuIcon />
+// 					</IconButton>
+// 					<IconButton edge="start" color="inherit" aria-label="logo">
+// 						<img alt="logo" style={{ cursor: 'pointer', height: '40px' }} src={SepioLogo} />
+// 					</IconButton>
+
+// 					<div style={{ flexGrow: 1 }} />
+// 					<div style={{ marginRight: '10px' }}>
+// 						<NavLink to='/' style={{ textDecoration: 'none' }}>
+// 							<span className='pi pi-sign-out' style={{ marginRight: '5px' }} />
+// 							Logout
+// 						</NavLink>
+// 					</div>
+
+// 					<IconButton
+// 						style={{ marginRight: '-25px' }}
+// 						color="inherit"
+// 						aria-label="user account"
+// 						aria-controls="menu-appbar"
+// 						aria-haspopup="true"
+					
+// 					>
+// 						<Avatar sx={{ width: 32, height: 32 }}>U</Avatar>
+// 					</IconButton>
+
+// 					<Menu
+						
+// 						id='account-menu'
+// 						open={open}
+						
+// 						PaperProps={{
+// 							elevation: 5,
+// 							sx: {
+// 								width: '140px',
+// 								borderRadius: '10px',
+// 								overflow: 'visible',
+// 								mt: 1,
+// 								'&::before': {
+// 									content: '""',
+// 									display: 'inline-block',
+// 									position: 'absolute',
+// 									top: 0,
+// 									right: 19,
+// 									width: 10,
+// 									height: 10,
+// 									bgcolor: 'background.paper',
+// 									transform: 'translateY(-50%) rotate(45deg)',
+// 									zIndex: 0,
+// 								},
+// 							},
+// 						}}
+// 						transformOrigin={{
+// 							vertical: 'top',
+// 							horizontal: 'center',
+// 						}}
+// 						anchorOrigin={{
+// 							vertical: 'bottom',
+// 							horizontal: 'center',
+// 						}}
+// 					>
+// 						<MenuItem sx={{ display: 'flex', justifyContent: 'center' }} title='Profile'>
+// 							<p style={{ marginBottom: '0px' }}>
+// 								User: {icon_username}
+// 							</p>
+// 						</MenuItem>
+// 						<Divider spacing={1}></Divider>
+// 						<MenuItem sx={{ display: 'flex', justifyContent: 'center' }} title='Profile'>
+// 							<p style={{ marginBottom: '0px' }}>
+// 								{userPrivileges}
+// 							</p>
+// 						</MenuItem>
+// 					</Menu>
+// 				</Toolbar>
+// 			</AppBar>
+    
+//     <div style={{ display: "flex", height: "100vh" }}>
+//       <Sidebar className="app" collapsed={!sidebarOpen} style = {{backgroundColor: '#FAFAFA'}}>
+//         <Menu style = {{ marginTop: '10px'}}>
+//           <MenuItem icon={<GridViewRoundedIcon />}> Dashboard </MenuItem>
+//           <MenuItem icon={<ReceiptRoundedIcon />}> Invoices </MenuItem>
+//           <MenuItem icon={<MonetizationOnRoundedIcon />}> Transactions </MenuItem>
+// 		  {!isLoading && userPrivileges !== 'UI_USER' && (
+//           <MenuItem icon={<LogoutRoundedIcon />}> Logout </MenuItem>
+// 		  )}
+//         </Menu>
+//       </Sidebar>
+
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default App;
+
+
+
+
+
+
+
+
+
+
+
+
+// import { Sidebar, Menu, MenuItem } from "react-pro-sidebar";
+// import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
+// import GridViewRoundedIcon from "@mui/icons-material/GridViewRounded";
+// import ReceiptRoundedIcon from "@mui/icons-material/ReceiptRounded";
+// import MonetizationOnRoundedIcon from "@mui/icons-material/MonetizationOnRounded";
+// import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
+// import React, { useEffect, useState } from 'react';
+// import { AppBar, Toolbar, IconButton, Avatar, Divider } from '@mui/material';
+// import MenuIcon from '@mui/icons-material/Menu';
+// import { useNavigate, NavLink } from 'react-router-dom';
+// import SepioLogo from './../image/Sepio_Logo.png';
+
+// const App = ({ icon_username }) => {
+//   const navigate = useNavigate();
+//   const [sidebarOpen, setSidebarOpen] = useState(true);
+//   const [userPrivileges, setUserPrivileges] = useState(null);
+//   const [isLoading, setIsLoading] = useState(true);
+
+//   useEffect(() => {
+//     if (icon_username) {
+//       fetch(`/api/user/${icon_username}`)
+//         .then(response => response.json())
+//         .then(data => {
+//           setUserPrivileges(data.privileges);
+//           setTimeout(() => {
+//             setIsLoading(false);
+//           }, 100);
+//         })
+//         .catch(error => {
+//           console.log('Error fetching user privileges', error);
+//           setIsLoading(false);
+//         });
+//     }
+//   }, [icon_username]);
+
+//   const toggleSidebar = () => {
+//     setSidebarOpen(!sidebarOpen);
+//   };
+
+//   useEffect(() => {
+//     const handleResize = () => {
+//       if (window.innerWidth <= 960) {
+//         setSidebarOpen(false);
+//       } else {
+//         setSidebarOpen(true);
+//       }
+//     };
+
+//     window.addEventListener("resize", handleResize);
+//     handleResize();
+
+//     return () => window.removeEventListener("resize", handleResize);
+//   }, []);
+
+//   return (
+//     <div>
+//       <AppBar position="static" style={{ backgroundColor: '#ffffff', color: '#000000', marginBottom: '1px', zIndex: 1201 }}>
+//         <Toolbar>
+//           <IconButton edge="start" color="inherit" aria-label="menu" onClick={toggleSidebar}>
+//             <MenuIcon />
+//           </IconButton>
+//           <IconButton edge="start" color="inherit" aria-label="logo">
+//             <img alt="logo" style={{ cursor: 'pointer', height: '40px' }} src={SepioLogo} />
+//           </IconButton>
+//           <div style={{ flexGrow: 1 }} />
+//           <div style={{ marginRight: '10px' }}>
+//             <NavLink to='/' style={{ textDecoration: 'none' }}>
+//               <span className='pi pi-sign-out' style={{ marginRight: '5px' }} />
+//               Logout
+//             </NavLink>
+//           </div>
+//           <IconButton
+//             style={{ marginRight: '-25px' }}
+//             color="inherit"
+//             aria-label="user account"
+//             aria-controls="menu-appbar"
+//             aria-haspopup="true"
+//           >
+//             <Avatar sx={{ width: 32, height: 32 }}>U</Avatar>
+//           </IconButton>
+//         </Toolbar>
+//       </AppBar>
+//       <div style={{ display: "flex", height: "100vh" }}>
+//         <Sidebar className="app" collapsed={!sidebarOpen} style={{ backgroundColor: '#FAFAFA' }}>
+//           <Menu style={{ marginTop: '10px' }}>
+//           <NavLink to = '/querytool/mac' className = 'nav-link'>
+//             <MenuItem style = {{marginLeft: '-160px'}}      
+//             icon={<GridViewRoundedIcon style = {{marginLeft: '300px'}}    />}> MAC  </MenuItem>
+//             </NavLink>
+//             <NavLink to = '/querytool/mac' className = 'nav-link'>
+//             <MenuItem style = {{marginLeft: '-120px'}}      
+//             icon={<GridViewRoundedIcon style = {{marginLeft: '220px'}}    />}> Settings  </MenuItem>
+//             </NavLink>
+//             <NavLink to = '/querytool/mac' className = 'nav-link'>
+//             <MenuItem style = {{marginLeft: '-160px'}}      
+//             icon={<GridViewRoundedIcon style = {{marginLeft: '300px'}}    />}> Users  </MenuItem>
+//             </NavLink>
+
+            
+//             {!isLoading && userPrivileges !== 'UI_USER' && (
+//               <MenuItem icon={<LogoutRoundedIcon />}> Logout </MenuItem>
+//             )}
+//           </Menu>
+//         </Sidebar>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default App;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// import { Sidebar, Menu, MenuItem } from "react-pro-sidebar";
+// import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
+// import GridViewRoundedIcon from "@mui/icons-material/GridViewRounded";
+// import ReceiptRoundedIcon from "@mui/icons-material/ReceiptRounded";
+// import MonetizationOnRoundedIcon from "@mui/icons-material/MonetizationOnRounded";
+// import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
+// import React, { useEffect, useState } from 'react';
+// import { AppBar, Toolbar, IconButton, Avatar, Divider } from '@mui/material';
+// import MenuIcon from '@mui/icons-material/Menu';
+// import { useNavigate, NavLink } from 'react-router-dom';
+// import SepioLogo from './../image/Sepio_Logo.png'
+
+
+// const App = ({ icon_username }) => {
+//   const navigate = useNavigate();
+//   const [sidebarOpen, setSidebarOpen] = useState(true);
+//   const [userPrivileges, setUserPrivileges] = useState(null);
+//   const [isLoading, setIsLoading] = useState(true);
+
+//   useEffect(() => {
+//     if (icon_username) {
+//       fetch(`/api/user/${icon_username}`)
+//         .then(response => response.json())
+//         .then(data => {
+//           setUserPrivileges(data.privileges);
+//           console.log(data.privileges);
+//           setTimeout(() => {
+//             setIsLoading(false);
+//           }, 100);
+//         })
+//         .catch(error => {
+//           console.log('Error fetching user privileges', error);
+//           setIsLoading(false);
+//         });
+//     }
+//   }, [icon_username]);
+
+//   const toggleSidebar = () => {
+//     setSidebarOpen(!sidebarOpen);
+//   };
+
+//   useEffect(() => {
+//     const handleResize = () => {
+//       if (window.innerWidth <= 960) {
+//         setSidebarOpen(false);
+//       } else {
+//         setSidebarOpen(true);
+//       }
+//     };
+
+//     window.addEventListener("resize", handleResize);
+//     handleResize();
+
+//     return () => window.removeEventListener("resize", handleResize);
+//   }, []);
+
+//   return (
+//     <div>
+//       <AppBar position="static" style={{ backgroundColor: '#ffffff', color: '#000000', marginBottom: '1px', zIndex: 1201 }}>
+//         <Toolbar>
+//           <IconButton edge="start" color="inherit" aria-label="menu" onClick={toggleSidebar}>
+//             <MenuIcon />
+//           </IconButton>
+//           <IconButton edge="start" color="inherit" aria-label="logo">
+//             <img alt="logo" style={{ cursor: 'pointer', height: '40px' }} src={SepioLogo} />
+//           </IconButton>
+//           <div style={{ flexGrow: 1 }} />
+//           <div style={{ marginRight: '10px' }}>
+//             <NavLink to='/' style={{ textDecoration: 'none' }}>
+//               <span className='pi pi-sign-out' style={{ marginRight: '5px' }} />
+//               Logout
+//             </NavLink>
+//           </div>
+//           <IconButton
+//             style={{ marginRight: '-25px' }}
+//             color="inherit"
+//             aria-label="user account"
+//             aria-controls="menu-appbar"
+//             aria-haspopup="true"
+//           >
+//             <Avatar sx={{ width: 32, height: 32 }}>U</Avatar>
+//           </IconButton>
+//         </Toolbar>
+//       </AppBar>
+//       <div style={{ display: "flex", height: "100vh" }}>
+//         <Sidebar className='border-end custom-sidebar' collapsed={!sidebarOpen}>
+//           <Menu style={{ marginTop: '10px' }}>
+//             <NavLink to='/querytool/mac' className='nav-link'>
+//               <MenuItem style={{ marginLeft: '-160px' }} icon={<GridViewRoundedIcon style={{ marginLeft: '300px' }} />}>
+//                 {sidebarOpen && 'MAC'}
+//               </MenuItem>
+//             </NavLink>
+//             <NavLink to='/querytool/settings' className='nav-link'>
+//               <MenuItem style={{ marginLeft: '-140px' }} icon={<GridViewRoundedIcon style={{ marginLeft: '258px' }} />}>
+//                 {sidebarOpen && 'Settings'}
+//               </MenuItem>
+//             </NavLink>
+//             {!isLoading && userPrivileges !== 'UI_USER' && (
+//             <NavLink to='/querytool/createuser' className='nav-link'>
+//               <MenuItem style={{ marginLeft: '-160px' }} icon={<GridViewRoundedIcon style={{ marginLeft: '300px' }} />}>
+//                 {sidebarOpen && 'Users'}
+//               </MenuItem>
+//             </NavLink>
+//             )}
+//             {/* {!isLoading && userPrivileges !== 'UI_USER' && (
+//               <MenuItem style={{ marginLeft: '-160px' }}  icon={<LogoutRoundedIcon />}>Logout</MenuItem>
+//             )} */}
+//           </Menu>
+//         </Sidebar>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default App;
+
+
+
+
+
+// import React, { useState } from 'react';
+// import ReactDOM from 'react-dom/client';
+// import {
+//   CSidebar,
+//   CSidebarBrand,
+//   CNav,
+//   CNavItem,
+//   CNavTitle,
+// } from '@coreui/react';
+
+// const App = () => {
+//   const [showSidebar, setShowSidebar] = useState(true);
+
+//   const toggleSidebar = () => {
+//     setShowSidebar(!showSidebar);
+//   };
+
+//   return (
+//     <div className="App">
+//       <button onClick={toggleSidebar}>Toggle Sidebar</button>
+//       <CSidebar
+//         className={`bg-dark sidebar sidebar-fixed ${showSidebar ? 'sidebar-lg-show' : ''}`}
+//       >
+//         <CSidebarBrand className="d-md-down-none" to="/">
+//           Brand Logo
+//         </CSidebarBrand>
+//         <CNav>
+//           <CNavItem className="px-3">
+//             Dashboard
+//           </CNavItem>
+//           <CNavTitle className="px-3">Settings</CNavTitle>
+//           <CNavItem className="px-3">
+//             Profile
+//           </CNavItem>
+//           <CNavItem className="px-3">
+//             Account
+//           </CNavItem>
+//         </CNav>
+//       </CSidebar>
+//     </div>
+//   );
+// };
+
+// export default App;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// import { Sidebar, Menu, MenuItem } from 'react-pro-sidebar';
+// import { Link } from 'react-router-dom';
+
+// <Sidebar>
+//   <Menu
+//     menuItemStyles={{
+//       button: {
+//         // the active class will be added automatically by react router
+//         // so we can use it to style the active menu item
+//         [`&.active`]: {
+//           backgroundColor: '#13395e',
+//           color: '#b6c8d9',
+//         },
+//       },
+//     }}
+//   >
+//     <MenuItem component={<Link to="/documentation" />}> Documentation</MenuItem>
+//     <MenuItem component={<Link to="/calendar" />}> Calendar</MenuItem>
+//     <MenuItem component={<Link to="/e-commerce" />}> E-commerce</MenuItem>
+//   </Menu>
+// </Sidebar>;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+///
+// import { Sidebar, Menu, MenuItem } from "react-pro-sidebar";
+// import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
+// import GridViewRoundedIcon from "@mui/icons-material/GridViewRounded";
+// import ReceiptRoundedIcon from "@mui/icons-material/ReceiptRounded";
+// import MonetizationOnRoundedIcon from "@mui/icons-material/MonetizationOnRounded";
+// import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
+// import React, { useEffect, useState } from 'react';
+// import { AppBar, Toolbar, IconButton, Avatar, Divider } from '@mui/material';
+// import MenuIcon from '@mui/icons-material/Menu';
+// import { useNavigate, NavLink } from 'react-router-dom';
+// import SepioLogo from './../image/Sepio_Logo.png';
+
+// const App = ({ icon_username }) => {
+//   const navigate = useNavigate();
+//   const [sidebarOpen, setSidebarOpen] = useState(true);
+//   const [userPrivileges, setUserPrivileges] = useState(null);
+//   const [isLoading, setIsLoading] = useState(true);
+
+//   useEffect(() => {
+//     if (icon_username) {
+//       fetch(`/api/user/${icon_username}`)
+//         .then(response => response.json())
+//         .then(data => {
+//           setUserPrivileges(data.privileges);
+//           console.log(data.privileges);
+//           setTimeout(() => {
+//             setIsLoading(false);
+//           }, 100);
+//         })
+//         .catch(error => {
+//           console.log('Error fetching user privileges', error);
+//           setIsLoading(false);
+//         });
+//     }
+//   }, [icon_username]);
+
+//   const toggleSidebar = () => {
+//     setSidebarOpen(!sidebarOpen);
+//   };
+
+//   useEffect(() => {
+//     const handleResize = () => {
+//       if (window.innerWidth <= 960) {
+//         setSidebarOpen(false);
+//       } else {
+//         setSidebarOpen(true);
+//       }
+//     };
+
+//     window.addEventListener("resize", handleResize);
+//     handleResize();
+
+//     return () => window.removeEventListener("resize", handleResize);
+//   }, []);
+
+//   return (
+//     <div>
+//       <AppBar position="static" style={{ backgroundColor: '#ffffff', color: '#000000', marginBottom: '1px', zIndex: 1201 }}>
+//         <Toolbar>
+//           <IconButton edge="start" color="inherit" aria-label="menu" onClick={toggleSidebar}>
+//             <MenuIcon />
+//           </IconButton>
+//           <IconButton edge="start" color="inherit" aria-label="logo">
+//             <img alt="logo" style={{ cursor: 'pointer', height: '40px' }} src={SepioLogo} />
+//           </IconButton>
+//           <div style={{ flexGrow: 1 }} />
+//           <div style={{ marginRight: '10px' }}>
+//             <NavLink to='/' style={{ textDecoration: 'none' }}>
+//               <span className='pi pi-sign-out' style={{ marginRight: '5px' }} />
+//               Logout
+//             </NavLink>
+//           </div>
+//           <IconButton
+//             style={{ marginRight: '-25px' }}
+//             color="inherit"
+//             aria-label="user account"
+//             aria-controls="menu-appbar"
+//             aria-haspopup="true"
+//           >
+//             <Avatar sx={{ width: 32, height: 32 }}>U</Avatar>
+//           </IconButton>
+//         </Toolbar>
+//       </AppBar>
+//       <div style={{ display: "flex", height: "100vh" }}>
+//         <Sidebar className='border-end' collapsed={!sidebarOpen} style={{ backgroundColor: '#FAFAFA' }}>
+//           <Menu style={{ marginTop: '10px' }}>
+//             <NavLink to='/querytool/mac' className='nav-link'>
+//               <MenuItem style={{ marginLeft: '-160px' }} icon={<GridViewRoundedIcon style={{ marginLeft: '300px' }} />}>
+//                 {sidebarOpen && 'MAC'}
+//               </MenuItem>
+//             </NavLink>
+//             <NavLink to='/querytool/settings' className='nav-link'>
+//               <MenuItem style={{ marginLeft: '-140px' }} icon={<GridViewRoundedIcon style={{ marginLeft: '258px' }} />}>
+//                 {sidebarOpen && 'Settings'}
+//               </MenuItem>
+//             </NavLink>
+//             {!isLoading && userPrivileges !== 'UI_USER' && (
+//             <NavLink to='/querytool/createuser' className='nav-link'>
+//               <MenuItem style={{ marginLeft: '-160px' }} icon={<GridViewRoundedIcon style={{ marginLeft: '300px' }} />}>
+//                 {sidebarOpen && 'Users'}
+//               </MenuItem>
+//             </NavLink>
+//             )}
+//             {/* {!isLoading && userPrivileges !== 'UI_USER' && (
+//               <MenuItem style={{ marginLeft: '-160px' }}  icon={<LogoutRoundedIcon />}>Logout</MenuItem>
+//             )} */}
+//           </Menu>
+//         </Sidebar>
+//       </div>
+//       {isLoading && (
+// 				<div style={{
+// 					display: 'flex',
+// 					justifyContent: 'center',
+// 					alignItems: 'center',
+// 					height: '100vh',
+// 					position: 'fixed',
+// 					top: 0,
+// 					left: 0,
+// 					width: '100%',
+// 					backgroundColor: 'rgba(255, 255, 255, 0.8)',
+// 					zIndex: 2000
+// 				}}>
+
+// 				</div>
+// 			)}
+//     </div>
+//   );
+// };
+
+// export default App;
+
+
+
+
+
+
+
+
+
+//new sidebar
+// import { Sidebar, Menu, MenuItem } from "react-pro-sidebar";
+// import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
+// import GridViewRoundedIcon from "@mui/icons-material/GridViewRounded";
+// import ReceiptRoundedIcon from "@mui/icons-material/ReceiptRounded";
+// import MonetizationOnRoundedIcon from "@mui/icons-material/MonetizationOnRounded";
+// import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
+// import React, { useEffect, useState } from 'react';
+// import { AppBar, Toolbar, IconButton, Avatar, Divider } from '@mui/material';
+// import MenuIcon from '@mui/icons-material/Menu';
+// import { useNavigate, NavLink } from 'react-router-dom';
+// import SepioLogo from './../image/Sepio_Logo.png';
+
+// const App = ({ icon_username }) => {
+//   const navigate = useNavigate();
+//   const [sidebarOpen, setSidebarOpen] = useState(true);
+//   const [userPrivileges, setUserPrivileges] = useState(null);
+//   const [isLoading, setIsLoading] = useState(true);
+
+//   useEffect(() => {
+// 		if (icon_username) {
+// 			fetch(`/api/user/${icon_username}`)
+// 				.then(response => response.json())
+// 				.then(data => {
+// 					setUserPrivileges(data.privileges);
+// 					setTimeout(() => {
+// 						setIsLoading(false);
+// 					}, 100);
+// 				})
+// 				.catch(error => {
+// 					console.log('Error fetching user privileges', error);
+// 					setIsLoading(false);
+// 				});
+// 		}
+// 	}, [icon_username]);
+
+//   const toggleSidebar = () => {
+//     setSidebarOpen(!sidebarOpen);
+//   };
+
+//   useEffect(() => {
+//     const handleResize = () => {
+//       if (window.innerWidth <= 960) {
+//         setSidebarOpen(false);
+//       } else {
+//         setSidebarOpen(true);
+//       }
+//     };
+
+//     window.addEventListener("resize", handleResize);
+//     handleResize();
+
+//     return () => window.removeEventListener("resize", handleResize);
+//   }, []);
+
+//   return (
+//     <div>
+//       <AppBar position="static" style={{ backgroundColor: '#ffffff', color: '#000000', marginBottom: '1px', zIndex: 1201 }}>
+//         <Toolbar>
+//           <IconButton edge="start" color="inherit" aria-label="menu" onClick={toggleSidebar}>
+//             <MenuIcon />
+//           </IconButton>
+//           <IconButton edge="start" color="inherit" aria-label="logo">
+//             <img alt="logo" style={{ cursor: 'pointer', height: '40px' }} src={SepioLogo} />
+//           </IconButton>
+//           <div style={{ flexGrow: 1 }} />
+//           <div style={{ marginRight: '10px' }}>
+//             <NavLink to='/' style={{ textDecoration: 'none' }}>
+//               <span className='pi pi-sign-out' style={{ marginRight: '5px' }} />
+//               Logout
+//             </NavLink>
+//           </div>
+//           <IconButton
+//             style={{ marginRight: '-25px' }}
+//             color="inherit"
+//             aria-label="user account"
+//             aria-controls="menu-appbar"
+//             aria-haspopup="true"
+//           >
+//             <Avatar sx={{ width: 32, height: 32 }}>U</Avatar>
+//           </IconButton>
+//         </Toolbar>
+//       </AppBar>
+//       <div style={{ display: "flex", height: "100vh" }}>
+//         <Sidebar className='border-end custom-sidebar' collapsed={!sidebarOpen} style={{ backgroundColor: '#FAFAFA' }}>
+//           <Menu style={{ marginTop: '10px' }}>
+//             <NavLink to='/querytool/mac' className='nav-link'>
+//               <MenuItem style={{ marginLeft: '-160px' }} icon={<GridViewRoundedIcon style={{ marginLeft: '300px' }} />}>
+//                 {sidebarOpen && 'MAC'}
+//               </MenuItem>
+//             </NavLink>
+//             <NavLink to='/querytool/settings' className='nav-link'>
+//               <MenuItem style={{ marginLeft: '-140px' }} icon={<GridViewRoundedIcon style={{ marginLeft: '258px' }} />}>
+//                 {sidebarOpen && 'Settings'}
+//               </MenuItem>
+//             </NavLink>
+//             {!isLoading && userPrivileges !== 'UI_USER' && (
+//             <NavLink to='/querytool/createuser' className='nav-link'>
+//               <MenuItem style={{ marginLeft: '-160px' }} icon={<GridViewRoundedIcon style={{ marginLeft: '300px' }} />}>
+//                 {sidebarOpen && 'Users'}
+//               </MenuItem>
+//             </NavLink>
+//             )}
+//             {/* {!isLoading && userPrivileges !== 'UI_USER' && (
+//               <MenuItem style={{ marginLeft: '-160px' }}  icon={<LogoutRoundedIcon />}>Logout</MenuItem>
+//             )} */}
+//           </Menu>
+//         </Sidebar>
+//       </div>
+//       {/* {isLoading && (
+// 				<div style={{
+// 					display: 'flex',
+// 					justifyContent: 'center',
+// 					alignItems: 'center',
+// 					height: '100vh',
+// 					position: 'fixed',
+// 					top: 0,
+// 					left: 0,
+// 					width: '100%',
+// 					backgroundColor: 'rgba(255, 255, 255, 0.8)',
+// 					zIndex: 2000
+// 				}}>
+
+// 				</div>
+// 			)} */}
+//     </div>
+//   );
+// };
+
+// export default App;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Sidebar } from "react-pro-sidebar";
+import {Menu, MenuItem} from '@mui/material';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
+import { AppBar, Toolbar, IconButton, Avatar, Divider } from '@mui/material';
+import MenuIcon from '@mui/icons-material/Menu';
+import { useNavigate, NavLink } from 'react-router-dom';
+import { CSidebar, CSidebarNav, CNavItem, CContainer, CForm } from '@coreui/react';
+import { RiDashboardLine } from 'react-icons/ri';
+import SepioLogo from './../image/Sepio_Logo.png';
+
+
+import SepioMainLogo from './../image/QueryTool.png';
+
+export default function Layout({ icon_username }) {
+	const navigate = useNavigate();
+	const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+	const [userPrivileges, setUserPrivileges] = useState(null);
+	const [isLoading, setIsLoading] = useState(true);
+	const [isMiddleSize, setIsMiddleSize] = useState(false);
+	const [isLow, setIsLow] = useState(false);
+	const [menuAnchorEl, setMenuAnchorEl] = useState(null);
+	const [prevWidth, setPrevWidth] = useState(window.innerWidth);
+	const [logoHeight, setLogoHeight] = useState('60px');
+	const [dropDown, setDropDown] = useState(null);
+	const open = Boolean(dropDown);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [isScrollDisabled, setIsScrollDisabled] = useState(true);
+
+	const sidebarRef = useRef(null);
+	const appBarRef = useRef(null);
+
+	useEffect(() => {
+		if (icon_username) {
+			fetch(`/api/user/${icon_username}`)
+				.then(response => response.json())
+				.then(data => {
+					setUserPrivileges(data.privileges);
+					setTimeout(() => {
+						setIsLoading(false);
+					}, 100);
+				})
+				.catch(error => {
+					console.log('Error fetching user privileges', error);
+					setIsLoading(false);
+				});
+		}
+	}, [icon_username]);
+
+
+
+  useEffect(() => {
+    if(isScrollDisabled){
+        document.body.style.overflow = 'hidden';
+    }else{
+        document.body.style.overflow = 'auto';
+    }
+
+    return () => {
+        document.body.style.overflow = 'auto';
+    }
+}, [isScrollDisabled]);
+
+  const toggleSidebar = () => {
+    setSidebarOpen(!sidebarOpen);
+  };
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth <= 960) {
+        setSidebarOpen(false);
+      } else {
+        setSidebarOpen(true);
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+    handleResize();
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+
+	const handleResize = () => {
+		if (window.innerWidth <= 480) {
+			setLogoHeight('20px');
+		} else if (window.innerWidth <= 868) {
+			setLogoHeight('20px');
+		} else {
+			setLogoHeight('40px');
+		}
 	};
-	export default App;
+
+
+	useEffect(() => {
+		window.addEventListener('resize', handleResize);
+		handleResize();
+
+		return () => {
+			window.removeEventListener('resize', handleResize);
+		};
+	}, []);
+
+
+	const handleClicks = (event) => {
+		setDropDown(event.currentTarget);
+	};
+
+	const handleClose = () => {
+		setDropDown(null);
+	};
+
+	return (
+		<div>
+			<AppBar ref={appBarRef} position="static" style={{ backgroundColor: '#ffffff', color: '#000000', marginBottom: '1px', zIndex: 1201 }}>
+				<Toolbar>
+					<IconButton edge="start" color="inherit" aria-label="menu" onClick={toggleSidebar}>
+						<MenuIcon />
+					</IconButton>
+					<IconButton edge="start" color="inherit" aria-label="logo">
+						<img alt="logo" style={{ cursor: 'pointer', height: '40px' }} src={SepioLogo} />
+					</IconButton>
+
+					<div style={{ flexGrow: 1 }} />
+					<div style={{ marginRight: '10px' }}>
+						<NavLink to='/' style={{ textDecoration: 'none' }}>
+							<span className='pi pi-sign-out' style={{ marginRight: '5px' }} />
+							Logout
+						</NavLink>
+					</div>
+
+					<IconButton
+						style={{ marginRight: '-25px' }}
+						color="inherit"
+						aria-label="user account"
+						aria-controls="menu-appbar"
+						aria-haspopup="true"
+						onClick={handleClicks}
+					>
+						<Avatar sx={{ width: 32, height: 32 }}>U</Avatar>
+					</IconButton>
+
+					<Menu
+						anchorEl={dropDown}
+						id='account-menu'
+						open={open}
+						onClose={handleClose}
+						onClick={handleClose}
+						PaperProps={{
+							elevation: 5,
+							sx: {
+								width: '140px',
+								borderRadius: '10px',
+								overflow: 'visible',
+								mt: 1,
+								'&::before': {
+									content: '""',
+									display: 'inline-block',
+									position: 'absolute',
+									top: 0,
+									right: 19,
+									width: 10,
+									height: 10,
+									bgcolor: 'background.paper',
+									transform: 'translateY(-50%) rotate(45deg)',
+									zIndex: 0,
+								},
+							},
+						}}
+						transformOrigin={{
+							vertical: 'top',
+							horizontal: 'center',
+						}}
+						anchorOrigin={{
+							vertical: 'bottom',
+							horizontal: 'center',
+						}}
+					>
+						<MenuItem sx={{ display: 'flex', justifyContent: 'center' }} title='Profile'>
+							<p style={{ marginBottom: '0px' }}>
+								User: {icon_username}
+							</p>
+						</MenuItem>
+						<Divider spacing={1}></Divider>
+						<MenuItem sx={{ display: 'flex', justifyContent: 'center' }} title='Profile'>
+							<p style={{ marginBottom: '0px' }}>
+								{userPrivileges}
+							</p>
+						</MenuItem>
+					</Menu>
+				</Toolbar>
+			</AppBar>
+      <div style={{ display: "flex", height: "100vh" }}>
+	  <Sidebar className='border-end' collapsed={!sidebarOpen} style={{ backgroundColor: '#FAFAFA' }}>
+				<CSidebarNav>
+					<CContainer fluid>
+						<CForm className='d-flex'></CForm>
+					</CContainer>
+					<CNavItem>
+						<NavLink to='/querytool/mac' className='nav-link'>
+							<RiDashboardLine className='nav-icon' /> {sidebarOpen && 'MAC'}
+						</NavLink>
+					</CNavItem>
+					<CNavItem>
+						<NavLink to='/querytool/settings' className='nav-link'>
+							<RiDashboardLine className='nav-icon' /> { sidebarOpen && 'Settings'}
+						</NavLink>
+						{!isLoading && userPrivileges !== 'UI_USER' && (
+							<NavLink to='/querytool/createuser' className='nav-link'>
+								<RiDashboardLine className='nav-icon' /> {sidebarOpen && 'Users'}
+							</NavLink>
+							)}
+						
+					</CNavItem>
+				</CSidebarNav>
+				</Sidebar>
+		
+				<div style={{
+				display: 'flex',
+				justifyContent: 'center',
+				marginTop: '-600px',
+				top: '4px',
+				marginRight: '-150px'
+			}}>
+				<img src={SepioMainLogo} style={{
+					position: 'fixed',
+					top: '180px',
+					left: '50%',
+					transform: 'translateX(-50%)',
+					zIndex: 1000,
+					height: logoHeight,
+					transition: 'height 0.3s ease'
+				}} className='mr-2' />
+			</div>
+			
+
+			{/* Render loading spinner if isLoading is true */}
+			{/* {isLoading && (
+				<div style={{
+					display: 'flex',
+					justifyContent: 'center',
+					alignItems: 'center',
+					height: '100vh',
+					position: 'fixed',
+					top: 0,
+					left: 0,
+					width: '100%',
+					backgroundColor: 'rgba(255, 255, 255, 0.8)',
+					zIndex: 2000
+				}}>
+
+				</div>
+			)} */}
+      </div>
+		</div>
+	);
+}

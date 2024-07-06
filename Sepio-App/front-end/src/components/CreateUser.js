@@ -4007,21 +4007,426 @@
 
 
 
+// //new sidebar
+// import React, { useEffect, useState, useRef, useCallback } from 'react';
+// import { AppBar, Toolbar, IconButton,  Avatar, Tooltip, Divider } from '@mui/material';
+// import MenuIcon from '@mui/icons-material/Menu';
+// import { Button } from 'primereact/button';
+// import { Menubar } from 'primereact/menubar';
+// import { NavLink, useNavigate } from 'react-router-dom';
+// import { Sidebar, Menu, MenuItem } from "react-pro-sidebar";
+// import { RiDashboardLine } from 'react-icons/ri';
+// import SepioLogo from './../image/Sepio_Logo.png';
+// import { DataTable } from 'primereact/datatable';
+// import { Column } from 'primereact/column';
+// import axios from 'axios';
+// import { Paginator } from 'primereact/paginator';
+// import RootView from './RootView'
+// import GridViewRoundedIcon from "@mui/icons-material/GridViewRounded";
+// import './Layout.css';
+
+// export default function Layout({ icon_username }) {
+// 	const navigate = useNavigate();
+// 	const [first, setFirst] = useState(0);
+// 	const [rows, setRows] = useState(10);
+// 	const [users, setUsers] = useState([]);
+// 	const [filteredUsers, setFilteredUsers] = useState([]);
+// 	const [searchTerm, setSearchTerm] = useState('');
+// 	const [searchField, setSearchField] = useState('all');
+// 	const [dropDown, setDropDown] = useState(null);
+// 	const [sidebarOpen, setSidebarOpen] = useState(true);
+// 	const open = Boolean(dropDown);
+
+// 	//
+
+// 	const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+// 	const [userPrivileges, setUserPrivileges] = useState(null);
+// 	const [isLoading, setIsLoading] = useState(true);
+// 	const [isMiddleSize, setIsMiddleSize] = useState(false);
+// 	const [isLow, setIsLow] = useState(false);
+// 	const [menuAnchorEl, setMenuAnchorEl] = useState(null);
+// 	const [prevWidth, setPrevWidth] = useState(window.innerWidth);
+// 	const [logoHeight, setLogoHeight] = useState('60px');
+
+
+// 	const sidebarRef = useRef(null);
+// 	const appBarRef = useRef(null);
+
+
+
+// 	const toggleSidebar = () => {
+// 		setSidebarOpen(!sidebarOpen);
+// 	  };
+	
+
+
+//   useEffect(() => {
+//     const handleResize = () => {
+//       if (window.innerWidth <= 960) {
+//         setSidebarOpen(false);
+//       } else {
+//         setSidebarOpen(true);
+//       }
+//     };
+
+// 	window.addEventListener("resize", handleResize);
+//     handleResize();
+
+//     return () => window.removeEventListener("resize", handleResize);
+//   }, []);
+
+
+// 	useEffect(() => {
+// 		if (icon_username) {
+// 			fetch(`/api/user/${icon_username}`)
+// 				.then(response => response.json())
+// 				.then(data => {
+// 					setUserPrivileges(data.privileges);
+// 					setTimeout(() => {
+// 						setIsLoading(false);
+// 					}, 100)
+// 				})
+// 				.catch(error => {
+// 					console.log('Error feching the privileges from server', error);
+// 					setIsLoading(false);
+// 				})
+// 		}
+// 	}, [icon_username]);
+
+
+
+
+
+
+
+
+
+// 	const handleClicks = (event) => {
+// 		setDropDown(event.currentTarget);
+// 	};
+
+// 	const handleClose = () => {
+// 		setDropDown(null);
+// 	};
+
+
+
+
+// 	//
+
+// 	useEffect(() => {
+// 		const handleKeydown = (event) => {
+// 			if ((event.ctrlKey || event.metaKey) && (event.key === '=' || event.key === '-' || event.key === '0')) {
+// 				event.preventDefault();
+// 			}
+// 		};
+
+// 		window.addEventListener('keydown', handleKeydown);
+
+// 		return () => {
+// 			window.removeEventListener('keydown', handleKeydown);
+// 		};
+// 	}, []);
+
+// 	useEffect(() => {
+// 		axios.get('/user/all')
+// 			.then(response => {
+// 				console.log('Fetched users:', response.data);
+// 				setUsers(response.data);
+// 				setFilteredUsers(response.data);
+// 			})
+// 			.catch(error => {
+// 				console.error('Error fetching users:', error);
+// 			});
+// 	}, []);
+
+// 	const handleLogout = () => {
+// 		navigate('/');
+// 	};
+
+// 	const handleClick = (event) => {
+// 		setDropDown(event.currentTarget);
+// 	};
+
+
+
+// 	const handleNew = () => {
+// 		navigate('/querytool/usersubmit');
+// 	};
+
+// 	const onPage = (event) => {
+// 		setFirst(event.first);
+// 		setRows(event.rows);
+// 	};
+
+// 	const bodyTemplate = (rowData, column) => (
+// 		<Tooltip title={rowData[column.field]} arrow>
+// 			<span
+// 				style={{
+// 					whiteSpace: 'nowrap',
+// 					overflow: 'hidden',
+// 					textOverflow: 'ellipsis',
+// 					display: 'inline-block',
+// 					maxWidth: '200px',
+// 				}}
+// 			>
+// 				{rowData[column.field]}
+// 			</span>
+// 		</Tooltip>
+// 	);
+
+// 	const passwordTemplate = (rowData) => {
+// 		const value = rowData.password || '';
+// 		return (
+// 			<Tooltip title={value} arrow>
+// 				<span
+// 					style={{
+// 						whiteSpace: 'normal',
+// 						overflow: 'visible',
+// 						textOverflow: 'clip',
+// 						display: 'inline-block',
+// 						maxWidth: '200px',
+// 					}}
+// 				>
+// 					{value ? '*'.repeat(8) : ''}
+// 				</span>
+// 			</Tooltip>
+// 		);
+// 	};
+
+// 	const secondMenubarEnd = (
+// 		<div style={{ display: 'flex', alignItems: 'center' }}>
+// 			<div style={{ color: 'white', padding: '10px', borderRadius: '5px', marginLeft: '10px' }}>
+// 				Users
+// 			</div>
+// 			<input
+// 				type="text"
+// 				value={searchTerm}
+// 				onChange={(e) => setSearchTerm(e.target.value)}
+// 				placeholder="Search..."
+// 				style={{ padding: '5px', marginLeft: '10px' }}
+// 			/>
+// 			<select
+// 				value={searchField}
+// 				onChange={(e) => setSearchField(e.target.value)}
+// 				style={{ padding: '5px', marginLeft: '10px' }}
+// 			> 
+// 			    <option value = "all">All</option>
+// 				<option value="id">ID</option>
+// 				<option value="name">Username</option>
+// 				<option value="password">Password</option>
+// 				<option value="privileges">Privileges</option>
+// 			</select>
+// 		</div>
+// 	);
+
+// 	const second = (
+// 		<div>
+// 			<Button label='New' icon='pi pi-plus' onClick={handleNew} style={{ backgroundColor: '#183462' }} />
+// 		</div>
+// 	);
+
+// 	// useEffect(() => {
+// 	// 	const filtered = users.filter(user =>
+// 	// 		user[searchField].toString().toLowerCase().includes(searchTerm.toLowerCase())
+// 	// 	);
+// 	// 	setFilteredUsers(filtered);
+// 	// }, [searchTerm, searchField, users]);
+
+// 	useEffect(() => {
+//         const filtered = users.filter(user => {
+//             if (searchField === 'all') {
+//                 return Object.values(user).some(value =>
+//                     String(value).toLowerCase().includes(searchTerm.toLowerCase())
+//                 );
+//             }
+//             return String(user[searchField]).toLowerCase().includes(searchTerm.toLowerCase());
+//         });
+//         setFilteredUsers(filtered);
+//     }, [searchTerm, searchField, users]);
+
+// 	const padData = (data, rowsPerPage) => {
+// 		const currentPage = Math.ceil(first / rowsPerPage) + 1;
+// 		const totalPages = Math.ceil(filteredUsers.length / rowsPerPage);
+
+// 		let paddingRowsNeeded = rowsPerPage - data.length;
+// 		if (currentPage === totalPages) {
+// 			paddingRowsNeeded = Math.max(0, paddingRowsNeeded);
+// 		}
+
+// 		const paddedData = [...data];
+
+// 		for (let i = 0; i < paddingRowsNeeded; i++) {
+// 			paddedData.push({ id: ' - ', username: '', password: '', privileges: '' });
+// 		}
+
+// 		return paddedData;
+// 	};
+
+// 	const paginatedUsers = padData(filteredUsers.slice(first, first + rows), rows);
+
+
+
+// 	const handelquerytool = () => {
+// 		navigate('/querytool');
+// 	}
+
+// 	return (
+// 		<div>
+// 			<AppBar position="static" style={{ backgroundColor: '#ffffff', color: '#000000', marginBottom: '1px', zIndex: 1201 }}>
+//         <Toolbar>
+//           <IconButton edge="start" color="inherit" aria-label="menu" onClick={toggleSidebar}>
+//             <MenuIcon />
+//           </IconButton>
+//           <IconButton edge="start" color="inherit" aria-label="logo">
+//             <img alt="logo" style={{ cursor: 'pointer', height: '40px' }} src={SepioLogo} />
+//           </IconButton>
+//           <div style={{ flexGrow: 1 }} />
+//           <div style={{ marginRight: '10px' }}>
+//             <NavLink to='/' style={{ textDecoration: 'none' }}>
+//               <span className='pi pi-sign-out' style={{ marginRight: '5px' }} />
+//               Logout
+//             </NavLink>
+//           </div>
+//           <IconButton
+//             style={{ marginRight: '-25px' }}
+//             color="inherit"
+//             aria-label="user account"
+//             aria-controls="menu-appbar"
+//             aria-haspopup="true"
+//           >
+//             <Avatar sx={{ width: 32, height: 32 }}>U</Avatar>
+//           </IconButton>
+//         </Toolbar>
+//       </AppBar>
+//       <div style={{ display: "flex", height: "100vh",  overflow: 'auto' }}>
+//         <Sidebar className='border-end' collapsed={!sidebarOpen} style={{ backgroundColor: '#FAFAFA' }}>
+//           <Menu style={{ marginTop: '10px' }}>
+//             <NavLink to='/querytool/mac' className='nav-link'>
+//               <MenuItem style={{ marginLeft: '-160px' }} icon={<GridViewRoundedIcon style={{ marginLeft: '300px' }} />}>
+//                 {sidebarOpen && 'MAC'}
+//               </MenuItem>
+//             </NavLink>
+//             <NavLink to='/querytool/settings' className='nav-link'>
+//               <MenuItem style={{ marginLeft: '-140px' }} icon={<GridViewRoundedIcon style={{ marginLeft: '258px' }} />}>
+//                 {sidebarOpen && 'Settings'}
+//               </MenuItem>
+//             </NavLink>
+//             {!isLoading && userPrivileges !== 'UI_USER' && (
+//             <NavLink to='/querytool/createuser' className='nav-link'>
+//               <MenuItem style={{ marginLeft: '-160px' }} icon={<GridViewRoundedIcon style={{ marginLeft: '300px' }} />}>
+//                 {sidebarOpen && 'Users'}
+//               </MenuItem>
+//             </NavLink>
+//             )}
+//             {/* {!isLoading && userPrivileges !== 'UI_USER' && (
+//               <MenuItem style={{ marginLeft: '-160px' }}  icon={<LogoutRoundedIcon />}>Logout</MenuItem>
+//             )} */}
+//           </Menu>
+//         </Sidebar>
+                
+// 				<div style={{ flex: 1, paddingLeft: '0px', marginTop: '-12px'}}>
+// 					<Menubar start={secondMenubarEnd} end={second} style={{ backgroundColor: '#183462', width: '100%', top: '0', zIndex: 1000, marginTop: '10px' }} />
+// 					<div style={{ marginTop: '-20px' }}>
+// 						<DataTable
+						
+// 							value={paginatedUsers}
+// 							responsiveLayout='scroll'
+// 							style={{ border: '1px solid #dee2e6', borderRadius: '10px', marginTop: '20px'}}
+// 							className='p-datatable-gridlines hoverable-rows'
+// 						>
+// 							<Column
+// 								field='id'
+// 								header='ID'
+// 								style={{ borderRight: '1px solid #dee2e6', width: '100px' }}
+// 								body={bodyTemplate}
+// 							></Column>
+// 							<Column
+// 								field='name'
+// 								header='Username'
+// 								style={{ borderRight: '1px solid #dee2e6', width: '100px' }}
+// 								body={bodyTemplate}
+// 							></Column>
+// 							<Column
+// 								field='password'
+// 								header='Password'
+// 								style={{ borderRight: '1px solid #dee2e6', width: '200px' }}
+// 								body={passwordTemplate}
+// 							></Column>
+// 							<Column
+// 								field='privileges'
+// 								header='Privileges'
+// 								style={{ borderRight: '1px solid #dee2e6', width: '150px' }}
+// 								body={bodyTemplate}
+// 							></Column>
+// 						</DataTable>
+// 						<div style={{ display: 'flex', justifyContent: 'center', marginTop: '80px', marginLeft: '-60px' }}>
+// 							<Paginator first={first} rows={rows} totalRecords={filteredUsers.length} onPageChange={onPage} rowsPerPageOptions={[10]} />
+// 						</div>
+// 					</div>
+// 				</div>
+// 			</div>
+// 			{/* <div style={{ display: 'flex', justifyContent: 'center', marginTop: '-20px', marginLeft: '150px'}}>
+//                 <Paginator first={first} rows={rows} totalRecords={filteredUsers.length} onPageChange={onPage} rowsPerPageOptions={[10]} />
+//             </div> */}
+// 			{/* {isLoading && (
+// 				<div style={{
+// 					display: 'flex',
+// 					justifyContent: 'center',
+// 					alignItems: 'center',
+// 					height: '100vh',
+// 					position: 'fixed',
+// 					top: 0,
+// 					left: 0,
+// 					width: '100%',
+// 					backgroundColor: 'rgba(255, 255, 255, 0.8)',
+// 					zIndex: 2000
+// 				}}>
+
+// 				</div>
+// 			)} */}
+			
+// 		</div>
+// 	);
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 import React, { useEffect, useState, useRef, useCallback } from 'react';
-import { AppBar, Toolbar, IconButton, Menu, MenuItem, Avatar, Tooltip, Divider } from '@mui/material';
+import { AppBar, Toolbar, IconButton,  Avatar, Tooltip, Divider } from '@mui/material';
+import { CSidebar, CSidebarNav, CNavItem, CContainer, CForm } from '@coreui/react';
 import MenuIcon from '@mui/icons-material/Menu';
 import { Button } from 'primereact/button';
 import { Menubar } from 'primereact/menubar';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { CSidebar, CSidebarNav, CNavItem, CContainer, CForm } from '@coreui/react';
+import { Sidebar} from "react-pro-sidebar";
+import {Menu, MenuItem} from '@mui/material';
 import { RiDashboardLine } from 'react-icons/ri';
 import SepioLogo from './../image/Sepio_Logo.png';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import axios from 'axios';
 import { Paginator } from 'primereact/paginator';
+import RootView from './RootView'
+import GridViewRoundedIcon from "@mui/icons-material/GridViewRounded";
 import './Layout.css';
 
 export default function Layout({ icon_username }) {
@@ -4033,6 +4438,7 @@ export default function Layout({ icon_username }) {
 	const [searchTerm, setSearchTerm] = useState('');
 	const [searchField, setSearchField] = useState('all');
 	const [dropDown, setDropDown] = useState(null);
+	const [sidebarOpen, setSidebarOpen] = useState(true);
 	const open = Boolean(dropDown);
 
 	//
@@ -4050,6 +4456,28 @@ export default function Layout({ icon_username }) {
 	const sidebarRef = useRef(null);
 	const appBarRef = useRef(null);
 
+
+
+	const toggleSidebar = () => {
+		setSidebarOpen(!sidebarOpen);
+	  };
+	
+
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth <= 960) {
+        setSidebarOpen(false);
+      } else {
+        setSidebarOpen(true);
+      }
+    };
+
+	window.addEventListener("resize", handleResize);
+    handleResize();
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
 
 	useEffect(() => {
@@ -4071,54 +4499,7 @@ export default function Layout({ icon_username }) {
 
 
 
-	const toggleSidebar = useCallback(() => {
-		setIsSidebarOpen(prevState => !prevState);
-	}, []);
 
-
-
-	useEffect(() => {
-		const handleResize = () => {
-			const width = window.innerWidth;
-			if (width > 602 && width < 983) {
-				setIsMiddleSize(true);
-				setIsLow(false);
-				setIsSidebarOpen(false);
-			} else if (width > 102 && width <= 602) {
-				setIsMiddleSize(false);
-				setIsLow(true);
-				setIsSidebarOpen(false);
-			} else {
-				setIsMiddleSize(false);
-				setIsLow(false);
-				if (prevWidth <= 983 || prevWidth <= 602) {
-					setIsSidebarOpen(true);
-				}
-			}
-			setPrevWidth(width);
-		};
-
-		handleResize();
-		window.addEventListener('resize', handleResize);
-		return () => window.removeEventListener('resize', handleResize);
-	}, [prevWidth]);
-
-	useEffect(() => {
-		const handleClickOutside = (event) => {
-			if (isMiddleSize || isLow) {
-				if (sidebarRef.current && !sidebarRef.current.contains(event.target) && appBarRef.current && !appBarRef.current.contains(event.target) && isSidebarOpen) {
-					setIsSidebarOpen(false);
-				}
-			}
-		};
-
-		document.addEventListener('click', handleClickOutside);
-		return () => {
-			document.removeEventListener('click', handleClickOutside);
-		};
-	}, [isSidebarOpen, isMiddleSize, isLow]);
-
-	const sidebarStyle = isMiddleSize ? { marginTop: '65px' } : isLow ? { marginTop: '56px' } : {};
 
 
 
@@ -4163,13 +4544,16 @@ export default function Layout({ icon_username }) {
 			});
 	}, []);
 
-	const handleLogout = () => {
-		navigate('/');
-	};
+	
 
 	const handleClick = (event) => {
 		setDropDown(event.currentTarget);
 	};
+
+
+	const handelquery = () => {
+		navigate('/querytool');
+	}
 
 
 
@@ -4296,24 +4680,22 @@ export default function Layout({ icon_username }) {
 
 	return (
 		<div>
-			<AppBar ref={appBarRef} position="static" style={{ backgroundColor: '#ffffff', color: '#000000', marginBottom: '1px', zIndex: 1201 }}>
-				<Toolbar>
-					<IconButton edge="start" color="inherit" aria-label="menu" onClick={toggleSidebar}>
-						<MenuIcon />
-					</IconButton>
-					<IconButton edge="start" color="inherit" aria-label="logo">
-						<img alt="logo" style={{ cursor: 'pointer', height: '40px' }} src={SepioLogo} onClick={handelquerytool} />
-					</IconButton>
-
-					<div style={{ flexGrow: 1 }} />
-					<div style={{ marginRight: '10px' }}>
-						<NavLink to='/' style={{ textDecoration: 'none' }}>
-							<span className='pi pi-sign-out' style={{ marginRight: '5px' }} />
-							Logout
-						</NavLink>
-					</div>
-
-					<IconButton
+			<AppBar position="static" style={{ backgroundColor: '#ffffff', color: '#000000', marginBottom: '1px', zIndex: 1201 }}>
+        <Toolbar>
+          <IconButton edge="start" color="inherit" aria-label="menu" onClick={toggleSidebar}>
+            <MenuIcon />
+          </IconButton>
+          <IconButton edge="start" color="inherit" aria-label="logo">
+            <img alt="logo" style={{ cursor: 'pointer', height: '40px' }} src={SepioLogo} onClick = {handelquery} />
+          </IconButton>
+          <div style={{ flexGrow: 1 }} />
+          <div style={{ marginRight: '10px' }}>
+            <NavLink to='/' style={{ textDecoration: 'none' }}>
+              <span className='pi pi-sign-out' style={{ marginRight: '5px' }} />
+              Logout
+            </NavLink>
+          </div>
+		  <IconButton
 						style={{ marginRight: '-25px' }}
 						color="inherit"
 						aria-label="user account"
@@ -4372,39 +4754,41 @@ export default function Layout({ icon_username }) {
 							</p>
 						</MenuItem>
 					</Menu>
-				</Toolbar>
-			</AppBar>
-			<div style={{ display: 'flex', overflow: 'auto' }}>
-				<CSidebar ref={sidebarRef} className='border-end custom-sidebar' visible={isSidebarOpen} style={sidebarStyle}>
-					<CSidebarNav>
-						<CContainer fluid>
-							<CForm className='d-flex'></CForm>
-						</CContainer>
-						<CNavItem>
-							<NavLink to='/querytool/mac' className='nav-link'>
-								<RiDashboardLine className='nav-icon' /> MAC
+        </Toolbar>
+      </AppBar>
+      <div style={{ display: "flex", height: "100vh",  overflow: 'auto' }}>
+	  <Sidebar className='border-end' collapsed={!sidebarOpen} style={{ backgroundColor: '#FAFAFA' }}>
+				<CSidebarNav>
+					<CContainer fluid>
+						<CForm className='d-flex'></CForm>
+					</CContainer>
+					<CNavItem>
+						<NavLink to='/querytool/mac' className='nav-link'>
+							<RiDashboardLine className='nav-icon' /> {sidebarOpen && 'MAC'}
+						</NavLink>
+					</CNavItem>
+					<CNavItem>
+						<NavLink to='/querytool/settings' className='nav-link'>
+							<RiDashboardLine className='nav-icon' /> { sidebarOpen && 'Settings'}
+						</NavLink>
+						{!isLoading && userPrivileges !== 'UI_USER' && (
+							<NavLink to='/querytool/createuser' className='nav-link'>
+								<RiDashboardLine className='nav-icon' /> {sidebarOpen && 'Users'}
 							</NavLink>
-						</CNavItem>
-						<CNavItem>
-							<NavLink to='/querytool/settings' className='nav-link'>
-								<RiDashboardLine className='nav-icon' /> Settings
-							</NavLink>
-							{!isLoading && userPrivileges !== 'UI_USER' && (
-								<NavLink to='/querytool/createuser' className='nav-link'>
-									<RiDashboardLine className='nav-icon' /> Users
-								</NavLink>
 							)}
-						</CNavItem>
-					</CSidebarNav>
-				</CSidebar>
-
-				<div style={{ flex: 1, paddingLeft: '0px', marginTop: '-12px' }}>
-					<Menubar start={secondMenubarEnd} end={second} style={{ backgroundColor: '#183462', width: '100%', position: '', top: '0', zIndex: 1000, marginTop: '10px' }} />
+						
+					</CNavItem>
+				</CSidebarNav>
+				</Sidebar>
+                
+				<div style={{ flex: 1, paddingLeft: '0px', marginTop: '-12px'}}>
+					<Menubar start={secondMenubarEnd} end={second} style={{ backgroundColor: '#183462', width: '100%', top: '0', zIndex: 1000, marginTop: '10px' }} />
 					<div style={{ marginTop: '-20px' }}>
 						<DataTable
+						
 							value={paginatedUsers}
 							responsiveLayout='scroll'
-							style={{ border: '1px solid #dee2e6', borderRadius: '10px', marginTop: '20px' }}
+							style={{ border: '1px solid #dee2e6', borderRadius: '10px', marginTop: '20px'}}
 							className='p-datatable-gridlines hoverable-rows'
 						>
 							<Column
@@ -4457,14 +4841,10 @@ export default function Layout({ icon_username }) {
 
 				</div>
 			)}
+			
 		</div>
 	);
 }
-
-
-
-
-
 
 
 

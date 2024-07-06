@@ -37,9 +37,14 @@ body, html, #root {
 }
 
 .custom-sidebar {
-    height: 100vh;
+    height: 10vh;
     border-right: 1px solid #ccc;
+    
+
 }
+
+
+
 
 /* .content {
     flex: 1;

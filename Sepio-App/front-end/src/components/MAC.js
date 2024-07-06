@@ -2540,15 +2540,430 @@
 
 
 
+//new sidebar
+// import React, { useState, useRef, useEffect, useCallback } from 'react';
+// import { AppBar, Toolbar, IconButton, Avatar, Tooltip, Divider } from '@mui/material';
+// import GridViewRoundedIcon from "@mui/icons-material/GridViewRounded";
+// import MenuIcon from '@mui/icons-material/Menu';
+// import { Menubar } from 'primereact/menubar';
+// import { Button } from 'primereact/button';
+// import { useNavigate } from 'react-router-dom';
+// import { InputText } from 'primereact/inputtext';
+// import { NavLink } from 'react-router-dom';
+// import { Sidebar, Menu, MenuItem } from "react-pro-sidebar";
+// import { RiDashboardLine } from 'react-icons/ri';
+// import { DataTable } from 'primereact/datatable';
+// import { Column } from 'primereact/column';
+// import axios from 'axios';
+// import SepioLogo from './../image/Sepio_Logo.png';
+// import { Toast } from 'primereact/toast';
+// import Switch from '@mui/material/Switch';
+// import Typography from '@mui/material/Typography';
+// import { Oval } from 'react-loader-spinner';
+
+// export default function Layout({ icon_username }) {
+// 	const navigate = useNavigate();
+// 	const [searchQuery, setSearchQuery] = useState('');
+// 	const [responseMessage, setResponseMessage] = useState('');
+// 	const [foundMacAddresses, setFoundMacAddresses] = useState([]);
+// 	const [inputWidth, setInputWidth] = useState('300px');
+// 	const [marginLeft, setMarginLeft] = useState('auto');
+// 	const [isScrollDisabled, setIsScrollDisabled] = useState(true);
+// 	const [isValidationEnabled, setIsValidationEnabled] = useState(true);
+// 	const [userPrivileges, setUserPrivileges] = useState(null);
+// 	const [isLoading, setIsLoading] = useState(true);
+	
+// 	const toast = useRef(null);
+// 	const [prevWidth, setPrevWidth] = useState(window.innerWidth);
+// 	const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+// 	const [isLow, setIsLow] = useState(false);
+// 	const [isMiddleSize, setIsMiddleSize] = useState(false);
+// 	const [dropDown, setDropDown] = useState(null)
+// 	const open = Boolean(dropDown);
+// 	const [sidebarOpen, setSidebarOpen] = useState(true);
+
+// 	const sidebarRef = useRef(null);
+// 	const appBarRef = useRef(null);
+
+// 	const toggleSidebar = () => {
+// 		setSidebarOpen(!sidebarOpen);
+// 	  };
+	
+// 	  useEffect(() => {
+// 		const handleResize = () => {
+// 		  if (window.innerWidth <= 960) {
+// 			setSidebarOpen(false);
+// 		  } else {
+// 			setSidebarOpen(true);
+// 		  }
+// 		};
+	
+// 		window.addEventListener("resize", handleResize);
+// 		handleResize();
+	
+// 		return () => window.removeEventListener("resize", handleResize);
+// 	  }, []);
+	
+
+
+	
+
+
+// 	useEffect(() => {
+// 		if (icon_username) {
+// 			fetch(`/api/user/${icon_username}`)
+// 				.then(response => response.json())
+// 				.then(data => {
+// 					setUserPrivileges(data.privileges);
+// 					console.log(data.privileges);
+// 					setTimeout(() => {
+// 						setIsLoading(false); // Set loading to false after fetching data
+// 					}, 100)
+
+// 				})
+// 				.catch(error => {
+// 					console.error('Error fetching the privilege', error);
+// 					setIsLoading(false); // Set loading to false even if there is an error
+// 				});
+// 		}
+// 	}, [icon_username]);
+
+// 	const handleLogout = () => {
+// 		navigate('/');
+// 	};
+
+// 	const handelquerytool = () => {
+// 		navigate('/querytool');
+// 	}
+
+// 	const handleStartClick = () => {
+// 		navigate('/querytool');
+// 	};
+
+// 	const showInfo = (message) => {
+// 		toast.current.clear();//to clear previous message
+// 		toast.current.show({ severity: 'info', summary: 'Info', detail: message, life: 300000 });
+// 	};
+
+// 	const showError = (message) => {
+// 		toast.current.show({ severity: 'error', summary: 'Error', detail: message, life: 3000 });
+// 	};
+
+// 	const isValidMacAddress = (mac) => {
+// 		const macRegex = /^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$|^[0-9A-Fa-f]{12}$/;
+// 		return macRegex.test(mac);
+// 	};
+
+// 	const handlePostMac = async () => {
+
+
+// 		try {
+// 			if (searchQuery.trim() === '') {
+// 				showError('Please enter at least one MAC address.');
+// 				return;
+// 			}
+
+// 			if (searchQuery.split(",").indexOf("") >= 0) {
+// 				showError('Please, remove extra comma(s) from your search bar!');
+// 				return;
+// 			}
+
+// 			const showSuccess = (message) => {
+// 				toast.current.show({ severity: 'success', summary: 'Success', detail: message, life: 3000 });
+// 			};
+
+// 			const macAddresses = searchQuery.split(',').map(mac => mac.trim());
+
+
+// 			let invalidMacMessages = [];
+
+
+// 			if (isValidationEnabled) {
+// 				for (let mac of macAddresses) {
+// 					if (!isValidMacAddress(mac)) {
+// 						invalidMacMessages.push(`Invalid MAC address format: ${mac}`);
+
+// 					}
+// 				}
+
+// 				if (invalidMacMessages.length > 0) {
+// 					showInfo(invalidMacMessages.join('\n'));
+// 				}
+// 			}
+
+
+
+
+// 			const requestBody = {
+// 				"macAddress": macAddresses,
+// 				"isClientFormatRequired": true
+// 			}
+
+// 			const response = await axios.post('/api/mac', requestBody);
+
+// 			if (response.status === 400) {
+// 				console.log("post response from server > " + response.data.message);
+// 				showError(response.data.message);
+// 			} else {
+// 				const newFoundMacAddresses = response.data.map((response, index) => ({
+// 					macAddress: macAddresses[index],
+// 					macAddressStatus: response.macAddress,
+// 					tables: response.tables || []
+// 				}));
+
+// 				setFoundMacAddresses(newFoundMacAddresses);
+// 				showSuccess('Search completed');
+// 			}
+// 		} catch (error) {
+// 			console.error('Error posting MAC address:', error);
+// 			showError('Error occurred while checking MAC address.');
+// 			setFoundMacAddresses([]);
+// 		}
+// 	};
+
+// 	const handleResize = () => {
+// 		const windowWidth = window.innerWidth;
+// 		if (windowWidth <= 280) {
+// 			setInputWidth('-10px');
+// 			setMarginLeft('10px');
+// 		} else if (windowWidth <= 1300) {
+// 			setInputWidth('10px');
+// 			setMarginLeft('75px');
+// 		} else {
+// 			setInputWidth('600px');
+// 			setMarginLeft('auto');
+// 		}
+// 	};
+
+// 	useEffect(() => {
+// 		window.addEventListener('resize', handleResize);
+// 		handleResize();
+
+// 		return () => {
+// 			window.removeEventListener('resize', handleResize);
+// 		};
+// 	}, []);
+
+
+
+// 	const handleClicks = (event) => {
+// 		setDropDown(event.currentTarget)
+// 	};
+// 	const handleClose = () => {
+// 		setDropDown(null);
+// 	};
+
+
+
+
+
+
+
+
+// 	return (
+// 		<div>
+// 			<Toast ref={toast} />
+// 			<AppBar position="static" style={{ backgroundColor: '#ffffff', color: '#000000', marginBottom: '1px', zIndex: 1201 }}>
+//         <Toolbar>
+//           <IconButton edge="start" color="inherit" aria-label="menu" onClick={toggleSidebar}>
+//             <MenuIcon />
+//           </IconButton>
+//           <IconButton edge="start" color="inherit" aria-label="logo">
+//             <img alt="logo" style={{ cursor: 'pointer', height: '40px' }} src={SepioLogo} />
+//           </IconButton>
+//           <div style={{ flexGrow: 1 }} />
+//           <div style={{ marginRight: '10px' }}>
+//             <NavLink to='/' style={{ textDecoration: 'none' }}>
+//               <span className='pi pi-sign-out' style={{ marginRight: '5px' }} />
+//               Logout
+//             </NavLink>
+//           </div>
+//           <IconButton
+//             style={{ marginRight: '-25px' }}
+//             color="inherit"
+//             aria-label="user account"
+//             aria-controls="menu-appbar"
+//             aria-haspopup="true"
+//           >
+//             <Avatar sx={{ width: 32, height: 32 }}>U</Avatar>
+//           </IconButton>
+//         </Toolbar>
+//       </AppBar>
+//       <div style={{ display: "flex", height: "100vh" }}>
+//         <Sidebar className='border-end' collapsed={!sidebarOpen} style={{ backgroundColor: '#FAFAFA' }}>
+//           <Menu style={{ marginTop: '10px' }}>
+//             <NavLink to='/querytool/mac' className='nav-link'>
+//               <MenuItem style={{ marginLeft: '-160px' }} icon={<GridViewRoundedIcon style={{ marginLeft: '300px' }} />}>
+//                 {sidebarOpen && 'MAC'}
+//               </MenuItem>
+//             </NavLink>
+//             <NavLink to='/querytool/settings' className='nav-link'>
+//               <MenuItem style={{ marginLeft: '-140px' }} icon={<GridViewRoundedIcon style={{ marginLeft: '258px' }} />}>
+//                 {sidebarOpen && 'Settings'}
+//               </MenuItem>
+//             </NavLink>
+//             {!isLoading && userPrivileges !== 'UI_USER' && (
+//             <NavLink to='/querytool/createuser' className='nav-link'>
+//               <MenuItem style={{ marginLeft: '-160px' }} icon={<GridViewRoundedIcon style={{ marginLeft: '300px' }} />}>
+//                 {sidebarOpen && 'Users'}
+//               </MenuItem>
+//             </NavLink>
+//             )}
+//             {/* {!isLoading && userPrivileges !== 'UI_USER' && (
+//               <MenuItem style={{ marginLeft: '-160px' }}  icon={<LogoutRoundedIcon />}>Logout</MenuItem>
+//             )} */}
+//           </Menu>
+//         </Sidebar>
+
+// 		<div style={{ flex: 1, paddingLeft: '0px', marginTop: '-12px', overflow: 'auto'  }}>
+// 					<InputText
+// 						value={searchQuery}
+// 						onChange={(e) => setSearchQuery(e.target.value)}
+// 						placeholder="Search MAC"
+// 						style={{
+// 							width: inputWidth,
+// 							minWidth: '200px',
+// 							maxWidth: '600px',
+// 							transition: 'width 0.3s ease',
+// 							borderRadius: '5px 0px 0px 5px',
+// 							marginTop: '200px'
+
+// 						}}
+// 					/>
+// 					<Button
+// 						label='Search'
+// 						icon='pi pi-search'
+// 						onClick={handlePostMac}
+// 						style={{
+// 							backgroundColor: '#183462',
+// 							borderColor: '#183462',
+// 							marginLeft: '0px',
+// 							borderRadius: '0 5px 5px 0'
+// 						}}
+// 					/>
+				
+
+// 				<div style={{ flex: 1, paddingLeft: '0px', marginTop: '-150px', marginLeft: '-100px' }}>
+// 					{/* <label htmlFor="validationSwitch" style={{ marginRight: '10px', marginTop: '5px' }}>MAC Address Validation:</label> */}
+// 					<Typography style={{ marginTop: '5px' }} level='title-lg'>Mac Address validation:</Typography>
+// 					<div style = {{marginLeft: '230px', marginTop: '-30px'}}>
+// 					<Switch
+
+// 						style={{ color: '#12467B'}}
+
+// 						checked={isValidationEnabled}
+// 						onChange={(e) => setIsValidationEnabled(e.target.checked)}
+
+// 						// slotProps={{
+// 						// 	track: {
+// 						// 		children: (
+// 						// 			<React.Fragment>
+// 						// 				<Typography component="span" level="inherit" sx={{ ml: '10px' }}>
+// 						// 					On
+// 						// 				</Typography>
+// 						// 				<Typography component="span" level="inherit" sx={{ mr: '8px' }}>
+// 						// 					Off
+// 						// 				</Typography>
+// 						// 			</React.Fragment>
+// 						// 		),
+// 						// 	},
+// 						// }}
+// 						sx={{
+// 							'--Switch-thumbSize': '27px',
+// 							'--Switch-trackWidth': '64px',
+// 							'--Switch-trackHeight': '31px',
+// 						}}
+// 					/>
+// 					</div>
+// 				</div>
+
+// 				{responseMessage && (
+// 					<div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px', color: responseMessage.includes('Please enter') ? 'red' : 'green' }}>
+// 						{responseMessage}
+// 					</div>
+// 				)}
+
+// {foundMacAddresses.length > 0 && (
+//   <div style={{ flex: 1, paddingLeft: '0px', marginTop: '200px', overflow: 'auto' }}>
+//     <div style={{
+//       display: 'flex',
+//       flexDirection: 'column',
+//       alignItems: 'center',
+//       height: '400px',
+//       overflowY: 'auto',
+//       width: '100%',
+//       paddingRight: '10px',
+//     }}>
+//       {foundMacAddresses.map((item, index) => (
+//         <div key={index} style={{ marginBottom: '20px', width: '100%', maxWidth: '800px' }}>
+//           <h4 style={{ textAlign: 'center' }}>{item.macAddress}</h4>
+//           <div style={{ overflowX: 'auto', width: '100%' }}>
+//             <DataTable value={[item]} responsiveLayout="scroll" style={{ width: '100%', minWidth: '800px' }}>
+//               <Column field="macAddressStatus" header="MAC Address Status" style={{ minWidth: '300px', width: '60%' }} />
+//               <Column field="tables" header="Found In" body={(rowData) => rowData.tables.join(", ")} style={{ minWidth: '300px', width: '40%' }} />
+//             </DataTable>
+//           </div>
+//         </div>
+//       ))}
+//     </div>
+//   </div>
+// )}
+
+			
+// 			{/* {isLoading && (
+// 				<div style={{
+// 					display: 'flex',
+// 					justifyContent: 'center',
+// 					alignItems: 'center',
+// 					height: '100vh',
+// 					position: 'fixed',
+// 					top: 0,
+// 					left: 0,
+// 					width: '100%',
+// 					backgroundColor: 'rgba(255, 255, 255, 0.8)',
+// 					zIndex: 2000
+// 				}}>
+
+// 				</div>
+// 			)} */}
+// 			</div>
+// 			</div>
+// 		</div>
+// 	);
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { AppBar, Toolbar, IconButton, Menu, MenuItem, Avatar, Tooltip, Divider } from '@mui/material';
+import { CSidebar, CSidebarNav, CNavItem, CContainer, CForm } from '@coreui/react';
+import { AppBar, Toolbar, IconButton, Avatar, Tooltip, Divider } from '@mui/material';
+import GridViewRoundedIcon from "@mui/icons-material/GridViewRounded";
 import MenuIcon from '@mui/icons-material/Menu';
 import { Menubar } from 'primereact/menubar';
 import { Button } from 'primereact/button';
 import { useNavigate } from 'react-router-dom';
 import { InputText } from 'primereact/inputtext';
 import { NavLink } from 'react-router-dom';
-import { CSidebar, CSidebarNav, CNavItem, CContainer, CForm } from '@coreui/react';
+import { Sidebar} from "react-pro-sidebar";
+import {Menu, MenuItem} from '@mui/material';
 import { RiDashboardLine } from 'react-icons/ri';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
@@ -2558,7 +2973,6 @@ import { Toast } from 'primereact/toast';
 import Switch from '@mui/material/Switch';
 import Typography from '@mui/material/Typography';
 import { Oval } from 'react-loader-spinner';
-import RootView from './RootView';
 
 export default function Layout({ icon_username }) {
 	const navigate = useNavigate();
@@ -2571,7 +2985,7 @@ export default function Layout({ icon_username }) {
 	const [isValidationEnabled, setIsValidationEnabled] = useState(true);
 	const [userPrivileges, setUserPrivileges] = useState(null);
 	const [isLoading, setIsLoading] = useState(true);
-	const [sidebarOpen, setSidebarOpen] = useState(true);
+	
 	const toast = useRef(null);
 	const [prevWidth, setPrevWidth] = useState(window.innerWidth);
 	const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -2579,59 +2993,33 @@ export default function Layout({ icon_username }) {
 	const [isMiddleSize, setIsMiddleSize] = useState(false);
 	const [dropDown, setDropDown] = useState(null)
 	const open = Boolean(dropDown);
+	const [sidebarOpen, setSidebarOpen] = useState(true);
 
 	const sidebarRef = useRef(null);
 	const appBarRef = useRef(null);
 
-
-	const toggleSidebar = useCallback(() => {
-		setIsSidebarOpen(prevState => !prevState);
-	}, []);
-
-
-	useEffect(() => {
+	const toggleSidebar = () => {
+		setSidebarOpen(!sidebarOpen);
+	  };
+	
+	  useEffect(() => {
 		const handleResize = () => {
-			const width = window.innerWidth;
-			if (width > 602 && width < 983) {
-				setIsMiddleSize(true);
-				setIsLow(false);
-				setIsSidebarOpen(false);
-			} else if (width > 102 && width <= 602) {
-				setIsMiddleSize(false);
-				setIsLow(true);
-				setIsSidebarOpen(false);
-			} else {
-				setIsMiddleSize(false);
-				setIsLow(false);
-				if (prevWidth <= 983 || prevWidth <= 602) {
-					setIsSidebarOpen(true);
-				}
-			}
-			setPrevWidth(width);
+		  if (window.innerWidth <= 960) {
+			setSidebarOpen(false);
+		  } else {
+			setSidebarOpen(true);
+		  }
 		};
-
+	
+		window.addEventListener("resize", handleResize);
 		handleResize();
-		window.addEventListener('resize', handleResize);
-		return () => window.removeEventListener('resize', handleResize);
-	}, [prevWidth]);
+	
+		return () => window.removeEventListener("resize", handleResize);
+	  }, []);
+	
 
 
-	useEffect(() => {
-		const handleClickOutside = (event) => {
-			if (isMiddleSize || isLow) {
-				if (sidebarRef.current && !sidebarRef.current.contains(event.target) && appBarRef.current && !appBarRef.current.contains(event.target) && isSidebarOpen) {
-					setIsSidebarOpen(false);
-				}
-			}
-		};
-
-		document.addEventListener('click', handleClickOutside);
-		return () => {
-			document.removeEventListener('click', handleClickOutside);
-		};
-	}, [isSidebarOpen, isMiddleSize, isLow]);
-
-	const sidebarStyle = isMiddleSize ? { marginTop: '65px' } : isLow ? { marginTop: '56px' } : {};
+	
 
 
 	useEffect(() => {
@@ -2671,7 +3059,13 @@ export default function Layout({ icon_username }) {
 	};
 
 	const showError = (message) => {
+		
 		toast.current.show({ severity: 'error', summary: 'Error', detail: message, life: 3000 });
+	};
+
+	const showSuccess = (message) => {
+		
+		toast.current.show({ severity: 'success', summary: 'Success', detail: message, life: 3000 });
 	};
 
 	const isValidMacAddress = (mac) => {
@@ -2693,9 +3087,7 @@ export default function Layout({ icon_username }) {
 				return;
 			}
 
-			const showSuccess = (message) => {
-				toast.current.show({ severity: 'success', summary: 'Success', detail: message, life: 3000 });
-			};
+			
 
 			const macAddresses = searchQuery.split(',').map(mac => mac.trim());
 
@@ -2769,17 +3161,6 @@ export default function Layout({ icon_username }) {
 		};
 	}, []);
 
-	useEffect(() => {
-		if (isScrollDisabled) {
-			document.body.style.overflow = 'hidden';
-		} else {
-			document.body.style.overflow = 'auto';
-		}
-
-		return () => {
-			document.body.style.overflow = 'auto';
-		};
-	}, [isScrollDisabled]);
 
 
 	const handleClicks = (event) => {
@@ -2790,6 +3171,9 @@ export default function Layout({ icon_username }) {
 	};
 
 
+	const handelquery = () => {
+		navigate('/querytool');
+	}
 
 
 
@@ -2799,24 +3183,22 @@ export default function Layout({ icon_username }) {
 	return (
 		<div>
 			<Toast ref={toast} />
-			<AppBar ref={appBarRef} position="static" style={{ backgroundColor: '#ffffff', color: '#000000', marginBottom: '1px', zIndex: 1201 }}>
-				<Toolbar>
-					<IconButton edge="start" color="inherit" aria-label="menu" onClick={toggleSidebar}>
-						<MenuIcon />
-					</IconButton>
-					<IconButton edge="start" color="inherit" aria-label="logo">
-						<img alt="logo" style={{ cursor: 'pointer', height: '40px' }} src={SepioLogo} onClick={handelquerytool} />
-					</IconButton>
-
-					<div style={{ flexGrow: 1 }} />
-					<div style={{ marginRight: '10px' }}>
-						<NavLink to='/' style={{ textDecoration: 'none' }}>
-							<span className='pi pi-sign-out' style={{ marginRight: '5px' }} />
-							Logout
-						</NavLink>
-					</div>
-
-					<IconButton
+			<AppBar position="static" style={{ backgroundColor: '#ffffff', color: '#000000', marginBottom: '1px', zIndex: 1201 }}>
+        <Toolbar>
+          <IconButton edge="start" color="inherit" aria-label="menu" onClick={toggleSidebar}>
+            <MenuIcon />
+          </IconButton>
+          <IconButton edge="start" color="inherit" aria-label="logo">
+            <img alt="logo" style={{ cursor: 'pointer', height: '40px' }} src={SepioLogo} onClick = {handelquery} />
+          </IconButton>
+          <div style={{ flexGrow: 1 }} />
+          <div style={{ marginRight: '10px' }}>
+            <NavLink to='/' style={{ textDecoration: 'none' }}>
+              <span className='pi pi-sign-out' style={{ marginRight: '5px' }} />
+              Logout
+            </NavLink>
+          </div>
+          <IconButton
 						style={{ marginRight: '-25px' }}
 						color="inherit"
 						aria-label="user account"
@@ -2875,34 +3257,34 @@ export default function Layout({ icon_username }) {
 							</p>
 						</MenuItem>
 					</Menu>
-				</Toolbar>
-			</AppBar>
-			<div>
-				{/* <CSidebar ref={sidebarRef} className='border-end custom-sidebar' visible={isSidebarOpen} style={sidebarStyle}>
-					<CSidebarNav>
-						<CContainer fluid>
-							<CForm className='d-flex'>
-							
-							</CForm>
-						</CContainer>
-						<CNavItem>
-							<NavLink to='/querytool/mac' className='nav-link'><RiDashboardLine className='nav-icon' /> MAC</NavLink>
-						</CNavItem>
-						<CNavItem>
-							<NavLink to='/querytool/settings' className='nav-link'><RiDashboardLine className='nav-icon' /> Settings </NavLink>
-						</CNavItem>
-						<CNavItem>
-							{!isLoading && userPrivileges !== 'UI_USER' && (
-								<NavLink to='/querytool/createuser' className='nav-link'>
-									<RiDashboardLine className='nav-icon' /> Users
-								</NavLink>
+        </Toolbar>
+      </AppBar>
+      <div style={{ display: "flex", height: "100vh" }}>
+	  <Sidebar className='border-end' collapsed={!sidebarOpen} style={{ backgroundColor: '#FAFAFA' }}>
+				<CSidebarNav>
+					<CContainer fluid>
+						<CForm className='d-flex'></CForm>
+					</CContainer>
+					<CNavItem>
+						<NavLink to='/querytool/mac' className='nav-link'>
+							<RiDashboardLine className='nav-icon' /> {sidebarOpen && 'MAC'}
+						</NavLink>
+					</CNavItem>
+					<CNavItem>
+						<NavLink to='/querytool/settings' className='nav-link'>
+							<RiDashboardLine className='nav-icon' /> { sidebarOpen && 'Settings'}
+						</NavLink>
+						{!isLoading && userPrivileges !== 'UI_USER' && (
+							<NavLink to='/querytool/createuser' className='nav-link'>
+								<RiDashboardLine className='nav-icon' /> {sidebarOpen && 'Users'}
+							</NavLink>
 							)}
-						</CNavItem>
-					</CSidebarNav>
-				</CSidebar> */}
-				<RootView/>
+						
+					</CNavItem>
+				</CSidebarNav>
+				</Sidebar>
 
-				<div style={{ display: 'flex', justifyContent: 'center', position: 'fixed', top: '180px', left: '50%', transform: 'translateX(-50%)', zIndex: 1000 }}>
+		<div style={{ flex: 1, paddingLeft: '0px', marginTop: '-12px', overflow: 'auto'  }}>
 					<InputText
 						value={searchQuery}
 						onChange={(e) => setSearchQuery(e.target.value)}
@@ -2912,7 +3294,9 @@ export default function Layout({ icon_username }) {
 							minWidth: '200px',
 							maxWidth: '600px',
 							transition: 'width 0.3s ease',
-							borderRadius: '5px 0px 0px 5px'
+							borderRadius: '5px 0px 0px 5px',
+							marginTop: '200px'
+
 						}}
 					/>
 					<Button
@@ -2926,14 +3310,15 @@ export default function Layout({ icon_username }) {
 							borderRadius: '0 5px 5px 0'
 						}}
 					/>
-				</div>
+				
 
-				<div style={{ position: 'fixed', top: '110px', left: '50%', transform: 'translateX(-50%)', zIndex: 1000, display: 'flex' }}>
+				<div style={{ flex: 1, paddingLeft: '0px', marginTop: '-150px', marginLeft: '-100px' }}>
 					{/* <label htmlFor="validationSwitch" style={{ marginRight: '10px', marginTop: '5px' }}>MAC Address Validation:</label> */}
-					<Typography style={{ marginTop: '5px' }} level='title-lg'>Mac Address validation</Typography>
+					<Typography style={{ marginTop: '5px' }} level='title-lg'>Mac Address validation:</Typography>
+					<div style = {{marginLeft: '230px', marginTop: '-30px'}}>
 					<Switch
 
-						style={{ color: '#12467B' }}
+						style={{ color: '#12467B'}}
 
 						checked={isValidationEnabled}
 						onChange={(e) => setIsValidationEnabled(e.target.checked)}
@@ -2958,6 +3343,7 @@ export default function Layout({ icon_username }) {
 							'--Switch-trackHeight': '31px',
 						}}
 					/>
+					</div>
 				</div>
 
 				{responseMessage && (
@@ -2966,30 +3352,33 @@ export default function Layout({ icon_username }) {
 					</div>
 				)}
 
-				{foundMacAddresses.length > 0 && (
-					<div style={{ marginLeft: marginLeft, position: 'fixed', top: '250px', left: '50%', transform: 'translateX(-50%)', width: '90%', maxWidth: '1200px', paddingTop: '20px', zIndex: 1000 }}>
-						<div style={{
-							display: 'flex',
-							flexDirection: 'column',
-							alignItems: 'center',
-							height: '400px',
-							overflowY: 'auto',
-							width: '100%',
-							paddingRight: '10px',
-						}}>
-							{foundMacAddresses.map((item, index) => (
-								<div key={index} style={{ marginBottom: '20px', width: '100%', maxWidth: '800px' }}>
-									<h4 style={{ textAlign: 'center' }}>{item.macAddress}</h4>
-									<DataTable value={[item]} responsiveLayout="scroll" style={{ marginLeft: marginLeft, width: '100%', minWidth: '800px' }}>
-										<Column field="macAddressStatus" header="MAC Address Status" style={{ minWidth: '300px', width: '60%' }} />
-										<Column field="tables" header="Found In" body={(rowData) => rowData.tables.join(", ")} style={{ minWidth: '300px', width: '40%' }} />
-									</DataTable>
-								</div>
-							))}
-						</div>
-					</div>
-				)}
-			</div>
+{foundMacAddresses.length > 0 && (
+  <div style={{ flex: 1, paddingLeft: '0px', marginTop: '200px', overflow: 'auto' }}>
+    <div style={{
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      height: '400px',
+      overflowY: 'auto',
+      width: '100%',
+      paddingRight: '10px',
+    }}>
+      {foundMacAddresses.map((item, index) => (
+        <div key={index} style={{ marginBottom: '20px', width: '100%', maxWidth: '800px' }}>
+          <h4 style={{ textAlign: 'center' }}>{item.macAddress}</h4>
+          <div style={{ overflowX: 'auto', width: '100%' }}>
+            <DataTable value={[item]} responsiveLayout="scroll" style={{ width: '100%', minWidth: '800px' }}>
+              <Column field="macAddressStatus" header="MAC Address Status" style={{ minWidth: '300px', width: '60%' }} />
+              <Column field="tables" header="Found In" body={(rowData) => rowData.tables.join(", ")} style={{ minWidth: '300px', width: '40%' }} />
+            </DataTable>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+)}
+
+			
 			{/* {isLoading && (
 				<div style={{
 					display: 'flex',
@@ -3006,6 +3395,8 @@ export default function Layout({ icon_username }) {
 
 				</div>
 			)} */}
+			</div>
+			</div>
 		</div>
 	);
 }

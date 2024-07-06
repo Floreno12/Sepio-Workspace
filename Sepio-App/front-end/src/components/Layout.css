@@ -3,6 +3,7 @@
 } */
 
 
+  
 
 
 body {
@@ -31,15 +32,14 @@ h2 {
 }
 
 
+
+
 /* Layout.css */
 .hoverable-rows .p-datatable-tbody > tr:hover {
     background-color: #f0f0f0 !important; /* Light grey background on hover */
     cursor: pointer; /* Change cursor to pointer on hover */
 }
 
-/* Add this to your CSS file */
-/* Layout.css */
-/* Layout.css */
 @media (max-width: 1024px) {
     .custom-sidebar {
         display: none;
