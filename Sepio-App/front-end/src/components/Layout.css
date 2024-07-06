@@ -3,7 +3,12 @@
 } */
 
 
-  
+ 
+/* CSS to ensure newlines are preserved */
+.toast-detail {
+    white-space: pre-wrap; /* Preserve new lines */
+}
+
 
 
 body {

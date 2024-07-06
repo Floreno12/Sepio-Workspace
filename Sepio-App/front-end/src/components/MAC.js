@@ -2973,8 +2973,9 @@ import { Toast } from 'primereact/toast';
 import Switch from '@mui/material/Switch';
 import Typography from '@mui/material/Typography';
 import { Oval } from 'react-loader-spinner';
+import Layout from './Layout.css';
 
-export default function Layout({ icon_username }) {
+export default function Layouts({ icon_username }) {
 	const navigate = useNavigate();
 	const [searchQuery, setSearchQuery] = useState('');
 	const [responseMessage, setResponseMessage] = useState('');
@@ -3054,9 +3055,10 @@ export default function Layout({ icon_username }) {
 	};
 
 	const showInfo = (message) => {
-		toast.current.clear();//to clear previous message
-		toast.current.show({ severity: 'info', summary: 'Info', detail: message, life: 300000 });
+		toast.current.clear(); // to clear previous message
+		toast.current.show({ severity: 'info', summary: 'Info', detail: <div className="toast-detail">{message}</div>, life: 300000 });
 	};
+	
 
 	const showError = (message) => {
 		
@@ -3074,50 +3076,39 @@ export default function Layout({ icon_username }) {
 	};
 
 	const handlePostMac = async () => {
-
-
 		try {
 			if (searchQuery.trim() === '') {
 				showError('Please enter at least one MAC address.');
 				return;
 			}
-
+	
 			if (searchQuery.split(",").indexOf("") >= 0) {
 				showError('Please, remove extra comma(s) from your search bar!');
 				return;
 			}
-
-			
-
+	
 			const macAddresses = searchQuery.split(',').map(mac => mac.trim());
-
-
 			let invalidMacMessages = [];
-
-
+	
 			if (isValidationEnabled) {
 				for (let mac of macAddresses) {
 					if (!isValidMacAddress(mac)) {
 						invalidMacMessages.push(`Invalid MAC address format: ${mac}`);
-
 					}
 				}
-
+	
 				if (invalidMacMessages.length > 0) {
 					showInfo(invalidMacMessages.join('\n'));
 				}
 			}
-
-
-
-
+	
 			const requestBody = {
 				"macAddress": macAddresses,
 				"isClientFormatRequired": true
-			}
-
+			};
+	
 			const response = await axios.post('/api/mac', requestBody);
-
+	
 			if (response.status === 400) {
 				console.log("post response from server > " + response.data.message);
 				showError(response.data.message);
@@ -3127,7 +3118,7 @@ export default function Layout({ icon_username }) {
 					macAddressStatus: response.macAddress,
 					tables: response.tables || []
 				}));
-
+	
 				setFoundMacAddresses(newFoundMacAddresses);
 				showSuccess('Search completed');
 			}
@@ -3137,6 +3128,7 @@ export default function Layout({ icon_username }) {
 			setFoundMacAddresses([]);
 		}
 	};
+	
 
 	const handleResize = () => {
 		const windowWidth = window.innerWidth;
