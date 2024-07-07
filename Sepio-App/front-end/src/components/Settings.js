@@ -1388,9 +1388,9 @@ const handleResizes = () => {
 	const windowWidth = window.innerWidth;
 	if (windowWidth <= 280) {
 		setMarginLeft('0px'); // Move to the right on smaller screens
-	} else if (windowWidth <= 1268) {
+	} else if (windowWidth <= 1580) {
 
-		setMarginLeft('-250px'); // Move to the right on medium screens
+		setMarginLeft('-450px'); // Move to the right on medium screens
 	} else {
 		setInputWidth('100%'); // Default width for larger screens
 		setMarginLeft('auto'); // Center align on larger screens
@@ -1712,7 +1712,7 @@ useEffect(() => {
 
 
 				<div style={{ marginLeft: marginLeft, flex: 1, paddingLeft: '0px', marginTop: '80px'}}>
-					<div style = {{marginLeft: '400px' }}>
+					<div style = {{marginLeft: '600px' }}>
 					<div style={{ width: '70%', maxWidth: '600px', minWidth: '300px', padding: '20px', borderRadius: '8px', boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)', backgroundColor: 'white' }}>
 						<div style={{ marginBottom: '20px' }}>
 							{message && (
