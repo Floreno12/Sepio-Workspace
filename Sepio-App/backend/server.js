@@ -1,3 +1,9 @@
+
+
+
+
+
+
 // const express = require('express');
 // const axios = require('axios');
 // const bodyParser = require('body-parser');
@@ -44,7 +50,7 @@
 
 
 // app.post('/user/privileges', async (req, res) => {
-//   const { username, password, privileges } = req.body;  // Correct the spelling here
+//   const { username, password, privileges, serviceNowInstance, serviceUsername, servicePassword, sepioEndpoint, sepioUsername, sepioPassword } = req.body;
 //   console.log(`Check user: ${username}`);
 
 //   try {
@@ -57,7 +63,13 @@
 //         password: hashedPassword,
 //         otp_secret: '',
 //         otp_verified: false,
-//         privileges: privileges  // Correct the spelling here
+//         privileges: privileges,
+//         serviceNowInstance: serviceNowInstance || null,
+//         serviceUsername: serviceUsername || null,
+//         servicePassword: servicePassword || null,
+//         sepioEndpoint: sepioEndpoint || null,
+//         sepioUsername: sepioUsername || null,
+//         sepioPassword: sepioPassword ||null
 //       },
 //     });
 //     console.log('User created successfully', newUser);
@@ -70,25 +82,16 @@
 
 
 
-
-
-
 // app.post('/update-password', async (req, res) => {
-//   const { password } = req.body;  // Extract password from the request body
-//   const username = req.session.username;  // Get username from session
-  
-//   // Log the username to debug
-//   console.log(`Username received for password update: ${username}`);
+//   const { password } = req.body;
+//   const username = req.session.username;
 
-//   // Check if username and password are provided
 //   if (!username || !password) {
 //     return res.status(400).json({ success: false, message: 'Username and password are required' });
 //   }
 
 //   try {
-//     const user = await prisma.user.findUnique({
-//       where: { name: username },
-//     });
+//     const user = await prisma.user.findUnique({ where: { name: username } });
 
 //     if (!user) {
 //       return res.status(404).json({ success: false, message: 'User not found' });
@@ -101,7 +104,7 @@
 //       where: { name: username },
 //       data: {
 //         password: hashedPassword,
-//         credentialsUpdated: true, // Update credentialsUpdated to true
+//         credentialsUpdated: true,
 //       },
 //     });
 
@@ -111,6 +114,62 @@
 //     res.status(500).json({ success: false, message: 'Error updating password for user' });
 //   }
 // });
+
+
+
+// app.post('/reset-credentials-updated', async (req, res) => {
+//   const username = req.session.username;
+
+//   if (!username) {
+//     return res.status(400).json({ success: false, message: 'Username is required' });
+//   }
+
+//   try {
+//     await prisma.user.update({
+//       where: { name: username },
+//       data: { credentialsUpdated: false },
+//     });
+
+//     res.json({ success: true });
+//   } catch (error) {
+//     console.error('Error resetting credentials updated status for user:', error);
+//     res.status(500).json({ success: false, message: 'Error resetting credentials updated status' });
+//   }
+// });
+
+
+
+// app.post('/authenticate', async (req, res) => {
+//   const { username, password } = req.body;
+
+//   try {
+//     const user = await prisma.user.findUnique({ where: { name: username } });
+
+//     if (!user || (user.privileges !== 'ADMIN' && user.privileges !== 'UI_USER')) {
+//       return res.status(401).json({ message: 'Authentication failed' });
+//     }
+
+//     const isMatch = await bcrypt.compare(password, user.password);
+//     if (!isMatch) {
+//       return res.status(401).json({ message: 'Authentication failed' });
+//     }
+
+//     req.session.username = username;
+
+//     if (!user.credentialsUpdated) {
+//       return res.json({ credentialsUpdated: false });
+//     }
+
+//     // Handle OTP logic as required...
+
+//     res.json({ otpRequired: user.otp_verified, credentialsUpdated: true });
+//   } catch (error) {
+//     console.error('Error:', error);
+//     res.status(500).json({ message: 'Database error' });
+//   }
+// });
+
+
 
 // app.get('/api/user/:username', async (req, res) => {
 //   const { username } = req.params;
@@ -132,85 +191,6 @@
 // });
 
 
-// app.post('/authenticate', async (req, res) => {
-//   const { username, password } = req.body;
-//   console.log(`Authenticating user: ${username}`);
-
-//   try {
-//     const user = await prisma.user.findUnique({
-//       where: { name: username },
-//     });
-
-
-
-//     if (!user || user.privileges !== 'ADMIN' && user.privileges !== 'UI_USER' ) {
-//       console.log(`Authentication failed for user: ${username}`);
-//       return res.status(401).json({ message: 'Authentication failed' });
-//     }
-
-//     // Compare password with hash
-//     const isMatch = await bcrypt.compare(password, user.password);
-//     if (!isMatch) {
-//       console.log(`Authentication failed for user: ${username}`);
-//       return res.status(401).json({ message: 'Authentication failed' });
-//     }
-
-//     // Save the username in the session
-//     req.session.username = username;
-
-//     if (!user.credentialsUpdated) {
-//       // Update the password
-//       const saltRounds = 10;
-//       const hashedPassword = await bcrypt.hash(password, saltRounds);
-
-//       await prisma.user.update({
-//         where: { name: username },
-//         data: {
-//           password: hashedPassword,
-//           credentialsUpdated: true, // Update credentialsUpdated to true
-//         },
-//       });
-
-//       console.log(`Password updated for user: ${username}`);
-//       return res.json({ credentialsUpdated: false });
-//     }
-
-//     if (user.otp_verified) {
-//       console.log(`User ${username} has completed OTP setup`);
-//       return res.json({ otpRequired: true, credentialsUpdated: true });
-//     } else {
-//       console.log(`User ${username} has not completed OTP setup, generating secret`);
-//       const secret = speakeasy.generateSecret({ length: 20 });
-//       console.log(`Generated secret for user ${username}: ${secret.base32}`);
-
-//       const otpauth_url = speakeasy.otpauthURL({
-//         secret: secret.base32,
-//         label: encodeURIComponent(username),
-//         issuer: 'YourApp',
-//         encoding: 'base32',
-//       });
-
-//       // Store secret in db
-//       await prisma.user.update({
-//         where: { name: username },
-//         data: { otp_secret: secret.base32 },
-//       });
-
-//       // Generate QR code for 2FA Authentication
-//       qrcode.toDataURL(otpauth_url, (err, data_url) => {
-//         if (err) {
-//           console.log(err);
-//           return res.status(500).json({ message: 'QR code generation failed' });
-//         }
-//         console.log(`Generated QR code for user ${username}`);
-//         res.json({ otpRequired: true, qrCode: data_url, secret: secret.base32, credentialsUpdated: true });
-//       });
-//     }
-//   } catch (error) {
-//     console.error('Error:', error);
-//     res.status(500).json({ message: 'Database error' });
-//   }
-// });
 
 // app.post('/verify', async (req, res) => {
 //   const { username, token } = req.body;
@@ -269,6 +249,9 @@
 //   res.json(sepioCredentials);
 // });
 
+
+
+
 // app.post('/check-connection', async (req, res) => {
 //   const { serviceNowInstance, username, password } = req.body;
 //   serviceNowCredentials = {serviceNowInstance, username, password};
@@ -316,56 +299,61 @@
 
 
 
+
+
+
 // app.post('/check-sepio-connection', async (req, res) => {
-//   const { sepioEndpoint, sepioUsername, sepioPassword } = req.body;
-//   sepioCredentials = { sepioEndpoint, sepioUsername, sepioPassword };
-//   if (sepioEndpoint && sepioUsername && sepioPassword) {
-//     console.log("sepioEndpoint > " + sepioEndpoint);
-//     console.log("username > " + sepioUsername);
-//     console.log("password > " + sepioPassword);
-
-//     const requestBody = {
-//       username: sepioUsername,
-//       password: sepioPassword
-//     };
-
-//     const config = {
-//       headers: {
-//         'Content-Type': 'application/json',
-//       }
-//     };
-
-//     try {
-//       const response = await axios.post(`https://${sepioEndpoint}/prime/webui/Auth/LocalLogin`, requestBody, config);
-      
-//       if (response.status === 200) {
-//         try {
-//           const newRecord = await prisma.sepio.create({
-//             data: {
-//               instance: sepioEndpoint,
-//               username: sepioUsername,
-//               password: sepioPassword
-//             }
-//           });
-
-//           console.log('New record created:', newRecord);
-//           res.json({ success: true, message: 'Connection successful!' });
-//         } catch (dbError) {
-//           console.error('Database error:', dbError);
-//           res.status(500).json({ success: false, message: 'Failed to save credentials to the database' });
-//         }
-//       } else {
-//         res.status(500).json({ success: false, message: 'Connection failed!' });
-//       }
-//     } catch (error) {
-//       console.error('API error:', error);
-//       res.status(500).json({ success: false, message: 'Connection failed!', error: error.message });
-//     }
-//   } else {
-//     res.status(500).json({ success: false, message: 'All fields are required!' });
-//   }
-// });
-
+// 	const { sepioEndpoint, sepioUsername, sepioPassword } = req.body;
+// 	sepioCredentials = { sepioEndpoint, sepioUsername, sepioPassword };
+	
+// 	// Ensure all fields are provided
+// 	if (!sepioEndpoint || !sepioUsername || !sepioPassword) {
+// 	  return res.status(400).json({ success: false, message: 'All fields are required!' });
+// 	}
+  
+// 	// Validate if the endpoint is for Sepio (you can add more specific checks here)
+// 	if (!sepioEndpoint.includes('sepio')) {
+// 	  return res.status(400).json({ success: false, message: 'Invalid Sepio endpoint!' });
+// 	}
+  
+// 	const requestBody = {
+// 	  username: sepioUsername,
+// 	  password: sepioPassword
+// 	};
+  
+// 	const config = {
+// 	  headers: {
+// 		'Content-Type': 'application/json',
+// 	  }
+// 	};
+  
+// 	try {
+// 	  const response = await axios.post(`https://${sepioEndpoint}/prime/webui/Auth/LocalLogin`, requestBody, config);
+	  
+// 	  if (response.status === 200) {
+// 		try {
+// 		  const newRecord = await prisma.sepio.create({
+// 			data: {
+// 			  instance: sepioEndpoint,
+// 			  username: sepioUsername,
+// 			  password: sepioPassword
+// 			}
+// 		  });
+  
+// 		  console.log('New record created:', newRecord);
+// 		  res.json({ success: true, message: 'Connection successful!' });
+// 		} catch (dbError) {
+// 		  console.error('Database error:', dbError);
+// 		  res.status(500).json({ success: false, message: 'Failed to save credentials to the database' });
+// 		}
+// 	  } else {
+// 		res.status(500).json({ success: false, message: 'Connection failed!' });
+// 	  }
+// 	} catch (error) {
+// 	  console.error('API error:', error);
+// 	  res.status(500).json({ success: false, message: 'Connection failed!', error: error.message });
+// 	}
+//   });
 
 
 // const getMacAddresses = async (macAddress, serviceNowInstance, snUsername, snPassword) => {
@@ -503,118 +491,107 @@
 //   }
 // };
 
+
+
+
+
 // app.post('/api/check-mac', async (req, res) => {
-//   const {login, password, macAddress} = req.body;
+//   const { login, password, macAddress } = req.body;
 
 //   try {
-//     // const requestLogin = req.body.requestLogin ? req.body.requestLogin : "";
-//     // const requestPassword = req.body.requestPassword ? req.body.requestPassword : "";
 //     const user = await prisma.user.findUnique({
-//       where: {name: login},
-//     })
+//       where: { name: login },
+//     });
 
-//     if (!user || !await bcrypt.compare(password, user.password) || user.privileges !== 'SERVICE_ACCOUNT' && user.privileges !== 'ADMIN') {
-//       return res.status(401).json({success: false, error: 'Invalid creddentials'})
+//     if (!user || !await bcrypt.compare(password, user.password) || (user.privileges !== 'SERVICE_ACCOUNT' && user.privileges !== 'ADMIN')) {
+//       return res.status(401).json({ success: false, error: 'Invalid credentials' });
 //     }
 
-//     if(true){
+//     const snEndpoint = user.serviceNowInstance || req.body.snEndpoint || "";
+//     const snUsername = user.serviceUsername || req.body.snLogin || "";
+//     const snPassword = user.servicePassword || req.body.snPassword || "";
 
-//       const snEndpoint = serviceNowCredentials.serviceNowInstance ? serviceNowCredentials.serviceNowInstance : req.body.snEndpoint ? req.body.snEndpoint : "";
-//       const snUsername = serviceNowCredentials.username ? serviceNowCredentials.username : req.body.snLogin ? req.body.snLogin : "";
-//       const snPassword = serviceNowCredentials.password ? serviceNowCredentials.password : req.body.snPassword ? req.body.snPassword : "";
+//     const sepioEndpoint = user.sepioEndpoint || req.body.sepioEndpoint || "";
+//     const sepioUsername = user.sepioUsername || req.body.sepioUsername || "";
+//     const sepioPassword = user.sepioPassword || req.body.sepioPassword || "";
 
-//       const sepioEndpoint = sepioCredentials.sepioEndpoint ? sepioCredentials.sepioEndpoint : req.body.sepioEndpoint ? req.body.sepioEndpoint : "";
-//       const sepioUsername = sepioCredentials.sepioUsername ? sepioCredentials.sepioUsername : req.body.sepioUsername ? req.body.sepioUsername : "";
-//       const sepioPassword = sepioCredentials.sepioPassword ? sepioCredentials.sepioPassword : req.body.sepioPassword ? req.body.sepioPassword : "";
+//     console.log('Sepio Credentials:', { sepioEndpoint, sepioUsername, sepioPassword });
 
-//       const macAddress = req.body.macAddress ? req.body.macAddress : [];
+//     const macAddresses = req.body.macAddress ? req.body.macAddress : [];
 
-//       const isClientFormatRequired = req.body.isClientFormatRequired ? req.body.isClientFormatRequired : false;
+//     const isClientFormatRequired = req.body.isClientFormatRequired ? req.body.isClientFormatRequired : false;
 
-//       console.log('Received MAC addresses: ' + macAddress);
+//     console.log('Received MAC addresses: ' + macAddresses);
 
-//       if (snEndpoint && snUsername && snPassword) {
+//     if (snEndpoint && snUsername && snPassword) {
+//       const macCheckResult = await getMacAddresses(macAddresses, snEndpoint, snUsername, snPassword);
+//       console.log('MAC check result: ' + macCheckResult);
 
-//         const macCheckResult = await getMacAddresses(macAddress, snEndpoint, snUsername, snPassword);
+//       if (Array.isArray(macCheckResult)) {
+//         let responseForClientSide = [];
+//         let foundMacAddresses = [];
+//         let notFoundMacAddresses = [];
 
-//         console.log('MAC check result: ' + macCheckResult);
+//         for (const singleMac of macAddresses) {
+//           const matchingResults = macCheckResult.filter(macCheckResult => macCheckResult.mac_address === singleMac && macCheckResult.sys_class_name.indexOf("cmdb_ci") >= 0);
 
-//         if (Array.isArray(macCheckResult)) {
+//           if (sepioEndpoint && sepioUsername && sepioPassword) {
+//             const sepioToken = await getSepioToken(sepioEndpoint, sepioUsername, sepioPassword);
 
-//           let responceForClientSide = [];
-//           let foundMacAddresses = [];
-//           let notFoundMacAddresses = [];
-
-//           for (const singleMac of macAddress) {
-
-//             const matchingResults = macCheckResult.filter(macCheckResult => macCheckResult.mac_address === singleMac && macCheckResult.sys_class_name.indexOf("cmdb_ci") >= 0);
-
-//             if (sepioEndpoint && sepioUsername && sepioPassword) {
-
-//               const sepioToken = await getSepioToken(sepioEndpoint, sepioUsername, sepioPassword);
-
-//               if (sepioToken) {
-//                 const responceSepio = await addTagsToSepioElements(sepioToken, sepioEndpoint, matchingResults, singleMac);
-//               } else {
-//                 res.status(500).json({
-//                   success: false,
-//                   error: "An attempt to get a token from Sepio failed"
-//                 });
-//               }
-//             }
-
-//             let macAndTables = { "macAddress": "", "tables": [] };
-
-//             if (isClientFormatRequired) {
-
-//               if (matchingResults.length > 0) {
-//                 macAndTables.macAddress = `Record with MAC address: ${singleMac} was found.`;
-//                 macAndTables.tables = matchingResults.map(result => (result.sys_class_name));
-//               } else {
-//                 macAndTables.macAddress = `No record with MAC address: ${singleMac} was found.`;
-//               }
-//               responceForClientSide.push(macAndTables);
-
+//             if (sepioToken) {
+//               const responseSepio = await addTagsToSepioElements(sepioToken, sepioEndpoint, matchingResults, singleMac);
 //             } else {
-//               if (matchingResults.length > 0) {
-//                 macAndTables.macAddress = singleMac;
-//                 macAndTables.tables = matchingResults.map(result => ({
-//                   table: result.sys_class_name,
-//                   sys_id: result.sys_id
-//                 }));
-//                 foundMacAddresses.push(macAndTables);
-//               } else {
-//                 notFoundMacAddresses.push(singleMac);
-//               }
+//               return res.status(500).json({
+//                 success: false,
+//                 error: "An attempt to get a token from Sepio failed"
+//               });
 //             }
 //           }
-//           console.log("responceForClientSide > " + responceForClientSide);
-//           let reqdRespons = isClientFormatRequired ? responceForClientSide : { success: true, foundMacAddresses, notFoundMacAddresses }
-//           res.json(reqdRespons);
-//         } else {
-//           res.status(500).json({
-//             success: false,
-//             error: "Unsupported data from ServiceNow instance. It should be 'array'"
-//           });
+
+//           let macAndTables = { "macAddress": "", "tables": [] };
+
+//           if (isClientFormatRequired) {
+//             if (matchingResults.length > 0) {
+//               macAndTables.macAddress = `Record with MAC address: ${singleMac} was found.`;
+//               macAndTables.tables = matchingResults.map(result => (result.sys_class_name));
+//             } else {
+//               macAndTables.macAddress = `No record with MAC address: ${singleMac} was found.`;
+//             }
+//             responseForClientSide.push(macAndTables);
+//           } else {
+//             if (matchingResults.length > 0) {
+//               macAndTables.macAddress = singleMac;
+//               macAndTables.tables = matchingResults.map(result => ({
+//                 table: result.sys_class_name,
+//                 sys_id: result.sys_id
+//               }));
+//               foundMacAddresses.push(macAndTables);
+//             } else {
+//               notFoundMacAddresses.push(singleMac);
+//             }
+//           }
 //         }
+
+//         console.log("responseForClientSide > " + responseForClientSide);
+//         let reqdResponse = isClientFormatRequired ? responseForClientSide : { success: true, foundMacAddresses, notFoundMacAddresses };
+//         res.json(reqdResponse);
 //       } else {
 //         res.status(500).json({
 //           success: false,
-//           error: macCheckResult.error
+//           error: "Unsupported data from ServiceNow instance. It should be 'array'"
 //         });
 //       }
 //     } else {
 //       res.status(401).json({
 //         success: false,
-//         error: "You aren’t authenticated! Either not authenticated at all or authenticated incorrectly. Please check you login / password / endpoint"
+//         error: "You aren’t authenticated! Either not authenticated at all or authenticated incorrectly. Please check your login / password / endpoint"
 //       });
 //     }
 //   } catch (error) {
+//     console.log('Error', error);
 //     res.status(500).json({ success: false, message: 'Error occurred while checking MAC address.' });
 //   }
 // });
-
-
 
 
 
@@ -660,7 +637,7 @@
 //             const matchingResults = macCheckResult.filter(macCheckResult => macCheckResult.mac_address === singleMac && macCheckResult.sys_class_name.indexOf("cmdb_ci") >= 0);
 
 //             if (sepioEndpoint && sepioUsername && sepioPassword) {
-
+      
 //               const sepioToken = await getSepioToken(sepioEndpoint, sepioUsername, sepioPassword);
 
 //               if (sepioToken) {
@@ -740,6 +717,46 @@
 //   getSepioToken,
 //   addTagsToSepioElements,
 // };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -931,9 +948,40 @@ app.post('/authenticate', async (req, res) => {
       return res.json({ credentialsUpdated: false });
     }
 
-    // Handle OTP logic as required...
 
-    res.json({ otpRequired: user.otp_verified, credentialsUpdated: true });
+    if (user.otp_verified) {
+      console.log(`User ${username} has completed OTP setup`);
+      return res.json({ otpRequired: true, credentialsUpdated: true });
+    } else {
+      console.log(`User ${username} has not completed OTP setup, generating secret`);
+      const secret = speakeasy.generateSecret({ length: 20 });
+      console.log(`Generated secret for user ${username}: ${secret.base32}`);
+
+      const otpauth_url = speakeasy.otpauthURL({
+        secret: secret.base32,
+        label: encodeURIComponent(username),
+        issuer: 'YourApp',
+        encoding: 'base32',
+      });
+
+      // Store secret in db
+      await prisma.user.update({
+        where: { name: username },
+        data: { otp_secret: secret.base32 },
+      });
+
+      // Generate QR code for 2FA Authentication
+      qrcode.toDataURL(otpauth_url, (err, data_url) => {
+        if (err) {
+          console.log(err);
+          return res.status(500).json({ message: 'QR code generation failed' });
+        }
+        console.log(`Generated QR code for user ${username}`);
+        res.json({ otpRequired: true, qrCode: data_url, secret: secret.base32, credentialsUpdated: true });
+      });
+    }
+
+    // res.json({ otpRequired: user.otp_verified, credentialsUpdated: true });
   } catch (error) {
     console.error('Error:', error);
     res.status(500).json({ message: 'Database error' });
@@ -1488,22 +1536,4 @@ module.exports = {
   getSepioToken,
   addTagsToSepioElements,
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
