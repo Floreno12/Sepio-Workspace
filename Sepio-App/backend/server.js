@@ -854,21 +854,15 @@ app.post('/user/privileges', async (req, res) => {
 
 
 app.post('/update-password', async (req, res) => {
-  const { password } = req.body;  // Extract password from the request body
-  const username = req.session.username;  // Get username from session
-  
-  // Log the username to debug
-  console.log(`Username received for password update: ${username}`);
+  const { password } = req.body;
+  const username = req.session.username;
 
-  // Check if username and password are provided
   if (!username || !password) {
     return res.status(400).json({ success: false, message: 'Username and password are required' });
   }
 
   try {
-    const user = await prisma.user.findUnique({
-      where: { name: username },
-    });
+    const user = await prisma.user.findUnique({ where: { name: username } });
 
     if (!user) {
       return res.status(404).json({ success: false, message: 'User not found' });
@@ -881,7 +875,7 @@ app.post('/update-password', async (req, res) => {
       where: { name: username },
       data: {
         password: hashedPassword,
-        credentialsUpdated: true, // Update credentialsUpdated to true
+        credentialsUpdated: true,
       },
     });
 
@@ -891,6 +885,62 @@ app.post('/update-password', async (req, res) => {
     res.status(500).json({ success: false, message: 'Error updating password for user' });
   }
 });
+
+
+
+app.post('/reset-credentials-updated', async (req, res) => {
+  const username = req.session.username;
+
+  if (!username) {
+    return res.status(400).json({ success: false, message: 'Username is required' });
+  }
+
+  try {
+    await prisma.user.update({
+      where: { name: username },
+      data: { credentialsUpdated: false },
+    });
+
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Error resetting credentials updated status for user:', error);
+    res.status(500).json({ success: false, message: 'Error resetting credentials updated status' });
+  }
+});
+
+
+
+app.post('/authenticate', async (req, res) => {
+  const { username, password } = req.body;
+
+  try {
+    const user = await prisma.user.findUnique({ where: { name: username } });
+
+    if (!user || (user.privileges !== 'ADMIN' && user.privileges !== 'UI_USER')) {
+      return res.status(401).json({ message: 'Authentication failed' });
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(401).json({ message: 'Authentication failed' });
+    }
+
+    req.session.username = username;
+
+    if (!user.credentialsUpdated) {
+      return res.json({ credentialsUpdated: false });
+    }
+
+    // Handle OTP logic as required...
+
+    res.json({ otpRequired: user.otp_verified, credentialsUpdated: true });
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ message: 'Database error' });
+  }
+});
+
+
 
 app.get('/api/user/:username', async (req, res) => {
   const { username } = req.params;
@@ -912,85 +962,6 @@ app.get('/api/user/:username', async (req, res) => {
 });
 
 
-app.post('/authenticate', async (req, res) => {
-  const { username, password } = req.body;
-  console.log(`Authenticating user: ${username}`);
-
-  try {
-    const user = await prisma.user.findUnique({
-      where: { name: username },
-    });
-
-
-
-    if (!user || user.privileges !== 'ADMIN' && user.privileges !== 'UI_USER' ) {
-      console.log(`Authentication failed for user: ${username}`);
-      return res.status(401).json({ message: 'Authentication failed' });
-    }
-
-    // Compare password with hash
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
-      console.log(`Authentication failed for user: ${username}`);
-      return res.status(401).json({ message: 'Authentication failed' });
-    }
-
-    // Save the username in the session
-    req.session.username = username;
-
-    if (!user.credentialsUpdated) {
-      // Update the password
-      const saltRounds = 10;
-      const hashedPassword = await bcrypt.hash(password, saltRounds);
-
-      await prisma.user.update({
-        where: { name: username },
-        data: {
-          password: hashedPassword,
-          credentialsUpdated: true, // Update credentialsUpdated to true
-        },
-      });
-
-      console.log(`Password updated for user: ${username}`);
-      return res.json({ credentialsUpdated: false });
-    }
-
-    if (user.otp_verified) {
-      console.log(`User ${username} has completed OTP setup`);
-      return res.json({ otpRequired: true, credentialsUpdated: true });
-    } else {
-      console.log(`User ${username} has not completed OTP setup, generating secret`);
-      const secret = speakeasy.generateSecret({ length: 20 });
-      console.log(`Generated secret for user ${username}: ${secret.base32}`);
-
-      const otpauth_url = speakeasy.otpauthURL({
-        secret: secret.base32,
-        label: encodeURIComponent(username),
-        issuer: 'YourApp',
-        encoding: 'base32',
-      });
-
-      // Store secret in db
-      await prisma.user.update({
-        where: { name: username },
-        data: { otp_secret: secret.base32 },
-      });
-
-      // Generate QR code for 2FA Authentication
-      qrcode.toDataURL(otpauth_url, (err, data_url) => {
-        if (err) {
-          console.log(err);
-          return res.status(500).json({ message: 'QR code generation failed' });
-        }
-        console.log(`Generated QR code for user ${username}`);
-        res.json({ otpRequired: true, qrCode: data_url, secret: secret.base32, credentialsUpdated: true });
-      });
-    }
-  } catch (error) {
-    console.error('Error:', error);
-    res.status(500).json({ message: 'Database error' });
-  }
-});
 
 app.post('/verify', async (req, res) => {
   const { username, token } = req.body;

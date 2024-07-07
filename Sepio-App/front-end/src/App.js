@@ -19,6 +19,7 @@ import '@coreui/coreui/dist/css/coreui.min.css';
 function App() {
   const [icon_username, setUsername] = useLocalStorage('');
   const [userPrivileges, setUserPrivileges] = useState(null);
+  console.log(userPrivileges);
 
   useEffect(() => {
     if (icon_username) {
@@ -43,11 +44,9 @@ function App() {
             <Route path='/querytool' element={<RootView icon_username={icon_username} />} />
             <Route path='/querytool/mac' element={<MAC icon_username={icon_username} />} />
             <Route path='/querytool/settings' element={<Settings icon_username={icon_username} />} />
-            {userPrivileges === 'UI_USER' ? (
-              <Route path='/querytool/createuser' element={<Navigate to='/querytool' />} />
-            ) : (
-              <Route path='/querytool/createuser' element={<CreateUser icon_username={icon_username} />} />
-            )}
+            {userPrivileges === 'ADMIN' && (
+              <Route path='/querytool/createuser' element={<CreateUser icon_username={icon_username} />} />           
+)}
             <Route path='/querytool/usersubmit' element={<Submit icon_username={icon_username} />} />
           </Routes>
         </div>

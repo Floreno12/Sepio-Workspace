@@ -3306,7 +3306,7 @@ export default function Layout({ icon_username }) {
 						<NavLink to='/querytool/settings' className='nav-link'>
 							<RiDashboardLine className='nav-icon' /> { sidebarOpen && 'Settings'}
 						</NavLink>
-						{!isLoading && userPrivileges !== 'UI_USER' && (
+						{!isLoading && userPrivileges === 'ADMIN' && (
 							<NavLink to='/querytool/createuser' className='nav-link'>
 								<RiDashboardLine className='nav-icon' /> {sidebarOpen && 'Users'}
 							</NavLink>

@@ -459,11 +459,11 @@ export default function UpdatePassword() {
 
   const showSuccess = (message) => {
     toast.current.show({ severity: 'success', summary: 'Success', detail: message, life: 3000 });
-  }
+  };
 
   const showError = (message) => {
     toast.current.show({ severity: 'error', summary: 'Error', detail: message, life: 3000 });
-  }
+  };
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -481,7 +481,7 @@ export default function UpdatePassword() {
           showSuccess('Password updated successfully');
           setTimeout(() => {
             navigate('/'); // Navigate to login page
-          }, 1500)
+          }, 1500);
         } else {
           showError('Password update failed');
           setStatus('failure');
@@ -495,8 +495,19 @@ export default function UpdatePassword() {
   };
 
   const handleLoginRedirect = () => {
-    navigate('/');
-  }
+    axios.post('/reset-credentials-updated')
+      .then(response => {
+        if (response.data.success) {
+          navigate('/');
+        } else {
+          showError('Failed to reset credentials update status');
+        }
+      })
+      .catch(error => {
+        console.error('Reset credentials update status error:', error);
+        showError('Failed to reset credentials update status');
+      });
+  };
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', background: '#778899', padding: '40px', borderRadius: '10px', maxWidth: '400px', margin: 'auto', marginTop: '100px' }}>
@@ -529,12 +540,19 @@ export default function UpdatePassword() {
           >
             Update Password
           </Button>
+          <Button
+            variant="outlined"
+            color="secondary"
+            onClick={handleLoginRedirect}
+            sx={{ marginTop: '10px' }}
+          >
+            Go Back to Login
+          </Button>
           {status === 'failure' && (
             <p style={{ color: 'red' }}>Password update failed. Please try again.</p>
           )}
         </FormControl>
       </form>
-
     </div>
   );
 }
