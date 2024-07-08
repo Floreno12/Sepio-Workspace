@@ -3371,7 +3371,7 @@ export default function Layouts({ icon_username }) {
 )}
 
 			
-			{/* {isLoading && (
+			{isLoading && (
 				<div style={{
 					display: 'flex',
 					justifyContent: 'center',
@@ -3386,7 +3386,7 @@ export default function Layouts({ icon_username }) {
 				}}>
 
 				</div>
-			)} */}
+			)}
 			</div>
 			</div>
 		</div>

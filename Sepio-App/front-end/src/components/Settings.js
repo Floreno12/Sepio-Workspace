@@ -1712,7 +1712,7 @@ useEffect(() => {
 
 
 				<div style={{ marginLeft: marginLeft, flex: 1, paddingLeft: '0px', marginTop: '80px'}}>
-					<div style = {{marginLeft: '600px' }}>
+					<div style = {{marginLeft: '500px' }}>
 					<div style={{ width: '70%', maxWidth: '600px', minWidth: '300px', padding: '20px', borderRadius: '8px', boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)', backgroundColor: 'white' }}>
 						<div style={{ marginBottom: '20px' }}>
 							{message && (
@@ -1783,7 +1783,7 @@ useEffect(() => {
 					</div>
 				</div>
 			</div>
-			{/* {isLoading && (
+			{isLoading && (
 				<div style={{
 					display: 'flex',
 					justifyContent: 'center',
@@ -1799,7 +1799,7 @@ useEffect(() => {
 
 
 				</div>
-			)} */}
+			)}
 		</div>
 	);
 }

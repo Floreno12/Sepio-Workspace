@@ -150,7 +150,7 @@ export default function TwoFactorAuth() {
         <form onSubmit={handleSubmit} id="demo">
           <FormControl style={{ display: 'inline-flex', justifyContent: 'center', maxWidth: '500px', marginTop: '15px', paddingTop: '15px' }}>
             <FormLabel sx={(theme) => ({ '--FormLabel-color': theme.vars.palette.primary.plainColor })}>
-              2FA Code
+             
             </FormLabel>
             <Input
               startDecorator={<PersonIcon style={{ color: 'fff' }} />}
