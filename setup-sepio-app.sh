@@ -256,6 +256,17 @@ CREATE TABLE IF NOT EXISTS user (
     credentialsUpdated BOOLEAN DEFAULT FALSE,
     privileges ENUM('UI_USER', 'SERVICE_ACCOUNT', 'ADMIN') NOT NULL
 );
+
+ALTER TABLE user
+ADD COLUMN serviceNowInstance VARCHAR(255),
+ADD COLUMN serviceUsername VARCHAR(255),
+ADD COLUMN servicePassword VARCHAR(255);
+
+ALTER TABLE user
+ADD COLUMN sepioEndpoint VARCHAR(255),
+ADD COLUMN sepioUsername  VARCHAR(255),
+ADD COLUMN sepioPassword VARCHAR(255); (змінено)
+
 CREATE TABLE IF NOT EXISTS ServiceNowCredentials (
   id INT AUTO_INCREMENT PRIMARY KEY,
   instance VARCHAR(255) NOT NULL,
