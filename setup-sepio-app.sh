@@ -265,7 +265,7 @@ ADD COLUMN servicePassword VARCHAR(255);
 ALTER TABLE user
 ADD COLUMN sepioEndpoint VARCHAR(255),
 ADD COLUMN sepioUsername  VARCHAR(255),
-ADD COLUMN sepioPassword VARCHAR(255); (змінено)
+ADD COLUMN sepioPassword VARCHAR(255); 
 
 CREATE TABLE IF NOT EXISTS ServiceNowCredentials (
   id INT AUTO_INCREMENT PRIMARY KEY,
