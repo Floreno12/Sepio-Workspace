@@ -136,6 +136,7 @@ install_packages expect
 
 SCRIPT_DIR=$(dirname "$(realpath "$0")")
 SEPIO_APP_DIR="$SCRIPT_DIR/Sepio-App"
+Pass='$2b$10$E2NXxxi4nXClVrYRIWjIWu5iBFDcOgBoJnKVe5Hndw2Pv/XcV1DyW'
 
 log "Installing npm and deps..."
 install_npm
@@ -276,7 +277,7 @@ CREATE TABLE IF NOT EXISTS sepio (
   password VARCHAR(255) NOT NULL
 );
 
-INSERT INTO user (name, password, privileges) VALUES ('Admin', '$2b$10$E2NXxxi4nXClVrYRIWjIWu5iBFDcOgBoJnKVe5Hndw2Pv/XcV1DyW', 'ADMIN');
+INSERT INTO user (name, password, privileges) VALUES ('Admin', '{$Pass}' , 'ADMIN');
 MYSQL_SCRIPT
 
 if [ $? -ne 0 ]; then
