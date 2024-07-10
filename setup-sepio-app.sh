@@ -1,17 +1,13 @@
 #!/bin/bash
-LOG_DIR="$SCRIPT_DIR/logs"
-LOG_FILE="$LOG_DIR/sepio_installer.log"
-mkdir -p "$LOG_DIR"
-
 log() {
-    echo "$(date '+%Y-%m-%d %H:%M:%S') - $1" | tee -a "$LOG_FILE" | lolcat
+    echo "$(date '+%Y-%m-%d %H:%M:%S') - $1" | lolcat
 }
 
 install_packages() {
     local package=$1
     if ! command -v "$package" &> /dev/null; then
         log "$package is not installed. Installing $package..."
-        sudo apt-get update && sudo apt-get install -y "$package" 2>&1 | tee -a "$LOG_FILE"
+        sudo apt-get update && sudo apt-get install -y "$package"
         if [ $? -ne 0 ]; then
             log "Error: Failed to install $package."
             exit 1
@@ -24,7 +20,7 @@ install_packages() {
 install_nvm() {
     if ! command -v nvm &> /dev/null; then
         log "nvm (Node Version Manager) is not installed. Installing nvm..."
-        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash 2>&1 | tee -a "$LOG_FILE"
+        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
         export NVM_DIR="$HOME/.nvm"
         [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
         log "nvm installed successfully."
@@ -33,10 +29,11 @@ install_nvm() {
     fi
 }
 
+
 install_npm() {
     if ! command -v npm &> /dev/null; then
         log "npm is not installed. Installing npm..."
-        sudo apt-get update && sudo apt-get install -y npm 2>&1 | tee -a "$LOG_FILE"
+        sudo apt-get update && sudo apt-get install -y npm
         if [ $? -ne 0 ]; then
             log "Error: Failed to install npm."
             exit 1
@@ -46,6 +43,7 @@ install_npm() {
         log "npm is already installed."
     fi
 }
+
 
 schedule_updater() {
     local script_path=$(realpath "$SCRIPT_DIR/Sepio_Updater.sh")
@@ -64,11 +62,11 @@ install_node_version() {
     local node_version=$1
     if ! command -v nvm &> /dev/null; then
         log "nvm (Node Version Manager) is not installed. Installing nvm..."
-        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash 2>&1 | tee -a "$LOG_FILE"
+        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
         export NVM_DIR="$HOME/.nvm"
         [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
     fi
-    nvm install "$node_version" 2>&1 | tee -a "$LOG_FILE"
+    nvm install "$node_version"
     if [ $? -ne 0 ]; then
         log "Error: Failed to install Node.js version $node_version using nvm."
         exit 1
@@ -81,9 +79,9 @@ install_frontend_dependencies() {
     local frontend_dir=$1
     log "Installing frontend dependencies in $frontend_dir..."
     cd "$frontend_dir" || { log "Error: Directory $frontend_dir not found."; exit 1; }
-    npm install 2>&1 | tee -a "$LOG_FILE"
+    npm install
     if [ $? -ne 0 ]; then
-        log "Error: npm install failed in $frontend_dir."
+        log "Error: Failed to install frontend dependencies."
         exit 1
     fi
 }
@@ -92,13 +90,12 @@ install_backend_dependencies() {
     local backend_dir=$1
     log "Installing backend dependencies in $backend_dir..."
     cd "$backend_dir" || { log "Error: Directory $backend_dir not found."; exit 1; }
-    npm install 2>&1 | tee -a "$LOG_FILE"
+    npm install
     if [ $? -ne 0 ]; then
-        log "Error: npm install failed in $backend_dir."
+        log "Error: Failed to install backend dependencies."
         exit 1
     fi
 }
-
 check_port_availability() {
     local port=$1
     local retries=30
@@ -165,17 +162,17 @@ fi
 install_node_version "$frontend_node_version"
 
 log "Installing latest eslint-webpack-plugin..."
-npm install eslint-webpack-plugin@latest --save-dev 2>&1 | tee -a "$LOG_FILE"
+npm install eslint-webpack-plugin@latest --save-dev
 
 log "Generating Prisma Client..."
-npx prisma generate 2>&1 | tee -a "$LOG_FILE"
+npx prisma generate
 if [ $? -ne 0 ]; then
     log "Error: Failed to generate Prisma Client."
     exit 1
 fi
 log "Prisma Client generated successfully."
 
-log "Granting privileges for Updater and scheduling autoupdates..."
+log "Granting privilages for Updater and scheduling autoupdates..."
 schedule_updater
 cd "$SCRIPT_DIR" || { log "Error: Directory $SCRIPT_DIR not found."; exit 1; }
 chmod +x Sepio_Updater.sh
@@ -187,7 +184,7 @@ if systemctl is-active --quiet mysql; then
     log "MySQL server is already installed."
 else
 log "Installing MySQL server..."
-sudo apt-get update && sudo apt-get install -y mysql-server 2>&1 | tee -a "$LOG_FILE"
+sudo apt-get update && sudo apt-get install -y mysql-server
 if [ $? -ne 0 ]; then
     log "Error: Failed to install MySQL server."
     exit 1
@@ -197,38 +194,38 @@ fi
 log "Securing MySQL installation..."
 sudo expect -c "
 spawn mysql_secure_installation
-expect \"VALIDATE PASSWORD COMPONENT?\" {
-    send -- \"Y\r\"
-    expect \"There are three levels of password validation policy:\"
-    send -- \"1\r\"  # Choose MEDIUM (or 2 for STRONG if needed)
+expect "VALIDATE PASSWORD COMPONENT?" {
+    send -- "Y\r"
+    expect "There are three levels of password validation policy:"
+    send -- "1\r"  # Choose MEDIUM (or 2 for STRONG if needed)
 }
 
-expect \"Remove anonymous users?\" {
-    send -- \"Y\r\"
+expect "Remove anonymous users?" {
+    send -- "Y\r"
 }
 
-expect \"Disallow root login remotely?\" {
-    send -- \"Y\r\"
+expect "Disallow root login remotely?" {
+    send -- "Y\r"
 }
 
-expect \"Remove test database and access to it?\" {
-    send -- \"Y\r\"
+expect "Remove test database and access to it?" {
+    send -- "Y\r"
 }
 
-expect \"Reload privilege tables now?\" {
-    send -- \"Y\r\"
+expect "Reload privilege tables now?" {
+    send -- "Y\r"
 }
 expect eof
-" 2>&1 | tee -a "$LOG_FILE"
+"
 
 log "Starting MySQL service..."
-sudo systemctl start mysql 2>&1 | tee -a "$LOG_FILE"
+sudo systemctl start mysql
 
 log "Enabling MySQL service to start on boot..."
-sudo systemctl enable --now mysql 2>&1 | tee -a "$LOG_FILE"
+sudo systemctl enable --now mysql
 
 log "Checking MySQL status..."
-sudo systemctl status --quiet mysql 2>&1 | tee -a "$LOG_FILE"
+sudo systemctl status --quiet mysql
 
 log "Checking MySQL port configuration..."
 mysql_port=$(sudo ss -tln | grep ':3306 ')
@@ -241,20 +238,161 @@ else
 fi
 fi
 
-log "Starting backend service..."
-cd "$SEPIO_APP_DIR/backend" || { log "Error: Directory $SEPIO_APP_DIR/backend not found."; exit 1; }
-npm run dev 2>&1 | tee -a "$LOG_FILE" &
+log "Creating MySQL entry user with password ********..."
+sudo mysql -u root <<MYSQL_SCRIPT
+CREATE DATABASE IF NOT EXISTS nodejs_login;
+USE nodejs_login;
 
-backend_pid=$!
-log "Backend service started with PID $backend_pid."
+CREATE USER IF NOT EXISTS 'Main_user'@'localhost' IDENTIFIED BY 'Sepio_password';
+GRANT ALL PRIVILEGES ON nodejs_login.* TO 'Main_user'@'localhost';
+FLUSH PRIVILEGES;
+
+CREATE TABLE IF NOT EXISTS user (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    otp_secret VARCHAR(255),
+    otp_verified BOOLEAN DEFAULT FALSE,
+    credentialsUpdated BOOLEAN DEFAULT FALSE,
+    privileges ENUM('UI_USER', 'SERVICE_ACCOUNT', 'ADMIN') NOT NULL,
+    serviceNowInstance VARCHAR(255),
+    serviceUsername VARCHAR(255),
+    servicePassword VARCHAR(255),
+    sepioEndpoint VARCHAR(255),
+    sepioUsername  VARCHAR(255),
+    sepioPassword VARCHAR(255)
+);
+
+CREATE TABLE IF NOT EXISTS ServiceNowCredentials (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  instance VARCHAR(255) NOT NULL,
+  username VARCHAR(255) NOT NULL,
+  password VARCHAR(255) NOT NULL
+);
+CREATE TABLE IF NOT EXISTS sepio (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  instance VARCHAR(255) NOT NULL,
+  username VARCHAR(255) NOT NULL,
+  password VARCHAR(255) NOT NULL
+);
+
+INSERT INTO user (name, password, privileges) VALUES ('Admin', SHA2('admin', 256), 'ADMIN');
+MYSQL_SCRIPT
+
+if [ $? -ne 0 ]; then
+    log "Error: Failed to create MySQL user Main_user."
+    exit 1
+fi
+
+log "MySQL user Main_user created successfully."
+
+log "Installing Redis server..."
+sudo apt-get update && sudo apt-get install -y redis-server
+if [ $? -ne 0 ]; then
+    log "Error: Failed to install Redis server."
+    exit 1
+fi
+
+log "Starting Redis service..."
+sudo systemctl start redis-server
+
+log "Enabling Redis service to start on boot..."
+sudo systemctl enable redis-server
+
+log "Checking Redis status..."
+sudo systemctl is-active redis-server
+
+log "Checking Redis port configuration..."
+redis_port=$(sudo ss -tln | grep ':6379 ')
+if [ -n "$redis_port" ]; then
+    log "Redis is running on port 6379."
+    log "Redis installation and setup completed."
+else
+    log "Error: Redis is not running on port 6379."
+    exit 1
+fi
+
+log "Creating systemd service for React build..."
+sudo bash -c "cat <<EOL > /etc/systemd/system/react-build.service
+[Unit]
+Description=React Build Service
+After=network.target
+
+[Service]
+Type=oneshot
+ExecStart=/bin/bash -c 'cd $SEPIO_APP_DIR/front-end && npm run build'
+User=$USER
+Environment=PATH=$PATH:/usr/local/bin
+Environment=NODE_ENV=production
+WorkingDirectory=$SEPIO_APP_DIR/front-end
+
+[Install]
+WantedBy=multi-user.target
+EOL"
+if [ $? -ne 0 ]; then
+    log "Error: Failed to create react-build.service."
+    exit 1
+fi
+
+log "Creating systemd service for server.js..."
+sudo bash -c "cat <<EOL > /etc/systemd/system/node-server.service
+[Unit]
+Description=Node.js Server
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/bin/bash -c 'cd $SEPIO_APP_DIR/backend && node server.js'
+User=$USER
+Environment=PATH=$PATH:/usr/local/bin
+Environment=NODE_ENV=production
+WorkingDirectory=$SEPIO_APP_DIR/backend
+
+[Install]
+WantedBy=multi-user.target
+EOL"
+if [ $? -ne 0 ]; then
+    log "Error: Failed to create node-server.service."
+    exit 1
+fi
+
+log "Reloading systemd daemon to pick up the new service files..."
+sudo systemctl daemon-reload
+if [ $? -ne 0 ]; then
+    log "Error: Failed to reload systemd daemon."
+    exit 1
+fi
+
+log "Enabling react-build.service to start on boot..."
+sudo systemctl enable react-build.service
+if [ $? -ne 0 ]; then
+    log "Error: Failed to enable react-build.service."
+    exit 1
+fi
+
+log "Starting react-build.service... Please be patient, don't break up the process..."
+sudo systemctl start react-build.service
+if [ $? -ne 0 ]; then
+    log "Error: Failed to start react-build.service."
+    exit 1
+fi
+
+log "Enabling node-server.service to start on boot..."
+sudo systemctl enable node-server.service
+if [ $? -ne 0 ]; then
+    log "Error: Failed to enable node-server.service."
+    exit 1
+fi
+
+log "Starting node-server.service..."
+sudo systemctl start node-server.service
+if [ $? -ne 0 ]; then
+    log "Error: Failed to start node-server.service."
+    exit 1
+fi
+
+log "Systemd services setup completed successfully."
+
 check_port_availability 3000
 
-log "Starting frontend service..."
-cd "$SEPIO_APP_DIR/front-end" || { log "Error: Directory $SEPIO_APP_DIR/front-end not found."; exit 1; }
-npm start 2>&1 | tee -a "$LOG_FILE" &
-
-frontend_pid=$!
-log "Frontend service started with PID $frontend_pid."
-check_port_availability 5173
-
-log "Sepio Installer script completed successfully."
+log "Setup script executed successfully." 
