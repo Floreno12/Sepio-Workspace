@@ -239,7 +239,23 @@ else
 fi
 fi
 
+log "Creating MySQL Prisma User..."
+sudo mysql -u root <<MYSQL_SCRIPT
+CREATE DATABASE IF NOT EXISTS nodejs_login;
+USE nodejs_login;
+
+CREATE USER IF NOT EXISTS 'Main_user'@'localhost' IDENTIFIED BY 'Sepio_password';
+GRANT ALL PRIVILEGES ON nodejs_login.* TO 'Main_user'@'localhost';
+FLUSH PRIVILEGES;
+MYSQL_SCRIPT
+
+if [ $? -ne 0 ]; then
+  log "Error: Failed to Create Prisma User"
+  exit 1
+fi
+
 log "Running Prisma migration"
+export DATABASE_URL="mysql://Main_user:Sepio_password@localhost:3306/nodejs_login"
 npx prisma db push --schema=Sepio-App/backend/prisma/schema.prisma
 
 if [ $? -ne 0 ]; then
@@ -248,7 +264,7 @@ if [ $? -ne 0 ]; then
 fi
 
 log "Prisma migration completed successfully."
-log "MySQL user Main_user created successfully."
+log "MySQL Prisma User created successfully."
 
 log "Installing Redis server..."
 sudo apt-get update && sudo apt-get install -y redis-server
