@@ -276,7 +276,7 @@ CREATE TABLE IF NOT EXISTS sepio (
   password VARCHAR(255) NOT NULL
 );
 
-INSERT INTO user (name, password, privileges) VALUES ('Admin', '8c6976e5b5410415bde908bd4dee15dfb16e07f9e85a1b8bfaac9b2aa9d77f57', 'ADMIN');
+INSERT INTO user (name, password, privileges) VALUES ('Admin', '$2b$10$E2NXxxi4nXClVrYRIWjIWu5iBFDcOgBoJnKVe5Hndw2Pv/XcV1DyW', 'ADMIN');
 MYSQL_SCRIPT
 
 if [ $? -ne 0 ]; then
