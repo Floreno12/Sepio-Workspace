@@ -17,7 +17,7 @@ model user {
   id                 Int       @id @default(autoincrement())
   name               String    @unique
   password           String
-  otp_secret         String
+  otp_secret         String?
   otp_verified       Boolean
   credentialsUpdated Boolean   @default(false) 
   privileges         Privileges

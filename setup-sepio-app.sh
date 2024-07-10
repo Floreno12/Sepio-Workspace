@@ -238,7 +238,7 @@ else
     exit 1
 fi
 fi
-
+'
 log "Creating MySQL entry user with password ********..."
 sudo mysql -u root <<MYSQL_SCRIPT
 CREATE DATABASE IF NOT EXISTS nodejs_login;
@@ -279,9 +279,11 @@ CREATE TABLE IF NOT EXISTS sepio (
 
 INSERT INTO user (name, password, privileges) VALUES ('Admin', '$Pass' , 'ADMIN');
 MYSQL_SCRIPT
-
+'
+log "Running Prisma migration"
+npx prisma db push
 if [ $? -ne 0 ]; then
-    log "Error: Failed to create MySQL user Main_user."
+    log "Error: Failed to run Prisma migration."
     exit 1
 fi
 
