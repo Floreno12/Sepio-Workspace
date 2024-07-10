@@ -238,55 +238,16 @@ else
     exit 1
 fi
 fi
-'
-log "Creating MySQL entry user with password ********..."
-sudo mysql -u root <<MYSQL_SCRIPT
-CREATE DATABASE IF NOT EXISTS nodejs_login;
-USE nodejs_login;
 
-CREATE USER IF NOT EXISTS 'Main_user'@'localhost' IDENTIFIED BY 'Sepio_password';
-GRANT ALL PRIVILEGES ON nodejs_login.* TO 'Main_user'@'localhost';
-FLUSH PRIVILEGES;
-
-CREATE TABLE IF NOT EXISTS user (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    password VARCHAR(255) NOT NULL,
-    otp_secret VARCHAR(255),
-    otp_verified BOOLEAN DEFAULT FALSE,
-    credentialsUpdated BOOLEAN DEFAULT FALSE,
-    privileges ENUM('UI_USER', 'SERVICE_ACCOUNT', 'ADMIN') NOT NULL,
-    serviceNowInstance VARCHAR(255),
-    serviceUsername VARCHAR(255),
-    servicePassword VARCHAR(255),
-    sepioEndpoint VARCHAR(255),
-    sepioUsername  VARCHAR(255),
-    sepioPassword VARCHAR(255)
-);
-
-CREATE TABLE IF NOT EXISTS ServiceNowCredentials (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  instance VARCHAR(255) NOT NULL,
-  username VARCHAR(255) NOT NULL,
-  password VARCHAR(255) NOT NULL
-);
-CREATE TABLE IF NOT EXISTS sepio (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  instance VARCHAR(255) NOT NULL,
-  username VARCHAR(255) NOT NULL,
-  password VARCHAR(255) NOT NULL
-);
-
-INSERT INTO user (name, password, privileges) VALUES ('Admin', '$Pass' , 'ADMIN');
-MYSQL_SCRIPT
-'
 log "Running Prisma migration"
-npx prisma db push
+npx prisma db push --schema=Sepio-App/backend/prisma/schema.prisma
+
 if [ $? -ne 0 ]; then
-    log "Error: Failed to run Prisma migration."
-    exit 1
+  log "Error: Failed to run Prisma migration."
+  exit 1
 fi
 
+log "Prisma migration completed successfully."
 log "MySQL user Main_user created successfully."
 
 log "Installing Redis server..."
