@@ -254,18 +254,14 @@ CREATE TABLE IF NOT EXISTS user (
     otp_secret VARCHAR(255),
     otp_verified BOOLEAN DEFAULT FALSE,
     credentialsUpdated BOOLEAN DEFAULT FALSE,
-    privileges ENUM('UI_USER', 'SERVICE_ACCOUNT', 'ADMIN') NOT NULL
+    privileges ENUM('UI_USER', 'SERVICE_ACCOUNT', 'ADMIN') NOT NULL,
+    serviceNowInstance VARCHAR(255),
+    serviceUsername VARCHAR(255),
+    servicePassword VARCHAR(255),
+    sepioEndpoint VARCHAR(255),
+    sepioUsername  VARCHAR(255),
+    sepioPassword VARCHAR(255)
 );
-
-ALTER TABLE user
-ADD COLUMN serviceNowInstance VARCHAR(255),
-ADD COLUMN serviceUsername VARCHAR(255),
-ADD COLUMN servicePassword VARCHAR(255);
-
-ALTER TABLE user
-ADD COLUMN sepioEndpoint VARCHAR(255),
-ADD COLUMN sepioUsername  VARCHAR(255),
-ADD COLUMN sepioPassword VARCHAR(255); 
 
 CREATE TABLE IF NOT EXISTS ServiceNowCredentials (
   id INT AUTO_INCREMENT PRIMARY KEY,
