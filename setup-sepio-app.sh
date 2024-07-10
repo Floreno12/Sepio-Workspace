@@ -1,6 +1,7 @@
 #!/bin/bash
 LOG_DIR="$SCRIPT_DIR/logs"
-
+LOG_FILE="$LOG_DIR/sepio_installer.log"
+mkdir -p "$LOG_DIR"
 
 log() {
     echo "$(date '+%Y-%m-%d %H:%M:%S') - $1" | tee -a "$LOG_FILE" | lolcat
@@ -82,7 +83,7 @@ install_frontend_dependencies() {
     cd "$frontend_dir" || { log "Error: Directory $frontend_dir not found."; exit 1; }
     npm install 2>&1 | tee -a "$LOG_FILE"
     if [ $? -ne 0 ]; then
-        log "Error: Failed to install frontend dependencies."
+        log "Error: npm install failed in $frontend_dir."
         exit 1
     fi
 }
@@ -93,7 +94,7 @@ install_backend_dependencies() {
     cd "$backend_dir" || { log "Error: Directory $backend_dir not found."; exit 1; }
     npm install 2>&1 | tee -a "$LOG_FILE"
     if [ $? -ne 0 ]; then
-        log "Error: Failed to install backend dependencies."
+        log "Error: npm install failed in $backend_dir."
         exit 1
     fi
 }
