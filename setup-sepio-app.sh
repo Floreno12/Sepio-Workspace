@@ -1,4 +1,5 @@
 #!/bin/bash
+
 log() {
     echo "$(date '+%Y-%m-%d %H:%M:%S') - $1" | lolcat
 }
@@ -29,7 +30,6 @@ install_nvm() {
     fi
 }
 
-
 install_npm() {
     if ! command -v npm &> /dev/null; then
         log "npm is not installed. Installing npm..."
@@ -43,7 +43,6 @@ install_npm() {
         log "npm is already installed."
     fi
 }
-
 
 schedule_updater() {
     local script_path=$(realpath "$SCRIPT_DIR/Sepio_Updater.sh")
@@ -96,6 +95,7 @@ install_backend_dependencies() {
         exit 1
     fi
 }
+
 check_port_availability() {
     local port=$1
     local retries=30
@@ -137,7 +137,7 @@ install_packages expect
 SCRIPT_DIR=$(dirname "$(realpath "$0")")
 SEPIO_APP_DIR="$SCRIPT_DIR/Sepio-App"
 
-log "Installing npm and deps..."
+log "Installing npm and dependencies..."
 install_npm
 install_frontend_dependencies "$SEPIO_APP_DIR/front-end"
 install_backend_dependencies "$SEPIO_APP_DIR/backend"
@@ -172,70 +172,53 @@ if [ $? -ne 0 ]; then
 fi
 log "Prisma Client generated successfully."
 
-log "Granting privilages for Updater and scheduling autoupdates..."
+log "Granting privileges for Updater and scheduling auto-updates..."
 schedule_updater
 cd "$SCRIPT_DIR" || { log "Error: Directory $SCRIPT_DIR not found."; exit 1; }
 chmod +x Sepio_Updater.sh
 sudo touch /var/log/sepio_updater.log
 sudo chown "$USER:$USER" /var/log/sepio_updater.log
 
-
 if systemctl is-active --quiet mysql; then
     log "MySQL server is already installed."
 else
-log "Installing MySQL server..."
-sudo apt-get update && sudo apt-get install -y mysql-server
-if [ $? -ne 0 ]; then
-    log "Error: Failed to install MySQL server."
-    exit 1
-fi
+    log "Installing MySQL server..."
+    sudo apt-get update && sudo apt-get install -y mysql-server
+    if [ $? -ne 0 ]; then
+        log "Error: Failed to install MySQL server."
+        exit 1
+    fi
 
+    log "Securing MySQL installation..."
+    sudo expect -c "
+    spawn mysql_secure_installation
+    expect \"VALIDATE PASSWORD COMPONENT?\" { send -- \"Y\r\"; exp_continue }
+    expect \"There are three levels of password validation policy:\" { send -- \"1\r\"; exp_continue } # Choose MEDIUM (or 2 for STRONG if needed)
+    expect \"Remove anonymous users?\" { send -- \"Y\r\"; exp_continue }
+    expect \"Disallow root login remotely?\" { send -- \"Y\r\"; exp_continue }
+    expect \"Remove test database and access to it?\" { send -- \"Y\r\"; exp_continue }
+    expect \"Reload privilege tables now?\" { send -- \"Y\r\"; exp_continue }
+    expect eof
+    "
 
-log "Securing MySQL installation..."
-sudo expect -c "
-spawn mysql_secure_installation
-expect "VALIDATE PASSWORD COMPONENT?" {
-    send -- "Y\r"
-    expect "There are three levels of password validation policy:"
-    send -- "1\r"  # Choose MEDIUM (or 2 for STRONG if needed)
-}
+    log "Starting MySQL service..."
+    sudo systemctl start mysql
 
-expect "Remove anonymous users?" {
-    send -- "Y\r"
-}
+    log "Enabling MySQL service to start on boot..."
+    sudo systemctl enable --now mysql
 
-expect "Disallow root login remotely?" {
-    send -- "Y\r"
-}
+    log "Checking MySQL status..."
+    sudo systemctl status --quiet mysql
 
-expect "Remove test database and access to it?" {
-    send -- "Y\r"
-}
-
-expect "Reload privilege tables now?" {
-    send -- "Y\r"
-}
-expect eof
-"
-
-log "Starting MySQL service..."
-sudo systemctl start mysql
-
-log "Enabling MySQL service to start on boot..."
-sudo systemctl enable --now mysql
-
-log "Checking MySQL status..."
-sudo systemctl status --quiet mysql
-
-log "Checking MySQL port configuration..."
-mysql_port=$(sudo ss -tln | grep ':3306 ')
-if [ -n "$mysql_port" ]; then
-    log "MySQL is running on port 3306."
-    log "MySQL installation and setup completed."
-else
-    log "Error: MySQL is not running on port 3306."
-    exit 1
-fi
+    log "Checking MySQL port configuration..."
+    mysql_port=$(sudo ss -tln | grep ':3306 ')
+    if [ -n "$mysql_port" ]; then
+        log "MySQL is running on port 3306."
+        log "MySQL installation and setup completed."
+    else
+        log "Error: MySQL is not running on port 3306."
+        exit 1
+    fi
 fi
 
 log "Creating MySQL entry user with password ********..."
@@ -260,139 +243,25 @@ CREATE TABLE IF NOT EXISTS user (
     servicePassword VARCHAR(255),
     sepioEndpoint VARCHAR(255),
     sepioUsername  VARCHAR(255),
-    sepioPassword VARCHAR(255)
+    sepioPassword  VARCHAR(255)
 );
 
-CREATE TABLE IF NOT EXISTS ServiceNowCredentials (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  instance VARCHAR(255) NOT NULL,
-  username VARCHAR(255) NOT NULL,
-  password VARCHAR(255) NOT NULL
-);
-CREATE TABLE IF NOT EXISTS sepio (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  instance VARCHAR(255) NOT NULL,
-  username VARCHAR(255) NOT NULL,
-  password VARCHAR(255) NOT NULL
-);
+INSERT INTO user (name, password, privileges) VALUES ('test', 'test', 'UI_USER');
 
-INSERT INTO user (name, password, privileges) VALUES ('Admin', SHA2('admin', 256), 'ADMIN');
 MYSQL_SCRIPT
 
-if [ $? -ne 0 ]; then
-    log "Error: Failed to create MySQL user Main_user."
-    exit 1
-fi
-
-log "MySQL user Main_user created successfully."
-
-log "Installing Redis server..."
-sudo apt-get update && sudo apt-get install -y redis-server
-if [ $? -ne 0 ]; then
-    log "Error: Failed to install Redis server."
-    exit 1
-fi
-
-log "Starting Redis service..."
-sudo systemctl start redis-server
-
-log "Enabling Redis service to start on boot..."
-sudo systemctl enable redis-server
-
-log "Checking Redis status..."
-sudo systemctl is-active redis-server
-
-log "Checking Redis port configuration..."
-redis_port=$(sudo ss -tln | grep ':6379 ')
-if [ -n "$redis_port" ]; then
-    log "Redis is running on port 6379."
-    log "Redis installation and setup completed."
+if [ $? -eq 0 ]; then
+    log "Database and user creation completed successfully."
 else
-    log "Error: Redis is not running on port 6379."
+    log "Error: Failed to create database and user."
     exit 1
 fi
 
-log "Creating systemd service for React build..."
-sudo bash -c "cat <<EOL > /etc/systemd/system/react-build.service
-[Unit]
-Description=React Build Service
-After=network.target
-
-[Service]
-Type=oneshot
-ExecStart=/bin/bash -c 'cd $SEPIO_APP_DIR/front-end && npm run build'
-User=$USER
-Environment=PATH=$PATH:/usr/local/bin
-Environment=NODE_ENV=production
-WorkingDirectory=$SEPIO_APP_DIR/front-end
-
-[Install]
-WantedBy=multi-user.target
-EOL"
-if [ $? -ne 0 ]; then
-    log "Error: Failed to create react-build.service."
-    exit 1
-fi
-
-log "Creating systemd service for server.js..."
-sudo bash -c "cat <<EOL > /etc/systemd/system/node-server.service
-[Unit]
-Description=Node.js Server
-After=network.target
-
-[Service]
-Type=simple
-ExecStart=/bin/bash -c 'cd $SEPIO_APP_DIR/backend && node server.js'
-User=$USER
-Environment=PATH=$PATH:/usr/local/bin
-Environment=NODE_ENV=production
-WorkingDirectory=$SEPIO_APP_DIR/backend
-
-[Install]
-WantedBy=multi-user.target
-EOL"
-if [ $? -ne 0 ]; then
-    log "Error: Failed to create node-server.service."
-    exit 1
-fi
-
-log "Reloading systemd daemon to pick up the new service files..."
-sudo systemctl daemon-reload
-if [ $? -ne 0 ]; then
-    log "Error: Failed to reload systemd daemon."
-    exit 1
-fi
-
-log "Enabling react-build.service to start on boot..."
-sudo systemctl enable react-build.service
-if [ $? -ne 0 ]; then
-    log "Error: Failed to enable react-build.service."
-    exit 1
-fi
-
-log "Starting react-build.service... Please be patient, don't break up the process..."
-sudo systemctl start react-build.service
-if [ $? -ne 0 ]; then
-    log "Error: Failed to start react-build.service."
-    exit 1
-fi
-
-log "Enabling node-server.service to start on boot..."
-sudo systemctl enable node-server.service
-if [ $? -ne 0 ]; then
-    log "Error: Failed to enable node-server.service."
-    exit 1
-fi
-
-log "Starting node-server.service..."
-sudo systemctl start node-server.service
-if [ $? -ne 0 ]; then
-    log "Error: Failed to start node-server.service."
-    exit 1
-fi
-
-log "Systemd services setup completed successfully."
+log "Executing application from directory: $SEPIO_APP_DIR..."
+cd "$SEPIO_APP_DIR" || { log "Error: Directory $SEPIO_APP_DIR not found."; exit 1; }
+npm start &
 
 check_port_availability 3000
 
-log "Setup script executed successfully." 
+log "Setup completed successfully. The application is running."
+log "Access the application at http://localhost:3000"
