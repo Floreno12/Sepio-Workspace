@@ -1,7 +1,6 @@
 #!/bin/bash
 LOG_DIR="$SCRIPT_DIR/logs"
-LOG_FILE="$LOG_DIR/sepio_installer.log"
-mkdir -p "$LOG_DIR"
+
 
 log() {
     echo "$(date '+%Y-%m-%d %H:%M:%S') - $1" | tee -a "$LOG_FILE" | lolcat
