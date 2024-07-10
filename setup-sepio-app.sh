@@ -1,14 +1,17 @@
 #!/bin/bash
+LOG_DIR="$SCRIPT_DIR/logs"
+LOG_FILE="$LOG_DIR/sepio_installer.log"
+mkdir -p "$LOG_DIR"
 
 log() {
-    echo "$(date '+%Y-%m-%d %H:%M:%S') - $1" | lolcat
+    echo "$(date '+%Y-%m-%d %H:%M:%S') - $1" | tee -a "$LOG_FILE" | lolcat
 }
 
 install_packages() {
     local package=$1
     if ! command -v "$package" &> /dev/null; then
         log "$package is not installed. Installing $package..."
-        sudo apt-get update && sudo apt-get install -y "$package"
+        sudo apt-get update && sudo apt-get install -y "$package" 2>&1 | tee -a "$LOG_FILE"
         if [ $? -ne 0 ]; then
             log "Error: Failed to install $package."
             exit 1
@@ -21,7 +24,7 @@ install_packages() {
 install_nvm() {
     if ! command -v nvm &> /dev/null; then
         log "nvm (Node Version Manager) is not installed. Installing nvm..."
-        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
+        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash 2>&1 | tee -a "$LOG_FILE"
         export NVM_DIR="$HOME/.nvm"
         [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
         log "nvm installed successfully."
@@ -33,7 +36,7 @@ install_nvm() {
 install_npm() {
     if ! command -v npm &> /dev/null; then
         log "npm is not installed. Installing npm..."
-        sudo apt-get update && sudo apt-get install -y npm
+        sudo apt-get update && sudo apt-get install -y npm 2>&1 | tee -a "$LOG_FILE"
         if [ $? -ne 0 ]; then
             log "Error: Failed to install npm."
             exit 1
@@ -61,11 +64,11 @@ install_node_version() {
     local node_version=$1
     if ! command -v nvm &> /dev/null; then
         log "nvm (Node Version Manager) is not installed. Installing nvm..."
-        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
+        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash 2>&1 | tee -a "$LOG_FILE"
         export NVM_DIR="$HOME/.nvm"
         [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
     fi
-    nvm install "$node_version"
+    nvm install "$node_version" 2>&1 | tee -a "$LOG_FILE"
     if [ $? -ne 0 ]; then
         log "Error: Failed to install Node.js version $node_version using nvm."
         exit 1
@@ -78,7 +81,7 @@ install_frontend_dependencies() {
     local frontend_dir=$1
     log "Installing frontend dependencies in $frontend_dir..."
     cd "$frontend_dir" || { log "Error: Directory $frontend_dir not found."; exit 1; }
-    npm install
+    npm install 2>&1 | tee -a "$LOG_FILE"
     if [ $? -ne 0 ]; then
         log "Error: Failed to install frontend dependencies."
         exit 1
@@ -89,7 +92,7 @@ install_backend_dependencies() {
     local backend_dir=$1
     log "Installing backend dependencies in $backend_dir..."
     cd "$backend_dir" || { log "Error: Directory $backend_dir not found."; exit 1; }
-    npm install
+    npm install 2>&1 | tee -a "$LOG_FILE"
     if [ $? -ne 0 ]; then
         log "Error: Failed to install backend dependencies."
         exit 1
@@ -137,7 +140,7 @@ install_packages expect
 SCRIPT_DIR=$(dirname "$(realpath "$0")")
 SEPIO_APP_DIR="$SCRIPT_DIR/Sepio-App"
 
-log "Installing npm and dependencies..."
+log "Installing npm and deps..."
 install_npm
 install_frontend_dependencies "$SEPIO_APP_DIR/front-end"
 install_backend_dependencies "$SEPIO_APP_DIR/backend"
@@ -162,106 +165,75 @@ fi
 install_node_version "$frontend_node_version"
 
 log "Installing latest eslint-webpack-plugin..."
-npm install eslint-webpack-plugin@latest --save-dev
+npm install eslint-webpack-plugin@latest --save-dev 2>&1 | tee -a "$LOG_FILE"
 
 log "Generating Prisma Client..."
-npx prisma generate
+npx prisma generate 2>&1 | tee -a "$LOG_FILE"
 if [ $? -ne 0 ]; then
     log "Error: Failed to generate Prisma Client."
     exit 1
 fi
 log "Prisma Client generated successfully."
 
-log "Granting privileges for Updater and scheduling auto-updates..."
+log "Granting privileges for Updater and scheduling autoupdates..."
 schedule_updater
 cd "$SCRIPT_DIR" || { log "Error: Directory $SCRIPT_DIR not found."; exit 1; }
 chmod +x Sepio_Updater.sh
 sudo touch /var/log/sepio_updater.log
 sudo chown "$USER:$USER" /var/log/sepio_updater.log
 
+
 if systemctl is-active --quiet mysql; then
     log "MySQL server is already installed."
 else
-    log "Installing MySQL server..."
-    sudo apt-get update && sudo apt-get install -y mysql-server
-    if [ $? -ne 0 ]; then
-        log "Error: Failed to install MySQL server."
-        exit 1
-    fi
-
-    log "Securing MySQL installation..."
-    sudo expect -c "
-    spawn mysql_secure_installation
-    expect \"VALIDATE PASSWORD COMPONENT?\" { send -- \"Y\r\"; exp_continue }
-    expect \"There are three levels of password validation policy:\" { send -- \"1\r\"; exp_continue } # Choose MEDIUM (or 2 for STRONG if needed)
-    expect \"Remove anonymous users?\" { send -- \"Y\r\"; exp_continue }
-    expect \"Disallow root login remotely?\" { send -- \"Y\r\"; exp_continue }
-    expect \"Remove test database and access to it?\" { send -- \"Y\r\"; exp_continue }
-    expect \"Reload privilege tables now?\" { send -- \"Y\r\"; exp_continue }
-    expect eof
-    "
-
-    log "Starting MySQL service..."
-    sudo systemctl start mysql
-
-    log "Enabling MySQL service to start on boot..."
-    sudo systemctl enable --now mysql
-
-    log "Checking MySQL status..."
-    sudo systemctl status --quiet mysql
-
-    log "Checking MySQL port configuration..."
-    mysql_port=$(sudo ss -tln | grep ':3306 ')
-    if [ -n "$mysql_port" ]; then
-        log "MySQL is running on port 3306."
-        log "MySQL installation and setup completed."
-    else
-        log "Error: MySQL is not running on port 3306."
-        exit 1
-    fi
-fi
-
-log "Creating MySQL entry user with password ********..."
-sudo mysql -u root <<MYSQL_SCRIPT
-CREATE DATABASE IF NOT EXISTS nodejs_login;
-USE nodejs_login;
-
-CREATE USER IF NOT EXISTS 'Main_user'@'localhost' IDENTIFIED BY 'Sepio_password';
-GRANT ALL PRIVILEGES ON nodejs_login.* TO 'Main_user'@'localhost';
-FLUSH PRIVILEGES;
-
-CREATE TABLE IF NOT EXISTS user (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    password VARCHAR(255) NOT NULL,
-    otp_secret VARCHAR(255),
-    otp_verified BOOLEAN DEFAULT FALSE,
-    credentialsUpdated BOOLEAN DEFAULT FALSE,
-    privileges ENUM('UI_USER', 'SERVICE_ACCOUNT', 'ADMIN') NOT NULL,
-    serviceNowInstance VARCHAR(255),
-    serviceUsername VARCHAR(255),
-    servicePassword VARCHAR(255),
-    sepioEndpoint VARCHAR(255),
-    sepioUsername  VARCHAR(255),
-    sepioPassword  VARCHAR(255)
-);
-
-INSERT INTO user (name, password, privileges) VALUES ('test', 'test', 'UI_USER');
-
-MYSQL_SCRIPT
-
-if [ $? -eq 0 ]; then
-    log "Database and user creation completed successfully."
-else
-    log "Error: Failed to create database and user."
+log "Installing MySQL server..."
+sudo apt-get update && sudo apt-get install -y mysql-server 2>&1 | tee -a "$LOG_FILE"
+if [ $? -ne 0 ]; then
+    log "Error: Failed to install MySQL server."
     exit 1
 fi
 
-log "Executing application from directory: $SEPIO_APP_DIR..."
-cd "$SEPIO_APP_DIR" || { log "Error: Directory $SEPIO_APP_DIR not found."; exit 1; }
-npm start &
 
-check_port_availability 3000
+log "Securing MySQL installation..."
+sudo expect -c "
+spawn mysql_secure_installation
+expect \"VALIDATE PASSWORD COMPONENT?\" {
+    send -- \"Y\r\"
+    expect \"There are three levels of password validation policy:\"
+    send -- \"1\r\"  # Choose MEDIUM (or 2 for STRONG if needed)
+}
 
-log "Setup completed successfully. The application is running."
-log "Access the application at http://localhost:3000"
+expect \"Remove anonymous users?\" {
+    send -- \"Y\r\"
+}
+
+expect \"Disallow root login remotely?\" {
+    send -- \"Y\r\"
+}
+
+expect \"Remove test database and access to it?\" {
+    send -- \"Y\r\"
+}
+
+expect \"Reload privilege tables now?\" {
+    send -- \"Y\r\"
+}
+expect eof
+" 2>&1 | tee -a "$LOG_FILE"
+
+log "Starting MySQL service..."
+sudo systemctl start mysql 2>&1 | tee -a "$LOG_FILE"
+
+log "Enabling MySQL service to start on boot..."
+sudo systemctl enable --now mysql 2>&1 | tee -a "$LOG_FILE"
+
+log "Checking MySQL status..."
+sudo systemctl status --quiet mysql 2>&1 | tee -a "$LOG_FILE"
+
+log "Checking MySQL port configuration..."
+mysql_port=$(sudo ss -tln | grep ':3306 ')
+if [ -n "$mysql_port" ]; then
+    log "MySQL is running on port 3306."
+    log "MySQL installation and setup completed."
+else
+    log "Error: MySQL is not
