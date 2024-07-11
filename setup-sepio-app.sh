@@ -180,7 +180,7 @@ log "Installing latest eslint-webpack-plugin..."
 npm install eslint-webpack-plugin@latest --save-dev
 
 log "Generating Prisma Client..."
-npx prisma generate --schema=Sepio-App/backend/prisma/schema.prisma
+npx prisma generate 
 if [ $? -ne 0 ]; then
     log "Error: Failed to generate Prisma Client."
     exit 1
