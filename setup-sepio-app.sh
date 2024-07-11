@@ -120,7 +120,7 @@ grant_mysql_privileges() {
     log "Granting MySQL privileges for Main_user on nodejs_login database..."
     sudo mysql -u root <<MYSQL_SCRIPT
     CREATE DATABASE IF NOT EXISTS nodejs_login;
-    GRANT ALL PRIVILEGES ON nodejs_login.* TO 'Main_user'@'localhost';
+    GRANT ALL PRIVILEGES ON nodejs_login.* TO 'Main_user'@'localhost' IDENTIFIED BY 'Sepio_password';
     FLUSH PRIVILEGES;
 MYSQL_SCRIPT
     if [ $? -ne 0 ]; then
