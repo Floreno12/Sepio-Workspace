@@ -151,7 +151,6 @@ install_packages expect
 
 SCRIPT_DIR=$(dirname "$(realpath "$0")")
 SEPIO_APP_DIR="$SCRIPT_DIR/Sepio-App"
-Pass='$2b$10$E2NXxxi4nXClVrYRIWjIWu5iBFDcOgBoJnKVe5Hndw2Pv/XcV1DyW'
 
 log "Installing npm and deps..."
 install_npm
@@ -181,7 +180,7 @@ log "Installing latest eslint-webpack-plugin..."
 npm install eslint-webpack-plugin@latest --save-dev
 
 log "Generating Prisma Client..."
-npx prisma generate
+npx prisma generate --schema=Sepio-App/backend/prisma/schema.prisma
 if [ $? -ne 0 ]; then
     log "Error: Failed to generate Prisma Client."
     exit 1
