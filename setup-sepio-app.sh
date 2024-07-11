@@ -262,7 +262,7 @@ fi
 
 log "Running Prisma migration"
 export DATABASE_URL="mysql://Main_user:Sepio_password@localhost:3306/nodejs_login"
-npx prisma db push --schema=Sepio-App/backend/prisma/schema.prisma
+npx prisma migrate deploy --schema=Sepio-App/backend/prisma/schema.prisma
 
 if [ $? -ne 0 ]; then
   log "Error: Failed to run Prisma migration."
