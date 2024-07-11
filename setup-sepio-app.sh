@@ -116,85 +116,7 @@ check_port_availability() {
     exit 1
 }
 
-grant_mysql_privileges() {
-    log "Granting MySQL privileges for Main_user on nodejs_login database..."
-    sudo mysql -u root <<MYSQL_SCRIPT
-    CREATE DATABASE IF NOT EXISTS nodejs_login;
-    CREATE USER IF NOT EXISTS 'Main_user'@'localhost' IDENTIFIED BY 'Sepio_password';
-    GRANT ALL PRIVILEGES ON nodejs_login.* TO 'Main_user'@'localhost';
-    FLUSH PRIVILEGES;
-MYSQL_SCRIPT
-    if [ $? -ne 0 ]; then
-        log "Error: Failed to grant MySQL privileges."
-        exit 1
-    fi
-    log "MySQL privileges granted successfully."
-}
-
-show_header() {
-    echo "====================================" | lolcat
-    figlet -c Sepio Installer | lolcat
-    echo "====================================" | lolcat
-}
-
-# Main script execution starts here
-
-show_header
-
-log "Starting setup script..."
-
-install_packages figlet
-install_packages lolcat
-install_packages git
-install_packages jq
-install_packages expect
-
-SCRIPT_DIR=$(dirname "$(realpath "$0")")
-SEPIO_APP_DIR="$SCRIPT_DIR/Sepio-App"
-
-log "Installing npm and deps..."
-install_npm
-install_frontend_dependencies "$SEPIO_APP_DIR/front-end"
-install_backend_dependencies "$SEPIO_APP_DIR/backend"
-
-install_nvm
-
-log "Checking for required Node.js versions from package.json files..."
-backend_node_version=$(get_required_node_version "$SEPIO_APP_DIR/backend/package.json")
-log "Required Node.js version for backend: $backend_node_version"
-if [ "$backend_node_version" == "null" ]; then
-    log "Error: Required Node.js version for backend not specified in package.json."
-    exit 1
-fi
-install_node_version "$backend_node_version"
-
-frontend_node_version=$(get_required_node_version "$SEPIO_APP_DIR/front-end/package.json")
-log "Required Node.js version for frontend: $frontend_node_version"
-if [ "$frontend_node_version" == "null" ]; then
-    log "Error: Required Node.js version for frontend not specified in package.json."
-    exit 1
-fi
-install_node_version "$frontend_node_version"
-
-log "Installing latest eslint-webpack-plugin..."
-npm install eslint-webpack-plugin@latest --save-dev
-
-log "Generating Prisma Client..."
-npx prisma generate 
-if [ $? -ne 0 ]; then
-    log "Error: Failed to generate Prisma Client."
-    exit 1
-fi
-log "Prisma Client generated successfully."
-
-log "Granting privilages for Updater and scheduling autoupdates..."
-schedule_updater
-cd "$SCRIPT_DIR" || { log "Error: Directory $SCRIPT_DIR not found."; exit 1; }
-chmod +x Sepio_Updater.sh
-sudo touch /var/log/sepio_updater.log
-sudo chown "$USER:$USER" /var/log/sepio_updater.log
-
-
+mysql_create(){
 if systemctl is-active --quiet mysql; then
     log "MySQL server is already installed."
 else
@@ -239,9 +161,6 @@ sudo systemctl start mysql
 log "Enabling MySQL service to start on boot..."
 sudo systemctl enable --now mysql
 
-log "Checking MySQL status..."
-sudo systemctl status --quiet mysql
-
 log "Checking MySQL port configuration..."
 mysql_port=$(sudo ss -tln | grep ':3306 ')
 if [ -n "$mysql_port" ]; then
@@ -253,24 +172,128 @@ else
 fi
 fi
 
-grant_mysql_privileges
+log "Creating MySQL entry user with password ********..."
+sudo mysql -u root <<MYSQL_SCRIPT
+CREATE DATABASE IF NOT EXISTS nodejs_login;
+USE nodejs_login;
 
+CREATE USER IF NOT EXISTS 'Main_user'@'localhost' IDENTIFIED BY 'Sepio_password';
+GRANT ALL PRIVILEGES ON nodejs_login.* TO 'Main_user'@'localhost';
+FLUSH PRIVILEGES;
+
+CREATE TABLE IF NOT EXISTS user (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    otp_secret VARCHAR(255),
+    otp_verified BOOLEAN DEFAULT FALSE,
+    credentialsUpdated BOOLEAN DEFAULT FALSE,
+    privileges ENUM('UI_USER', 'SERVICE_ACCOUNT', 'ADMIN') NOT NULL,
+    serviceNowInstance VARCHAR(255),
+    serviceUsername VARCHAR(255),
+    servicePassword VARCHAR(255),
+    sepioEndpoint VARCHAR(255),
+    sepioUsername  VARCHAR(255),
+    sepioPassword VARCHAR(255)
+);
+
+CREATE TABLE IF NOT EXISTS ServiceNowCredentials (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  instance VARCHAR(255) NOT NULL,
+  username VARCHAR(255) NOT NULL,
+  password VARCHAR(255) NOT NULL
+);
+CREATE TABLE IF NOT EXISTS sepio (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  instance VARCHAR(255) NOT NULL,
+  username VARCHAR(255) NOT NULL,
+  password VARCHAR(255) NOT NULL
+);
+MYSQL_SCRIPT
+}
+
+grant_mysql_privileges() {
+    log "Granting MySQL privileges for Main_user on nodejs_login database..."
+    sudo mysql -u root <<MYSQL_SCRIPT
+    GRANT ALL PRIVILEGES ON nodejs_login.* TO 'Main_user'@'localhost';
+    FLUSH PRIVILEGES;
+MYSQL_SCRIPT
+    if [ $? -ne 0 ]; then
+        log "Error: Failed to grant MySQL privileges."
+        exit 1
+    fi
+    log "MySQL privileges granted successfully."
+}
+
+show_header() {
+    echo "====================================" | lolcat
+    figlet -c Sepio Installer | lolcat
+    echo "====================================" | lolcat
+}
+
+# Main script execution starts here
+
+show_header
+
+log "Starting setup script..."
+
+mysql_create
+install_packages figlet
+install_packages lolcat
+install_packages git
+install_packages jq
+install_packages expect
+
+SCRIPT_DIR=$(dirname "$(realpath "$0")")
+SEPIO_APP_DIR="$SCRIPT_DIR/Sepio-App"
+
+log "Installing npm and deps..."
+install_npm
+install_frontend_dependencies "$SEPIO_APP_DIR/front-end"
+install_backend_dependencies "$SEPIO_APP_DIR/backend"
+
+install_nvm
+
+log "Checking for required Node.js versions from package.json files..."
+backend_node_version=$(get_required_node_version "$SEPIO_APP_DIR/backend/package.json")
+log "Required Node.js version for backend: $backend_node_version"
+if [ "$backend_node_version" == "null" ]; then
+    log "Error: Required Node.js version for backend not specified in package.json."
+    exit 1
+fi
+install_node_version "$backend_node_version"
+
+frontend_node_version=$(get_required_node_version "$SEPIO_APP_DIR/front-end/package.json")
+log "Required Node.js version for frontend: $frontend_node_version"
+if [ "$frontend_node_version" == "null" ]; then
+    log "Error: Required Node.js version for frontend not specified in package.json."
+    exit 1
+fi
+install_node_version "$frontend_node_version"
+
+log "Installing latest eslint-webpack-plugin..."
+npm install eslint-webpack-plugin@latest --save-dev
+
+log "Generating Prisma Client..."
+npx prisma generate 
+if [ $? -ne 0 ]; then
+    log "Error: Failed to generate Prisma Client."
+    exit 1
+fi
+log "Prisma Client generated successfully."
+
+grant_mysql_privileges
 if [ $? -ne 0 ]; then
   log "Error: Failed to Create Prisma User"
   exit 1
 fi
 
-log "Running Prisma migration"
-export DATABASE_URL="mysql://Main_user:Sepio_password@localhost:3306/nodejs_login"
-npx prisma migrate deploy --schema=Sepio-App/backend/prisma/schema.prisma
-
-if [ $? -ne 0 ]; then
-  log "Error: Failed to run Prisma migration."
-  exit 1
-fi
-
-log "Prisma migration completed successfully."
-log "MySQL Prisma User created successfully."
+log "Granting privilages for Updater and scheduling autoupdates..."
+schedule_updater
+cd "$SCRIPT_DIR" || { log "Error: Directory $SCRIPT_DIR not found."; exit 1; }
+chmod +x Sepio_Updater.sh
+sudo touch /var/log/sepio_updater.log
+sudo chown "$USER:$USER" /var/log/sepio_updater.log
 
 log "Installing Redis server..."
 sudo apt-get update && sudo apt-get install -y redis-server
