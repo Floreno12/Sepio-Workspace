@@ -119,6 +119,7 @@ check_port_availability() {
 grant_mysql_privileges() {
     log "Granting MySQL privileges for Main_user on nodejs_login database..."
     sudo mysql -u root <<MYSQL_SCRIPT
+    CREATE DATABASE IF NOT EXISTS nodejs_login;
     GRANT ALL PRIVILEGES ON nodejs_login.* TO 'Main_user'@'localhost';
     FLUSH PRIVILEGES;
 MYSQL_SCRIPT
