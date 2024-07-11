@@ -116,6 +116,19 @@ check_port_availability() {
     exit 1
 }
 
+grant_mysql_privileges() {
+    log "Granting MySQL privileges for Main_user on nodejs_login database..."
+    sudo mysql -u root <<MYSQL_SCRIPT
+    GRANT ALL PRIVILEGES ON nodejs_login.* TO 'Main_user'@'localhost';
+    FLUSH PRIVILEGES;
+MYSQL_SCRIPT
+    if [ $? -ne 0 ]; then
+        log "Error: Failed to grant MySQL privileges."
+        exit 1
+    fi
+    log "MySQL privileges granted successfully."
+}
+
 show_header() {
     echo "====================================" | lolcat
     figlet -c Sepio Installer | lolcat
@@ -239,15 +252,7 @@ else
 fi
 fi
 
-log "Creating MySQL Prisma User..."
-sudo mysql -u root <<MYSQL_SCRIPT
-CREATE DATABASE IF NOT EXISTS nodejs_login;
-USE nodejs_login;
-
-CREATE USER IF NOT EXISTS 'Main_user'@'localhost' IDENTIFIED BY 'Sepio_password';
-GRANT ALL PRIVILEGES ON nodejs_login.* TO 'Main_user'@'localhost';
-FLUSH PRIVILEGES;
-MYSQL_SCRIPT
+grant_mysql_privileges
 
 if [ $? -ne 0 ]; then
   log "Error: Failed to Create Prisma User"
